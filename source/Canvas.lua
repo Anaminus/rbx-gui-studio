@@ -6,6 +6,7 @@ API:
 	Canvas.ActiveLookup     save-to-active lookup table
 	Canvas.SaveLookup       active-to-save lookup table
 	Canvas.ButtonLookup     save-to-button lookup table
+	Canvas.GlobalButton     a representation of every button
 	ServiceStatus.Status    whether the service is started or not
 
 	Canvas:Start(screen)    starts the service with a ScreenGui to bind to
@@ -59,6 +60,28 @@ local Canvas do
 		Transparency = 1;
 	}
 
+	Canvas.GlobalButton = {
+		MouseButton1Click = {};
+		MouseButton1Down = {};
+		MouseButton1Up = {};
+		MouseButton2Click = {};
+		MouseButton2Down = {};
+		MouseButton2Up = {};
+		MouseEnter = {};
+		MouseLeave = {};
+		MouseMoved = {};
+	}
+
+	local function connectButton(save,button)
+		for event,global in pairs(Canvas.GlobalButton) do
+			button[event]:connect(function(...)
+				for _,listener in pairs(global) do
+					listener(save,...)
+				end
+			end)
+		end
+	end
+
 	local function makeActiveCopy(saveObject)
 		if ActiveLookup[saveObject] == nil then
 			local saveParent = saveObject.Parent
@@ -70,6 +93,7 @@ local Canvas do
 					ButtonLookup[saveObject] = button
 					button.Archivable = false
 					button.Parent = activeObject
+					connectButton(saveObject,button)
 				ActiveLookup[saveObject] = activeObject
 				SaveLookup[activeObject] = saveObject
 				activeObject.Parent = activeParent
@@ -113,6 +137,7 @@ local Canvas do
 		if activeObject then
 			ActiveLookup[saveObject] = nil
 			SaveLookup[activeObject] = nil
+			ButtonLookup[saveObject] = nil
 			activeObject:Destroy()
 		end
 	end
