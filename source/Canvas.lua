@@ -1,5 +1,7 @@
 --[[
 Synchronizes a container to the canvas
+save: the saved copy of the object; the *actual* object
+active: the representation of the save object on the canvas
 API:
 	Canvas.CurrentScreen    The current ScreenGui the Canvas is bound to
 	Canvas.CanvasFrame      The Frame instance representing the Canvas
