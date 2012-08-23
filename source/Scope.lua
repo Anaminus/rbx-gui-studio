@@ -1,4 +1,14 @@
--- handles the current scope; the object whose children are manipulated by tools
+--[[
+handles the current scope; the object whose children are manipulated by tools
+API:
+	Scope.Top                   The top of the scope hierarchy
+	Scope.Current               The current scope
+
+	Scope:In(object)            Scope into a child object
+	Scope:Out()                 Scope out to the parent object
+
+	Scope.ScopeChanged(object)  Fired after the scope changes
+]]
 local Scope do
 	Scope = {
 		Top = nil;

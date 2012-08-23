@@ -1,5 +1,19 @@
--- Synchronizes a container to the canvas
+--[[
+Synchronizes a container to the canvas
+API:
+	Canvas.CurrentScreen    The current ScreenGui the Canvas is bound to
+	Canvas.CanvasFrame      The Frame instance representing the Canvas
+	Canvas.ActiveLookup     save-to-active lookup table
+	Canvas.SaveLookup       active-to-save lookup table
+	Canvas.ButtonLookup     save-to-button lookup table
+	ServiceStatus.Status    whether the service is started or not
 
+	Canvas:Start(screen)    starts the service with a ScreenGui to bind to
+	Canvas:Stop()           stops the service
+	Canvas:Restart(screen)  restarts the service with a ScreenGui to bind to
+
+	Canvas.Started(screen)  Fired after the Canvas starts
+]]
 local Canvas do
 	local CurrentScreen = Game:GetService("StarterGui")
 	local CanvasFrame = Instance.new("Frame")

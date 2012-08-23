@@ -1,3 +1,10 @@
+--[[
+handles undo/redo
+API:
+	History:PushState(state)  pushes the current state; call when change to state is made
+	History:Undo(state)       returns the previous state
+	History:Redo(state)       returns the next state
+]]
 local History do
 	History = {
 		UndoStack = {};

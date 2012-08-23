@@ -1,5 +1,14 @@
--- handles ScreenGuis for Canvas on plugin activation
--- implements ScreenSelect and ScreenInsert dialogs
+--[[
+handles ScreenGuis for Canvas on plugin activation
+implements ScreenSelect and ScreenInsert dialogs
+API:
+	ScreenHandler.CurrentScreen   The current ScreenGui
+
+	ScreenHandler:Select(screen)  Selects the ScreenGui that the Canvas will be bound to
+	ScreenHandler:RunStartup()    does the startup procedure for plugin activation
+	ScreenHandler:InsertDialog()  runs the ScreenGui insert dialog
+	ScreenHandler:SelectDialog()  runs the ScreenGui select dialog
+]]
 local ScreenHandler do
 	ScreenHandler = {
 		CurrentScreen = nil;

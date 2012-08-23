@@ -1,5 +1,17 @@
--- handles selection of GUIs the Canvas is bound to
--- when Selection service selects a GUI, it's corresponding active object in Canvas is highlighted
+--[[
+handles selection of GUIs the Canvas is bound to
+when Selection service selects a GUI, it's corresponding active object in Canvas is highlighted
+API:
+	Selection.SelectedObjects                  A set of selected objects
+	Selection.SelectFrameLookup                object-to-select lookup table
+	ServiceStatus.Status                       whether the service is started
+
+	Selection:Start()                          Starts the service
+	Selection:Stop()                           Stops the service
+
+	Selection.ObjectSelected(object,select)    Fired after an object is selected, passing the object and the highlighting frame
+	Selection.ObjectDeselected(object,select)  Fired before an object is deselected
+]]
 local Selection do
 	local SelectionService = Game:GetService("Selection")
 	local SelectedObjects = {}
