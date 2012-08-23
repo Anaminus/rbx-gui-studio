@@ -153,7 +153,7 @@ local Canvas do
 		end
 	end
 
-	local eventStarted = Instance.new("BinableEvent")
+	local eventStarted = Instance.new("BindableEvent")
 	Canvas.Started = eventStarted.Event
 
 	AddServiceStatus{Canvas;
