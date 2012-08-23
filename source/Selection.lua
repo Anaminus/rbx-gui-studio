@@ -77,14 +77,11 @@ local Selection do
 		for object in pairs(deselected) do
 		--	print("---- DESELECT",object)
 			SelectedObjects[object] = nil
-			local button = Canvas.ButtonLookup[object]
-			if button then
-				local select_frame = SelectFrameLookup[object]
-				if select_frame then
-					eventObjectDeselected:Fire(object,select_frame)
-					SelectFrameLookup[object] = nil
-					select_frame:Destroy()
-				end
+			local select_frame = SelectFrameLookup[object]
+			if select_frame then
+				eventObjectDeselected:Fire(object,select_frame)
+				SelectFrameLookup[object] = nil
+				select_frame:Destroy()
 			end
 		end
 		for object in pairs(selected) do
@@ -92,7 +89,7 @@ local Selection do
 			local select_frame = selectTemplate:Clone()
 			SelectFrameLookup[object] = select_frame
 			select_frame.Archivable = false
-			select_frame.Parent = Canvas.ButtonLookup[object]
+			select_frame.Parent = Canvas.ActiveLookup[object]
 			SelectedObjects[object] = true
 			eventObjectSelected:Fire(object,select_frame)
 		end

@@ -6,8 +6,6 @@ API:
 	Canvas.CurrentScreen    The current ScreenGui the Canvas is bound to
 	Canvas.CanvasFrame      The Frame instance representing the Canvas
 	Canvas.ActiveLookup     save-to-active lookup table
-	Canvas.SaveLookup       active-to-save lookup table
-	Canvas.ButtonLookup     save-to-button lookup table
 	Canvas.GlobalButton     a representation of every button
 	ServiceStatus.Status    whether the service is started or not
 
@@ -21,15 +19,11 @@ local Canvas do
 	local CurrentScreen = Game:GetService("StarterGui")
 	local CanvasFrame = Instance.new("Frame")
 	local ActiveLookup = {} -- [CurrentScreen] = CanvasFrame
-	local SaveLookup = {}   -- [CanvasFrame] = CurrentScreen
-	local ButtonLookup = {} -- [CurrentScreen.Frame] = CanvasFrame.Frame.Button
 
 	Canvas = {
 		CurrentScreen      = CurrentScreen;
 		CanvasFrame        = CanvasFrame;
 		ActiveLookup       = ActiveLookup;
-		SaveLookup         = SaveLookup;
-		ButtonLookup       = ButtonLookup;
 		Replicate          = true;
 	}
 
@@ -92,12 +86,10 @@ local Canvas do
 				local activeObject = saveObject:Clone()
 				activeObject:ClearAllChildren()
 				local button = buttonTemplate:Clone()
-					ButtonLookup[saveObject] = button
 					button.Archivable = false
 					button.Parent = activeObject
 					connectButton(saveObject,button)
 				ActiveLookup[saveObject] = activeObject
-				SaveLookup[activeObject] = saveObject
 				activeObject.Parent = activeParent
 				return activeObject
 			end
@@ -138,8 +130,6 @@ local Canvas do
 		local activeObject = ActiveLookup[saveObject]
 		if activeObject then
 			ActiveLookup[saveObject] = nil
-			SaveLookup[activeObject] = nil
-			ButtonLookup[saveObject] = nil
 			activeObject:Destroy()
 		end
 	end
@@ -175,7 +165,6 @@ local Canvas do
 			r(CurrentScreen,descendants)
 
 			ActiveLookup[CurrentScreen] = CanvasFrame
-			SaveLookup[CanvasFrame] = CurrentScreen
 
 			conAdded = CurrentScreen.DescendantAdded:connect(saveAdded)
 			conRemoved = CurrentScreen.DescendantRemoving:connect(saveRemoving)
@@ -195,13 +184,6 @@ local Canvas do
 			for object,con in pairs(conChangedLookup) do
 				con:disconnect()
 				conChangedLookup[object] = nil
-			end
-			for k in pairs(SaveLookup) do
-				SaveLookup[k] = nil
-			end
-			for save,button in pairs(ButtonLookup) do
-				ButtonLookup[save] = nil
-				button:Destroy()
 			end
 			for save,active in pairs(ActiveLookup) do
 				ActiveLookup[save] = nil
