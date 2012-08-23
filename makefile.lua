@@ -1,4 +1,4 @@
---option('write_path',"--[[FILE: %s]]")
+option('write_path',"--[[FILE: %s]]")
 --option('show_messages',0)
 --option('cmd_friendly',0)
 
@@ -21,7 +21,19 @@ local output_files = {
 	rbx_plugins/NAME/NAME..[[.lua]];
 }
 
-read [[METADATA]]        {'main'}
-read [[source/file.lua]] {'main'}
+read [[METADATA]]                 {'main'}
+read [[source/Header.lua]]        {'main'}
+read [[source/Utility.lua]]       {'main'}
+
+widgets = [[source/widgets]]
+read (widgets/[[Header.lua]])     {'main'}
+read (widgets/[[DialogBase.lua]]) {'main'}
+
+read [[source/Canvas.lua]]        {'main'}
+read [[source/Scope.lua]]         {'main'}
+read [[source/Selection.lua]]     {'main'}
+read [[source/ScreenHandler.lua]] {'main'}
+read [[source/GUI.lua]]           {'main'}
+read [[source/Activator.lua]]     {'main'}
 
 write 'main' (output_files)
