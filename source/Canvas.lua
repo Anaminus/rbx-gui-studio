@@ -17,7 +17,7 @@ API:
 ]]
 local Canvas do
 	local CurrentScreen = Game:GetService("StarterGui")
-	local CanvasFrame = Instance.new("Frame")
+	local CanvasFrame = Instance.new("ImageButton")
 	local ActiveLookup = {} -- [CurrentScreen] = CanvasFrame
 
 	Canvas = {
