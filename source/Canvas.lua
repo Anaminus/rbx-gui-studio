@@ -16,7 +16,7 @@ API:
 	Canvas.Started(screen)  Fired after the Canvas starts
 ]]
 local Canvas do
-	local CurrentScreen = Game:GetService("StarterGui")
+	local CurrentScreen
 	local CanvasFrame = Instance.new("ImageButton")
 	local ActiveLookup = {} -- [CurrentScreen] = CanvasFrame
 
