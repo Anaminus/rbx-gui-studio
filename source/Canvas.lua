@@ -56,23 +56,39 @@ local Canvas do
 		Transparency = 1;
 	}
 
+	local globalEventMT = {
+		connect = function(listener)
+			table.insert(self,listener)
+			return function()
+				for i,v in pairs(self) do
+					if v == listener then
+						table.remove(self,i)
+					end
+				end
+			end
+		end;
+	}
+	local function globalEvent()
+		return setmetatable({},globalEventMT)
+	end
+
 	Canvas.GlobalButton = {
-		MouseButton1Click = {};
-		MouseButton1Down = {};
-		MouseButton1Up = {};
-		MouseButton2Click = {};
-		MouseButton2Down = {};
-		MouseButton2Up = {};
-		MouseEnter = {};
-		MouseLeave = {};
-		MouseMoved = {};
+		MouseButton1Click	= globalEvent();
+		MouseButton1Down	= globalEvent();
+		MouseButton1Up		= globalEvent();
+		MouseButton2Click	= globalEvent();
+		MouseButton2Down	= globalEvent();
+		MouseButton2Up		= globalEvent();
+		MouseEnter			= globalEvent();
+		MouseLeave			= globalEvent();
+		MouseMoved			= globalEvent();
 	}
 
-	local function connectButton(save,button)
+	local function connectButton(save,active,button)
 		for event,global in pairs(Canvas.GlobalButton) do
 			button[event]:connect(function(...)
 				for _,listener in pairs(global) do
-					listener(save,...)
+					listener(save,active,...)
 				end
 			end)
 		end
@@ -88,7 +104,7 @@ local Canvas do
 				local button = buttonTemplate:Clone()
 					button.Archivable = false
 					button.Parent = activeObject
-					connectButton(saveObject,button)
+					connectButton(saveObject,activeObject,button)
 				ActiveLookup[saveObject] = activeObject
 				activeObject.Parent = activeParent
 				return activeObject
