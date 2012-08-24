@@ -128,7 +128,6 @@ local Selection do
 	end
 
 	function Selection:Set(...)
-
 		SelectionService:Set(...)
 	end
 
@@ -147,6 +146,9 @@ local Selection do
 			for k in pairs(SelectedObjectsSet) do
 				SelectedObjectsSet[k] = nil
 			end
+			for i in pairs(SelectedObjects) do
+				SelectedObjects[i] = nil
+			end
 			for object,select_frame in pairs(SelectFrameLookup) do
 				eventObjectDeselected:Fire(object,select_frame)
 				SelectFrameLookup[object] = nil
@@ -154,4 +156,8 @@ local Selection do
 			end
 		end;
 	}
+
+	Canvas.Started:connect(function()
+		Selection:Start()
+	end)
 end
