@@ -58,3 +58,15 @@ local function CreateSignal(instance,name)
 	instance[name] = event.Event
 	return event
 end
+
+local function removeValue(list,value)
+	local i,n = 0,#list
+	while i <= n do
+		if list[i] == value then
+			table.remove(list,i)
+			n = n - 1
+		else
+			i = i + 1
+		end
+	end
+end

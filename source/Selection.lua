@@ -92,6 +92,19 @@ local Selection do
 			eventObjectSelected:Fire(object,select_frame)
 		end
 	end
+
+	function Selection:Add(object)
+		local s = SelectionService:Get()
+		s[#s+1] = object
+		SelectionService:Set(s)
+	end
+
+	function Selection:Remove(object)
+		local s = SelectionService:Get()
+		removeValue(s,object)
+		SelectionService:Set(s)
+	end
+
 	local conChanged
 	AddServiceStatus{Selection;
 		Start = function()
