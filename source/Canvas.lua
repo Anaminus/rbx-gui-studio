@@ -57,16 +57,18 @@ local Canvas do
 	}
 
 	local globalEventMT = {
-		connect = function(listener)
-			table.insert(self,listener)
-			return function()
-				for i,v in pairs(self) do
-					if v == listener then
-						table.remove(self,i)
+		__index = {
+			connect = function(self,listener)
+				table.insert(self,listener)
+				return function()
+					for i,v in pairs(self) do
+						if v == listener then
+							table.remove(self,i)
+						end
 					end
 				end
-			end
-		end;
+			end;
+		};
 	}
 	local function globalEvent()
 		return setmetatable({},globalEventMT)
