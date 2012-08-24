@@ -56,10 +56,8 @@ local Selection do
 		return v:IsA"GuiObject" and Canvas.ActiveLookup[v]
 	end
 
-	local eventObjectSelected = Instance.new("BindableEvent")
-	Selection.ObjectSelected = eventObjectSelected
-	local eventObjectDeselected = Instance.new("BindableEvent")
-	Selection.ObjectDeselected = eventObjectDeselected
+	local eventObjectSelected = CreateSignal(Selection,'ObjectSelected')
+	local eventObjectDeselected = CreateSignal(Selection,'ObjectDeselected')
 
 	local function updateSelection()
 		local selected = {}

@@ -52,3 +52,9 @@ local function AddServiceStatus(data)
 		end
 	end
 end
+
+local function CreateSignal(instance,name)
+	local event = Instance.new("BindableEvent")
+	instance[name] = event.Event
+	return event
+end

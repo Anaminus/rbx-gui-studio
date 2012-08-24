@@ -143,8 +143,7 @@ local Canvas do
 		end
 	end
 
-	local eventStarted = Instance.new("BindableEvent")
-	Canvas.Started = eventStarted.Event
+	local eventStarted = CreateSignal(Canvas,'Started')
 
 	AddServiceStatus{Canvas;
 		Start = function(self,container)

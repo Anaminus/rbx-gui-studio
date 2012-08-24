@@ -15,8 +15,7 @@ local Scope do
 		Current = nil;
 	}
 
-	local eventScopeChanged = Instance.new("BindableEvent")
-	Scope.ScopeChanged = eventScopeChanged.Event
+	local eventScopeChanged = CreateSignal(Scope,'ScopeChanged')
 
 	function Scope:SetTop(object)
 		if not object then
