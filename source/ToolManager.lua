@@ -45,4 +45,13 @@ local ToolManager do
 			error("ToolManager:SelectTool: invalid tool index ["..index.."]",2)
 		end
 	end
+
+	AddServiceStatus{ToolManager;
+		Start = function(self)
+			self:SelectTool(1)
+		end;
+		Stop = function(self)
+			self.ToolList[self.CurrentTool]:Deselect()
+		end;
+	}
 end

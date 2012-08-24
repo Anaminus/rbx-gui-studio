@@ -6,10 +6,12 @@ local function Activate()
 	Canvas:Start()
 	Selection:Start()
 	ActivateGUI()
+	ToolManager:Start()
 	ScreenHandler:RunStartup()
 end
 
 local function Deactivate()
+	ToolManager:Stop()
 	Canvas:Stop()
 	Selection:Stop()
 	DeactivateGUI()
