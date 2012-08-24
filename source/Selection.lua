@@ -6,6 +6,9 @@ API:
 	Selection.SelectFrameLookup                object-to-select lookup table
 	ServiceStatus.Status                       whether the service is started
 
+	Selection:Set(objects)                     Sets the selection to a list of objects (SelectionService.Set)
+	Selection:Add(object)                      Adds an object to the selection
+	Selection:Remove(object)                   Removes an object from the selection
 	Selection:Start()                          Starts the service
 	Selection:Stop()                           Stops the service
 
@@ -103,6 +106,10 @@ local Selection do
 		local s = SelectionService:Get()
 		removeValue(s,object)
 		SelectionService:Set(s)
+	end
+
+	function Selection:Set(...)
+		SelectionService:Set(...)
 	end
 
 	local conChanged
