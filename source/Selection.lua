@@ -2,22 +2,25 @@
 handles selection of GUIs the Canvas is bound to
 when Selection service selects a GUI, it's corresponding active object in Canvas is highlighted
 API:
-	Selection.SelectedObjects                  A set of selected objects
+	Selection.SelectedObjects                  A list of objects that are currently selected (no-edit)
 	Selection.SelectFrameLookup                object-to-select lookup table
 	ServiceStatus.Status                       whether the service is started
 
+	Selection:Get()                            Returns a copy of Selecton.SelectedObjects
 	Selection:Set(objects)                     Sets the selection to a list of objects (SelectionService.Set)
 	Selection:Add(object)                      Adds an object to the selection
 	Selection:Remove(object)                   Removes an object from the selection
+	Selection:Contains(object)                 Returns whether an object is selected
 	Selection:Start()                          Starts the service
 	Selection:Stop()                           Stops the service
 
-	Selection.ObjectSelected(object,select)    Fired after an object is selected, passing the object and the highlighting frame
-	Selection.ObjectDeselected(object,select)  Fired before an object is deselected
+	Selection.ObjectSelected(object,active)    Fired after an object is selected, passing the object and its active object
+	Selection.ObjectDeselected(object,active)  Fired after an object is deselected
 ]]
 local Selection do
 	local SelectionService = Game:GetService("Selection")
 	local SelectedObjects = {}
+	local SelectedObjectsSet = {}
 	local SelectFrameLookup = {}
 
 	Selection = {
@@ -65,11 +68,11 @@ local Selection do
 	local function updateSelection()
 		local selected = {}
 		local deselected = {}
-		for object in pairs(SelectedObjects) do
+		for object in pairs(SelectedObjectsSet) do
 			deselected[object] = true
 		end
 		for i,object in pairs(SelectionService:Get()) do
-			if SelectedObjects[object] then
+			if SelectedObjectsSet[object] then
 				deselected[object] = nil -- object is still selected
 			elseif filter(object) then
 				selected[object] = true -- object is newly selected
@@ -77,22 +80,30 @@ local Selection do
 		end
 		for object in pairs(deselected) do
 		--	print("---- DESELECT",object)
-			SelectedObjects[object] = nil
+			SelectedObjectsSet[object] = nil
+			removeValue(SelectedObjects,object)
+
 			local select_frame = SelectFrameLookup[object]
 			if select_frame then
-				eventObjectDeselected:Fire(object,select_frame)
 				SelectFrameLookup[object] = nil
 				select_frame:Destroy()
 			end
+
+			eventObjectDeselected:Fire(object,Canvas.ActiveLookup[object])
 		end
 		for object in pairs(selected) do
 		--	print("---- SELECT",object)
+			local active = Canvas.ActiveLookup[object]
+
 			local select_frame = selectTemplate:Clone()
-			SelectFrameLookup[object] = select_frame
 			select_frame.Archivable = false
-			select_frame.Parent = Canvas.ActiveLookup[object]
-			SelectedObjects[object] = true
-			eventObjectSelected:Fire(object,select_frame)
+			select_frame.Parent = active
+			SelectFrameLookup[object] = select_frame
+
+			SelectedObjectsSet[object] = true
+			SelectedObjects[#SelectedObjects+1] = object
+
+			eventObjectSelected:Fire(object,active)
 		end
 	end
 
@@ -108,8 +119,21 @@ local Selection do
 		SelectionService:Set(s)
 	end
 
+	function Selection:Get()
+		local s = {}
+		for i = 1,#SelectedObjects do
+			s[i] = SelectedObjects[i]
+		end
+		return s
+	end
+
 	function Selection:Set(...)
+
 		SelectionService:Set(...)
+	end
+
+	function Selection:Contains(object)
+		return not not SelectedObjectsSet[object]
 	end
 
 	local conChanged
@@ -120,8 +144,8 @@ local Selection do
 		end;
 		Stop = function()
 			conChanged:disconnect()
-			for k in pairs(SelectedObjects) do
-				SelectedObjects[k] = nil
+			for k in pairs(SelectedObjectsSet) do
+				SelectedObjectsSet[k] = nil
 			end
 			for object,select_frame in pairs(SelectFrameLookup) do
 				eventObjectDeselected:Fire(object,select_frame)
