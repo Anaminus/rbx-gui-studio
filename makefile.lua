@@ -29,14 +29,15 @@ widgets = [[source/widgets]]
 read (widgets/[[Header.lua]])     {'main'}
 read (widgets/[[DialogBase.lua]]) {'main'}
 
-tools = [[source/tools]]
-read [[source/ToolManager.lua]]   {'main'}
-read (tools/[[Selector.lua]])     {'main'}
-
 read [[source/Canvas.lua]]        {'main'}
 read [[source/Scope.lua]]         {'main'}
 read [[source/Selection.lua]]     {'main'}
 read [[source/ScreenHandler.lua]] {'main'}
+
+tools = [[source/tools]]
+read [[source/ToolManager.lua]]   {'main'}
+read (tools/[[Selector.lua]])     {'main'}
+
 read [[source/GUI.lua]]           {'main'}
 read [[source/Activator.lua]]     {'main'}
 
