@@ -3,10 +3,7 @@ local function Initialize()
 end
 
 local function Activate()
-	Canvas:Start()
-	Selection:Start()
 	ActivateGUI()
-	ToolManager:Start()
 	ScreenHandler:RunStartup()
 end
 
