@@ -40,7 +40,7 @@ local ToolManager do
 
 			self.CurrentTool = index
 			ToolList[index]:Select()
-			eventToolDeselected:Fire(index)
+			eventToolSelected:Fire(index)
 		else
 			error("ToolManager:SelectTool: invalid tool index ["..index.."]",2)
 		end
@@ -48,10 +48,15 @@ local ToolManager do
 
 	AddServiceStatus{ToolManager;
 		Start = function(self)
-			self:SelectTool(1)
+			self.ToolList[self.CurrentTool]:Select()
+			eventToolSelected:Fire(self.CurrentTool)
 		end;
 		Stop = function(self)
 			self.ToolList[self.CurrentTool]:Deselect()
 		end;
 	}
+
+	Canvas.Started:connect(function()
+		ToolManager:Start()
+	end)
 end
