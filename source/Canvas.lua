@@ -60,13 +60,15 @@ local Canvas do
 		__index = {
 			connect = function(self,listener)
 				table.insert(self,listener)
-				return function()
-					for i,v in pairs(self) do
-						if v == listener then
-							table.remove(self,i)
+				return {
+					disconnect = function()
+						for i,v in pairs(self) do
+							if v == listener then
+								table.remove(self,i)
+							end
 						end
-					end
-				end
+					end;
+				}
 			end;
 		};
 	}
