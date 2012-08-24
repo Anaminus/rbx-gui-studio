@@ -108,6 +108,8 @@ local function InitializeGUI()
 	local SelectionTool  = Tools.SelectionTool
 	local ObjectTool     = Tools.ObjectTool
 	local DynamicToolbar = StudioFrame.DynamicToolbar
+	-- TEMP: select first tool
+	ToolManager:SelectTool(1)
 end
 
 local function ActivateGUI()
