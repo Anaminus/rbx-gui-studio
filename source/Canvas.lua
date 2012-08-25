@@ -152,7 +152,7 @@ local Canvas do
 		local activeObject = ActiveLookup[saveObject]
 		if activeObject then
 			ActiveLookup[saveObject] = nil
-			activeObject:Destroy()
+			activeObject.Parent = nil
 		end
 	end
 
