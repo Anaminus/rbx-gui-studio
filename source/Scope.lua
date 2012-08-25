@@ -6,6 +6,7 @@ API:
 
 	Scope:In(object)            Scope into a child object
 	Scope:Out()                 Scope out to the parent object
+	Scope:GetContainer(object)  Return the ancestor whose parent is the current scope
 
 	Scope.ScopeChanged(object)  Fired after the scope changes
 ]]
@@ -50,6 +51,14 @@ local Scope do
 			self.Current = self.Current.Parent
 			eventScopeChanged:Fire(self.Current)
 		end
+	end
+
+	function Scope:GetContainer(object)
+		while object.Parent ~= Scope.Current do
+			object = object.Parent
+			if object == nil then return nil end
+		end
+		return object
 	end
 
 	Canvas.Started:connect(function(screen)
