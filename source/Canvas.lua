@@ -120,6 +120,7 @@ local Canvas do
 	local conChangedLookup = {}
 
 	local function saveAdded(saveObject)
+		if not CurrentScreen:IsAncestorOf(saveObject) then return end
 		if saveObject:IsA"GuiBase" then
 			local activeObject = makeActiveCopy(saveObject)
 			if not activeObject then
@@ -142,6 +143,7 @@ local Canvas do
 	end
 
 	local function saveRemoving(saveObject)
+		if not CurrentScreen:IsAncestorOf(saveObject) then return end
 		local changed = conChangedLookup[saveObject]
 		if changed then
 			changed:disconnect()
@@ -164,6 +166,7 @@ local Canvas do
 	end
 
 	local eventStarted = CreateSignal(Canvas,'Started')
+	local StarterGui = Game:GetService("StarterGui")
 
 	AddServiceStatus{Canvas;
 		Start = function(self,container)
@@ -185,8 +188,8 @@ local Canvas do
 
 			ActiveLookup[CurrentScreen] = CanvasFrame
 
-			conAdded = CurrentScreen.DescendantAdded:connect(saveAdded)
-			conRemoved = CurrentScreen.DescendantRemoving:connect(saveRemoving)
+			conAdded = StarterGui.DescendantAdded:connect(saveAdded)
+			conRemoved = StarterGui.DescendantRemoving:connect(saveRemoving)
 
 			for i,descendant in pairs(descendants) do
 				saveAdded(descendant)
