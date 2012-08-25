@@ -70,3 +70,48 @@ local function removeValue(list,value)
 		end
 	end
 end
+
+local function GetScreen(screen)
+	if screen == nil then return nil end
+	while not screen:IsA("ScreenGui") do
+		screen = screen.Parent
+		if screen == nil then return nil end
+	end
+	return screen
+end
+
+local function CreateDragger(object)
+	local dragger = Create'ImageButton'{
+		Name = "MouseDrag";
+		Position = UDim2.new(-0.25,0,-0.25,0);
+		Size = UDim2.new(1.5,0,1.5,0);
+		Transparency = 1;
+		AutoButtonColor = false;
+		Active = true;
+		ZIndex = 10;
+	}
+	dragger.Parent = GetScreen(object)
+	return dragger
+end
+
+local EventManager_mt = {
+	__index = {
+		disconnect = function(self,...)
+			for _,name in pairs{...} do
+				if self[name] then
+					self[name]:disconnect()
+					self[name] = nil
+				end
+			end
+		end;
+		clear = function(self)
+			for name in pairs(self) do
+				self[name]:disconnect()
+				self[name] = nil
+			end
+		end;
+	};
+}
+local function CreateEventManager()
+	return setmetatable({},EventManager_mt)
+end
