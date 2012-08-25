@@ -24,6 +24,7 @@ local output_files = {
 read [[METADATA]]                 {'main'}
 read [[source/Header.lua]]        {'main'}
 read [[source/Utility.lua]]       {'main'}
+read [[source/Mouse.lua]]         {'main'}
 
 widgets = [[source/widgets]]
 read (widgets/[[Header.lua]])     {'main'}

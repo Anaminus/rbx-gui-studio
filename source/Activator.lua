@@ -3,6 +3,7 @@ local function Initialize()
 end
 
 local function Activate()
+	Mouse:Start()
 	ActivateGUI()
 	ScreenHandler:RunStartup()
 end
@@ -12,6 +13,7 @@ local function Deactivate()
 	Canvas:Stop()
 	Selection:Stop()
 	DeactivateGUI()
+	Mouse:Stop()
 end
 
 PluginButton.Click:connect(function()
