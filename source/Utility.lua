@@ -80,20 +80,6 @@ local function GetScreen(screen)
 	return screen
 end
 
-local function CreateDragger(object)
-	local dragger = Create'ImageButton'{
-		Name = "MouseDrag";
-		Position = UDim2.new(-0.25,0,-0.25,0);
-		Size = UDim2.new(1.5,0,1.5,0);
-		Transparency = 1;
-		AutoButtonColor = false;
-		Active = true;
-		ZIndex = 10;
-	}
-	dragger.Parent = GetScreen(object)
-	return dragger
-end
-
 local EventManager_mt = {
 	__index = {
 		disconnect = function(self,...)

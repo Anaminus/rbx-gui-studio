@@ -29,6 +29,7 @@ read [[source/Mouse.lua]]         {'main'}
 widgets = [[source/widgets]]
 read (widgets/[[Header.lua]])     {'main'}
 read (widgets/[[DialogBase.lua]]) {'main'}
+read (widgets/[[Dragger.lua]])    {'main'}
 
 read [[source/Canvas.lua]]        {'main'}
 read [[source/Scope.lua]]         {'main'}
