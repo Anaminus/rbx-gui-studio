@@ -17,8 +17,8 @@ local function Create(ty)
 	end
 end
 
-local Enum,CreateEnum do
-	Enum = {}
+local Enums,CreateEnum do
+	Enums = {}
 	local EnumName = {} -- used as unique key for enum name
 	local enum_mt = {
 		__call = function(self,value)
@@ -57,7 +57,7 @@ local Enum,CreateEnum do
 				e[name] = item
 				e[item] = item
 			end
-			Enum[enumName] = e
+			Enums[enumName] = e
 			return setmetatable(e,enum_mt)
 		end
 	end
@@ -69,19 +69,19 @@ local function AddServiceStatus(data)
 	local service = data[1]
 	local start = data.Start
 	local stop = data.Stop
-	service.Status = Enum.ServiceStatus.Stopped
+	service.Status = Enums.ServiceStatus.Stopped
 	service.Start = function(...)
-		if Enum.ServiceStatus.Stopped(service.Status) then
-			service.Status = Enum.ServiceStatus.Starting
+		if Enums.ServiceStatus.Stopped(service.Status) then
+			service.Status = Enums.ServiceStatus.Starting
 			start(...)
-			service.Status = Enum.ServiceStatus.Started
+			service.Status = Enums.ServiceStatus.Started
 		end
 	end
 	service.Stop = function(...)
-		if Enum.ServiceStatus.Started(service.Status) then
-			service.Status = Enum.ServiceStatus.Stopping
+		if Enums.ServiceStatus.Started(service.Status) then
+			service.Status = Enums.ServiceStatus.Stopping
 			stop(...)
-			service.Status = Enum.ServiceStatus.Stopped
+			service.Status = Enums.ServiceStatus.Stopped
 		end
 	end
 end
@@ -105,7 +105,7 @@ local function CreateSignal(instance,name)
 			end
 			self.connected = false
 		end
-		connections[#connections+1] = {func,connection)
+		connections[#connections+1] = {func,connection}
 		return connection
 	end
 

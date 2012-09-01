@@ -12,13 +12,13 @@ function Widgets.ArrowGraphic(size,dir,scaled,template)
 	end
 
 	local transform
-	if dir == nil or Enum.ArrowGraphicDirection.Up(dir) then
+	if dir == nil or Enums.ArrowGraphicDirection.Up(dir) then
 		function transform(p,s) return p,s end
-	elseif Enum.ArrowGraphicDirection.Down(dir) then
+	elseif Enums.ArrowGraphicDirection.Down(dir) then
 		function transform(p,s) return UDim2.new(0,p.X.Offset,0,size-p.Y.Offset-1),s end
-	elseif Enum.ArrowGraphicDirection.Left(dir) then
+	elseif Enums.ArrowGraphicDirection.Left(dir) then
 		function transform(p,s) return UDim2.new(0,p.Y.Offset,0,p.X.Offset),UDim2.new(0,s.Y.Offset,0,s.X.Offset) end
-	elseif Enum.ArrowGraphicDirection.Right(dir) then
+	elseif Enums.ArrowGraphicDirection.Right(dir) then
 		function transform(p,s) return UDim2.new(0,size-p.Y.Offset-1,0,p.X.Offset),UDim2.new(0,s.Y.Offset,0,s.X.Offset) end
 	end
 
@@ -90,14 +90,14 @@ function Widgets.GripGraphic(size,dir,spacing,scaled,template)
 		function scale(p) return p end
 	end
 
-	if Enum.GripGraphicDirection.Vertical(dir) then
+	if Enums.GripGraphicDirection.Vertical(dir) then
 		for i=0,size.x-1,spacing do
 			local t = template:Clone()
 			t.Size = scale(UDim2.new(0,1,0,size.y))
 			t.Position = scale(UDim2.new(0,i,0,0))
 			t.Parent = Frame
 		end
-	elseif dir == nil or Enum.GripGraphicDirection.Horizontal(dir) then
+	elseif dir == nil or Enums.GripGraphicDirection.Horizontal(dir) then
 		for i=0,size.y-1,spacing do
 			local t = template:Clone()
 			t.Size = scale(UDim2.new(0,size.x,0,1))
