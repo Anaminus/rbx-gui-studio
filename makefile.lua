@@ -33,6 +33,7 @@ read (widgets/[[Graphics.lua]])           {'main'}
 read (widgets/[[StackingFrame.lua]])      {'main'}
 read (widgets/[[ScrollBar.lua]])          {'main'}
 read (widgets/[[ScrollingContainer.lua]]) {'main'}
+read (widgets/[[List.lua]])               {'main'}
 read (widgets/[[DialogBase.lua]])         {'main'}
 read (widgets/[[ToolTipService.lua]])     {'main'}
 read (widgets/[[Dragger.lua]])            {'main'}
@@ -42,6 +43,7 @@ read [[source/Canvas.lua]]        {'main'}
 read [[source/Scope.lua]]         {'main'}
 read [[source/Selection.lua]]     {'main'}
 read [[source/InsertDialog.lua]]  {'main'}
+read [[source/SelectDialog.lua]]  {'main'}
 read [[source/ScreenHandler.lua]] {'main'}
 
 tools = [[source/tools]]

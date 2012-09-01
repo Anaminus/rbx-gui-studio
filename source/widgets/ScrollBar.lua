@@ -10,19 +10,19 @@ do
 			CanScrollUp = function(self)
 				return self.ScrollIndex > 0
 			end;
-			ScrollDown = function()
+			ScrollDown = function(self)
 				self.ScrollIndex = self.ScrollIndex + self.PageIncrement
 				self:Update()
 			end;
-			ScrollUp = function()
+			ScrollUp = function(self)
 				self.ScrollIndex = self.ScrollIndex - self.PageIncrement
 				self:Update()
 			end;
-			ScrollTo = function(index)
+			ScrollTo = function(self,index)
 				self.ScrollIndex = index
 				self:Update()
 			end;
-			SetScrollPercent = function(percent)
+			SetScrollPercent = function(self,percent)
 				self.ScrollIndex = math.floor((self.TotalSpace - self.VisibleSpace)*percent + 0.5)
 				self:Update()
 			end;
@@ -46,41 +46,55 @@ do
 				Name = "ScrollDown";
 				Position = horizontal and UDim2.new(1,-size,0,0) or UDim2.new(0,0,1,-size);
 				Size = UDim2.new(0, size, 0, size);
-				BackgroundColor3 = Color3.new(0,0,0);
-				BorderSizePixel = 0;
+				BackgroundColor3 = Color3.new(0.866667, 0.866667, 0.866667);
+				BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+				--BorderSizePixel = 0;
 			};
 			Create'ImageButton'{
 				Name = "ScrollUp";
 				Size = UDim2.new(0, size, 0, size);
-				BackgroundColor3 = Color3.new(0,0,0);
-				BorderSizePixel = 0;
+				BackgroundColor3 = Color3.new(0.866667, 0.866667, 0.866667);
+				BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+				--BorderSizePixel = 0;
 			};
 			Create'ImageButton'{
 				Name = "ScrollBar";
 				Size = horizontal and UDim2.new(1,-size*2,1,0) or UDim2.new(1,0,1,-size*2);
 				Position = horizontal and UDim2.new(0,size,0,0) or UDim2.new(0,0,0,size);
 				AutoButtonColor = false;
-				BackgroundColor3 = Color3.new(0,0,0);
-				BorderSizePixel = 0;
+				BackgroundColor3 = Color3.new(0.94902, 0.94902, 0.94902);
+				BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+				--BorderSizePixel = 0;
 				Create'ImageButton'{
 					Name = "ScrollThumb";
+					AutoButtonColor = false;
 					Size = UDim2.new(0, size, 0, size);
-					BackgroundColor3 = Color3.new(1,1,1);
-					BorderSizePixel = 0;
+					BackgroundColor3 = Color3.new(0.866667, 0.866667, 0.866667);
+					BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+					--BorderSizePixel = 0;
 				};
 			};
 		}
 
+		local graphicTemplate = Create'Frame'{
+			Name="Graphic";
+			BorderSizePixel = 0;
+			BackgroundColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+		}
+		local graphicSize = math.floor(size*0.625)
+
 		local ScrollDownFrame = ScrollFrame.ScrollDown
-			local ScrollDownGraphic = Widgets.ArrowGraphic(size,'Down',true)
+			local ScrollDownGraphic = Widgets.ArrowGraphic(graphicSize,horizontal and 'Right' or 'Down',true,graphicTemplate)
+			ScrollDownGraphic.Position = UDim2.new(0.5,-graphicSize/2,0.5,-graphicSize/2)
 			ScrollDownGraphic.Parent = ScrollDownFrame
 		local ScrollUpFrame = ScrollFrame.ScrollUp
-			local ScrollUpGraphic = Widgets.ArrowGraphic(size,'Up',true)
+			local ScrollUpGraphic = Widgets.ArrowGraphic(graphicSize,horizontal and 'Left' or 'Up',true,graphicTemplate)
+			ScrollUpGraphic.Position = UDim2.new(0.5,-graphicSize/2,0.5,-graphicSize/2)
 			ScrollUpGraphic.Parent = ScrollUpFrame
 		local ScrollBarFrame = ScrollFrame.ScrollBar
 		local ScrollThumbFrame = ScrollBarFrame.ScrollThumb
-			local Decal = Widgets.GripGraphic(Vector2.new(4,4),'Horizontal',2)
-			Decal.Position = UDim2.new(0.5,-4,0.5,-4)
+			local Decal = Widgets.GripGraphic(Vector2.new(6,6),horizontal and 'Vertical' or 'Horizontal',2,graphicTemplate)
+			Decal.Position = UDim2.new(0.5,-3,0.5,-3)
 			Decal.Parent = ScrollThumbFrame
 
 		local MouseDrag = Widgets.Dragger()
@@ -315,13 +329,13 @@ do
 		end)
 
 		function Class:Destroy()
+			ScrollFrame:Destroy()
+			MouseDrag:Destroy()
 			for k in pairs(Class) do
 				Class[k] = nil
 			end
-			MouseDrag:Destroy()
-			ScrollFrame:Destroy()
+			setmetatable(Class,nil)
 		end
-		setmetatable(Class,nil)
 
 		Update()
 

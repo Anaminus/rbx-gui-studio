@@ -3,8 +3,8 @@ do
 		__index = {
 			Update = function(self)
 				local eid = self.event_id + 1; self.event_id = eid
-				local height = 0
 				local width = 0
+				local height = 0
 
 				local padding,border = self.Padding,self.Border
 
@@ -12,16 +12,18 @@ do
 					if self.event_id ~= eid then return end
 					if child.Visible then
 						local abs = child.AbsoluteSize
-						child.Position = UDim2.new(0,border,0,width + border)
-						height = abs.x > height and abs.x or height
-						width = width + abs.y + padding
+						child.Position = UDim2.new(0,border,0,height + border)
+					--	width = abs.x > width and abs.x or width
+						height = height + abs.y + padding
 					end
 				end
 				if self.event_id ~= eid then return end
 				if #self.List > 0 then
-					self.GUI.Size = UDim2.new(0,height + border*2,0,width - padding + border*2)
+				--	self.GUI.Size = UDim2.new(0,width + border*2,0,height - padding + border*2)
+					self.GUI.Size = UDim2.new(1,0,0,height - padding + border*2)
 				else
-					self.GUI.Size = UDim2.new(0,border*2,0,border*2)
+				--	self.GUI.Size = UDim2.new(0,border*2,0,border*2)
+					self.GUI.Size = UDim2.new(1,0,0,border*2)
 				end
 				self.event_id = 0
 			end;
@@ -37,7 +39,7 @@ do
 							self:Update()
 						end
 					end)
-					object.Parent = Frame
+					object.Parent = self.GUI
 					self:Update()
 				end
 			end;
@@ -98,7 +100,7 @@ do
 		},mt)
 
 		for i,child in pairs(Frame:GetChildren()) do
-			AddObject(child,i)
+			Class:AddObject(child,i)
 		end
 
 		Class:Update()

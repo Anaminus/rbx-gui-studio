@@ -4,9 +4,11 @@ do
 			Update = function(self)
 				local bounds = self.GUI.TextBounds
 				local padding = self.Padding
+				local x = self.LockXAxis or UDim.new(0,bounds.x+padding+padding)
+				local y = self.LockYAxis or UDim.new(0,bounds.y+padding+padding)
 				self.GUI.Size = UDim2.new(
-					0,bounds.x+padding+padding,
-					0,bounds.y+padding+padding
+					x.Scale,x.Offset,
+					y.Scale,y.Offset
 				)
 			end;
 			Destroy = function(self)

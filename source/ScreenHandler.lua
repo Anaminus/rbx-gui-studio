@@ -33,30 +33,38 @@ local ScreenHandler do
 		Canvas:Restart(screen)
 	end
 
-	function ScreenHandler:SelectDialog(screens)
-		-- TEMP: select first screen
-		self:Select(screens[1])
+	function ScreenHandler:SelectDialog()
+		local parent = GetScreen(Canvas.CanvasFrame)
+		if parent then
+			local screen = RunSelectDialog(parent)
+			if screen then
+				self:Select(screen)
+			end
+		end
 	end
 
 	function ScreenHandler:InsertDialog()
-		local screen,set_canvas = RunInsertDialog(Canvas.CanvasFrame.Parent.Parent)
-		if screen and set_canvas then
-			ScreenHandler:Select(screen)
+		local parent = GetScreen(Canvas.CanvasFrame)
+		if parent then
+			local screen,set_canvas = RunInsertDialog(parent)
+			if screen and set_canvas then
+				ScreenHandler:Select(screen)
+			end
 		end
 	end
 
 	-- look for ScreenGuis on plugin startup
 	function ScreenHandler:RunStartup()
-		if self.CurrentScreen and Game:IsAncestorOf(self.CurrentScreen) then
+		if self.CurrentScreen and Game:GetService("StarterGui"):IsAncestorOf(self.CurrentScreen) then
 			self:Select(self.CurrentScreen)
 		else
 			local screens = getScreens(Game:GetService("StarterGui"))
 			if #screens == 0 then
 				self:InsertDialog()
-			elseif #screens == 1 then
-				self:Select(screens[1])
+		--	elseif #screens == 1 then
+		--		self:Select(screens[1])
 			else
-				self:SelectDialog(screens) -- TEMP: pass screens
+				self:SelectDialog()
 			end
 		end
 	end
