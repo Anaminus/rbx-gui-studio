@@ -9,7 +9,7 @@ Common procedure:
 			Update whatever
 		Dragger.Parent = (screen of button)
 ]]
-local function CreateDragger(object)
+function Widgets.Dragger(object)
 	local dragger = Create'ImageButton'{
 		Name = "MouseDrag";
 		Position = UDim2.new(-0.25,0,-0.25,0);
