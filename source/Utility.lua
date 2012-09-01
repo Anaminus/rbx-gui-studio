@@ -111,7 +111,7 @@ local function CreateSignal(instance,name)
 
 	function Event:wait()
 		waitEvent.Changed:wait()
-		return unpack(waitArguments)
+		return unpack(waitArguments) -- leaky
 	end
 
 	function Invoker:Fire(...)
@@ -120,6 +120,23 @@ local function CreateSignal(instance,name)
 		for i,conn in pairs(connections) do
 			conn[1](...)
 		end
+	end
+
+	function Invoker:Destroy()
+		instance[name] = nil
+		for k in pairs(Event) do
+			Event[k] = nil
+		end
+		for k in pairs(Invoker) do
+			Invoker[k] = nil
+		end
+		for i in pairs(connections) do
+			connections[i] = nil
+		end
+		for i in pairs(waitArguments) do
+			waitArguments[i] = nil
+		end
+		waitEvent:Destroy()
 	end
 
 	instance[name] = Event
