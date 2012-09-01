@@ -41,6 +41,7 @@ read (widgets/[[TransformHandles.lua]])   {'main'}
 read [[source/Canvas.lua]]        {'main'}
 read [[source/Scope.lua]]         {'main'}
 read [[source/Selection.lua]]     {'main'}
+read [[source/InsertDialog.lua]]  {'main'}
 read [[source/ScreenHandler.lua]] {'main'}
 
 tools = [[source/tools]]

@@ -29,7 +29,6 @@ local ScreenHandler do
 
 	-- bind canvas to a screen
 	function ScreenHandler:Select(screen)
-		print("SELECTING SCREEN:",screen)
 		self.CurrentScreen = screen
 		Canvas:Restart(screen)
 	end
@@ -40,10 +39,10 @@ local ScreenHandler do
 	end
 
 	function ScreenHandler:InsertDialog()
-		-- TEMP: insert a new screen into StarterGui
-		local screen = Instance.new("ScreenGui")
-		screen.Parent = Game:GetService("StarterGui")
-		ScreenHandler:Select(screen)
+		local screen,set_canvas = RunInsertDialog(Canvas.CanvasFrame.Parent.Parent)
+		if screen and set_canvas then
+			ScreenHandler:Select(screen)
+		end
 	end
 
 	-- look for ScreenGuis on plugin startup
