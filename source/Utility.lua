@@ -17,46 +17,113 @@ local function Create(ty)
 	end
 end
 
-local function Class(ctor)
-	return function(...)
-		local def = {}
-		ctor(def, ...)
-		return def
+local Enum,CreateEnum do
+	Enum = {}
+	local EnumName = {} -- used as unique key for enum name
+	local enum_mt = {
+		__call = function(self,value)
+			return self[value] or self[tonumber(value)]
+		end;
+		__index = {
+			GetEnumItems = function(self)
+				local t = {}
+				for i,item in pairs(self) do
+					if type(i) == 'number' then
+						t[#t+1] = item
+					end
+				end
+				table.sort(t,function(a,b) return a.Value < b.Value end)
+				return t
+			end;
+		};
+		__tostring = function(self)
+			return "Enum." .. self[EnumName]
+		end;
+	}
+	local item_mt = {
+		__call = function(self,value)
+			return value == self or value == self.Name or value == self.Value
+		end;
+		__tostring = function(self)
+			return "Enum." .. self[EnumName] .. "." .. self.Name
+		end;
+	}
+	function CreateEnum(enumName)
+		return function(t)
+			local e = {[EnumName] = enumName}
+			for i,name in pairs(t) do
+				local item = setmetatable({Name=name,Value=i,Enum=e,[EnumName]=enumName},item_mt)
+				e[i] = item
+				e[name] = item
+				e[item] = item
+			end
+			Enum[enumName] = e
+			return setmetatable(e,enum_mt)
+		end
 	end
 end
 
-local Status = {
-	Stopped = 0;
-	Started = 1;
-	Starting = 2;
-	Stopping = 3;
-}
+CreateEnum'ServiceStatus'{'Stopped','Started','Starting','Stopping'}
 
 local function AddServiceStatus(data)
 	local service = data[1]
 	local start = data.Start
 	local stop = data.Stop
-	service.Status = Status.Stopped
+	service.Status = Enum.ServiceStatus.Stopped
 	service.Start = function(...)
-		if service.Status == Status.Stopped then
-			service.Status = Status.Starting
+		if Enum.ServiceStatus.Stopped(service.Status) then
+			service.Status = Enum.ServiceStatus.Starting
 			start(...)
-			service.Status = Status.Started
+			service.Status = Enum.ServiceStatus.Started
 		end
 	end
 	service.Stop = function(...)
-		if service.Status == Status.Started then
-			service.Status = Status.Stopping
+		if Enum.ServiceStatus.Started(service.Status) then
+			service.Status = Enum.ServiceStatus.Stopping
 			stop(...)
-			service.Status = Status.Stopped
+			service.Status = Enum.ServiceStatus.Stopped
 		end
 	end
 end
 
 local function CreateSignal(instance,name)
-	local event = Instance.new("BindableEvent")
-	instance[name] = event.Event
-	return event
+	local connections = {}
+	local waitEvent = Instance.new('BoolValue')
+	local waitArguments = {} -- holds arguments from Fire to be returned by event:wait()
+
+	local Event = {}
+	local Invoker = {Event = Event}
+
+	function Event:connect(func)
+		local connection = {connected = true}
+		function connection:disconnect()
+			for i = 1,#mListeners do
+				if mListeners[i][2] == self then
+					table.remove(mListeners,i)
+					break
+				end
+			end
+			self.connected = false
+		end
+		connections[#connections+1] = {func,connection)
+		return connection
+	end
+
+	function Event:wait()
+		waitEvent.Changed:wait()
+		return unpack(waitArguments)
+	end
+
+	function Invoker:Fire(...)
+		waitArguments = {...}
+		waitEvent.Value = not waitEvent.Value
+		for i,conn in pairs(connections) do
+			conn[1](...)
+		end
+	end
+
+	instance[name] = Event
+	return Invoker
 end
 
 local function removeValue(list,value)
