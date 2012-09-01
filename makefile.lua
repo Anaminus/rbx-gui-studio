@@ -34,6 +34,7 @@ read (widgets/[[StackingFrame.lua]])      {'main'}
 read (widgets/[[ScrollBar.lua]])          {'main'}
 read (widgets/[[ScrollingContainer.lua]]) {'main'}
 read (widgets/[[DialogBase.lua]])         {'main'}
+read (widgets/[[ToolTipService.lua]])     {'main'}
 read (widgets/[[Dragger.lua]])            {'main'}
 read (widgets/[[TransformHandles.lua]])   {'main'}
 
