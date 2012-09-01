@@ -97,9 +97,9 @@ local function CreateSignal(instance,name)
 	function Event:connect(func)
 		local connection = {connected = true}
 		function connection:disconnect()
-			for i = 1,#mListeners do
-				if mListeners[i][2] == self then
-					table.remove(mListeners,i)
+			for i = 1,#connections do
+				if connections[i][2] == self then
+					table.remove(connections,i)
 					break
 				end
 			end
