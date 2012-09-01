@@ -3,17 +3,19 @@ Synchronizes a container to the canvas
 save: the saved copy of the object; the *actual* object
 active: the representation of the save object on the canvas
 API:
-	Canvas.CurrentScreen    The current ScreenGui the Canvas is bound to
-	Canvas.CanvasFrame      The Frame instance representing the Canvas
-	Canvas.ActiveLookup     save-to-active lookup table
-	Canvas.GlobalButton     a representation of every button
-	ServiceStatus.Status    whether the service is started or not
+	Canvas.CurrentScreen     the current ScreenGui the Canvas is bound to
+	Canvas.CanvasFrame       the Frame instance representing the Canvas
+	Canvas.ActiveLookup      save-to-active lookup table
+	Canvas.GlobalButton      a representation of every button
+	ServiceStatus.Status     whether the service is started or not
 
-	Canvas:Start(screen)    starts the service with a ScreenGui to bind to
-	Canvas:Stop()           stops the service
-	Canvas:Restart(screen)  restarts the service with a ScreenGui to bind to
+	Canvas:Start(screen)     starts the service with a ScreenGui to bind to
+	Canvas:Stop()            stops the service
+	Canvas:Restart(screen)   restarts the service with a ScreenGui to bind to
 
-	Canvas.Started(screen)  Fired after the Canvas starts
+	Canvas.Started(screen)   fired after the Canvas starts
+	Canvas.Stopping(screen)  fired before the Canvas stops
+	Canvas.Stopped(screen)   fired after the Canvas stops
 ]]
 local Canvas do
 	local CurrentScreen
@@ -165,8 +167,10 @@ local Canvas do
 		end
 	end
 
-	local eventStarted = CreateSignal(Canvas,'Started')
 	local StarterGui = Game:GetService("StarterGui")
+	local eventStarted = CreateSignal(Canvas,'Started')
+	local eventStopped = CreateSignal(Canvas,'Stopped')
+	local eventStopping = CreateSignal(Canvas,'Stopping')
 
 	AddServiceStatus{Canvas;
 		Start = function(self,container)
@@ -198,6 +202,7 @@ local Canvas do
 			eventStarted:Fire(CurrentScreen)
 		end;
 		Stop = function()
+			eventStopping:Fire(screen)
 			local function clear(t)
 				for k in pairs(t) do t[k] = nil end
 			end
@@ -214,6 +219,10 @@ local Canvas do
 				end
 			end
 			clear(ActiveLookup)
+			local screen = CurrentScreen
+			CurrentScreen = nil
+			Canvas.CurrentScreen = nil
+			eventStopped:Fire(screen)
 		end;
 	};
 

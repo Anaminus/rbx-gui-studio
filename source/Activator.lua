@@ -1,5 +1,16 @@
 local function Initialize()
 	InitializeGUI()
+	Canvas.Started:connect(function(screen)
+		Scope:SetTop(screen)
+		Selection:Start()
+		ToolManager:Start()
+	end)
+	Canvas.Stopping:connect(function()
+		ToolManager:Stop()
+	end)
+	Canvas.Stopped:connect(function()
+		Selection:Stop()
+	end)
 end
 
 local function Activate()
@@ -9,9 +20,7 @@ local function Activate()
 end
 
 local function Deactivate()
-	ToolManager:Stop()
 	Canvas:Stop()
-	Selection:Stop()
 	DeactivateGUI()
 	Mouse:Stop()
 end

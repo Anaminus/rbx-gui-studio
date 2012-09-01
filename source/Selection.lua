@@ -156,8 +156,4 @@ local Selection do
 			end
 		end;
 	}
-
-	Canvas.Started:connect(function()
-		Selection:Start()
-	end)
 end

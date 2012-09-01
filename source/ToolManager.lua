@@ -55,8 +55,4 @@ local ToolManager do
 			self.ToolList[self.CurrentTool]:Deselect()
 		end;
 	}
-
-	Canvas.Started:connect(function()
-		ToolManager:Start()
-	end)
 end

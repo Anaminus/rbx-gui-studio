@@ -60,8 +60,4 @@ local Scope do
 		end
 		return object
 	end
-
-	Canvas.Started:connect(function(screen)
-		Scope:SetTop(screen)
-	end)
 end
