@@ -17,7 +17,7 @@ local ToolTipService do
 				BackgroundTransparency = 1;
 				TextColor3 = Color3.new(0,0,0);
 				Font = "Arial";
-				FontSize = "Size12";
+				FontSize = "Size14";
 				ZIndex = 10;
 			};
 		};
@@ -65,6 +65,8 @@ local ToolTipService do
 		if self.ToolTips[object] then
 			self:RemoveToolTip(object)
 		end
+
+		if message == nil then return end
 
 		local tooltip = {
 			Object = object;
