@@ -1,8 +1,8 @@
 do
 	local Tool = {
 		Name = "Selector";
-		Icon = "";
-		Tooltip = "Select and transform objects";
+		Icon = "http://www.roblox.com/asset/?id=92033578";
+		ToolTip = "Select and transform objects";
 		Shortcut = "";
 	}
 	local SelectedObjects = Selection.SelectedObjects
