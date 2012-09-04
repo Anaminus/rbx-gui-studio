@@ -164,6 +164,17 @@ local function GetScreen(screen)
 	return screen
 end
 
+local function GetScreens(object,list)
+	list = list or {}
+	if object:IsA("ScreenGui") and object ~= Screen then
+		list[#list+1] = object
+	end
+	for i,child in pairs(object:GetChildren()) do
+		GetScreens(child,list)
+	end
+	return list
+end
+
 local EventManager_mt = {
 	__index = {
 		disconnect = function(self,...)

@@ -14,23 +14,14 @@ local ScreenHandler do
 		CurrentScreen = nil;
 	}
 
-	local function getScreens(object)
-		local list = {}
-		for i,child in pairs(object:GetChildren()) do
-			if child:IsA"ScreenGui" then
-				list[#list+1] = child
-			end
-			for i,screen in pairs(getScreens(child)) do
-				list[#list+1] = screen
-			end
-		end
-		return list
-	end
-
 	-- bind canvas to a screen
 	function ScreenHandler:Select(screen)
 		self.CurrentScreen = screen
-		Canvas:Restart(screen)
+		if screen then
+			Canvas:Restart(screen)
+		else
+			Canvas:Stop()
+		end
 	end
 
 	function ScreenHandler:SelectDialog()
@@ -48,6 +39,7 @@ local ScreenHandler do
 		if parent then
 			local screen,set_canvas = RunInsertDialog(parent)
 			if screen and set_canvas then
+				Game:GetService("Selection"):Set{screen}
 				ScreenHandler:Select(screen)
 			end
 		end
@@ -58,13 +50,13 @@ local ScreenHandler do
 		if self.CurrentScreen and Game:GetService("StarterGui"):IsAncestorOf(self.CurrentScreen) then
 			self:Select(self.CurrentScreen)
 		else
-			local screens = getScreens(Game:GetService("StarterGui"))
+			local screens = GetScreens(Game:GetService("StarterGui"))
 			if #screens == 0 then
-				self:InsertDialog()
+				self:InsertDialog(Screen)
 		--	elseif #screens == 1 then
 		--		self:Select(screens[1])
 			else
-				self:SelectDialog()
+				self:SelectDialog(Screen)
 			end
 		end
 	end
