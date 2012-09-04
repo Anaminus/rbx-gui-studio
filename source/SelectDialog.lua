@@ -1,8 +1,9 @@
 local function RunSelectDialog(parent)
 	local Dialog = Create'ScreenGui'{
 		Name = "Select Dialog";
-		Create'Frame'{
+		Create'ImageButton'{
 			Active = true;
+			AutoButtonColor = false;
 			BorderSizePixel = 0;
 			Size = UDim2.new(1.5, 0, 1.5, 0);
 			Name = "Shield";
