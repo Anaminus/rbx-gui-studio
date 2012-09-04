@@ -27,17 +27,19 @@ read [[source/Utility.lua]]       {'main'}
 read [[source/Mouse.lua]]         {'main'}
 
 widgets = [[source/widgets]]
-read (widgets/[[Header.lua]])             {'main'}
-read (widgets/[[AutoSizeLabel.lua]])      {'main'}
-read (widgets/[[Graphics.lua]])           {'main'}
-read (widgets/[[StackingFrame.lua]])      {'main'}
-read (widgets/[[ScrollBar.lua]])          {'main'}
-read (widgets/[[ScrollingContainer.lua]]) {'main'}
-read (widgets/[[List.lua]])               {'main'}
-read (widgets/[[DialogBase.lua]])         {'main'}
-read (widgets/[[ToolTipService.lua]])     {'main'}
-read (widgets/[[Dragger.lua]])            {'main'}
-read (widgets/[[TransformHandles.lua]])   {'main'}
+read (widgets/[[Header.lua]])              {'main'}
+read (widgets/[[ToolTipService.lua]])      {'main'}
+read (widgets/[[AutoSizeLabel.lua]])       {'main'}
+read (widgets/[[Graphics.lua]])            {'main'}
+read (widgets/[[StackingFrame.lua]])       {'main'}
+read (widgets/[[StaticStackingFrame.lua]]) {'main'}
+read (widgets/[[ScrollBar.lua]])           {'main'}
+read (widgets/[[ScrollingContainer.lua]])  {'main'}
+read (widgets/[[ButtonMenu.lua]])          {'main'}
+read (widgets/[[List.lua]])                {'main'}
+read (widgets/[[DialogBase.lua]])          {'main'}
+read (widgets/[[Dragger.lua]])             {'main'}
+read (widgets/[[TransformHandles.lua]])    {'main'}
 
 read [[source/Canvas.lua]]        {'main'}
 read [[source/Scope.lua]]         {'main'}

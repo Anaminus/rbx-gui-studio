@@ -1,6 +1,123 @@
-local Screen
-
 local function InitializeGUI()
+	local MenuButtons = {
+		{
+			Name = "InsertScreenGui";
+			Icon = "http://www.roblox.com/asset/?id=92035432";
+			ToolTip = "Insert a new ScreenGui";
+			Select = function()
+				ScreenHandler:InsertDialog()
+			end;
+		};
+		{
+			Name = "SelectScreenGui";
+			Icon = "http://www.roblox.com/asset/?id=92033564";
+			ToolTip = "Set a ScreenGui to the canvas";
+			Select = function()
+				ScreenHandler:SelectDialog()
+			end;
+		};
+--[[
+		'----------------';
+		{
+			Name = "Import";
+			Icon = "";
+			ToolTip = "Import a GUI";
+			Select = function()
+
+			end;
+		};
+		{
+			Name = "Export";
+			Icon = "";
+			ToolTip = "Export the current screen";
+			Select = function()
+
+			end;
+		};
+		{
+			Name = "Preview";
+			Icon = "";
+			ToolTip = "Preview the current screen";
+			Select = function()
+
+			end;
+		};
+		'----------------';
+		{
+			Name = "ScaleMode";
+			Icon = "";
+			ToolTip = "Scale Mode";
+			Select = function()
+
+			end;
+		};
+		{
+			Name = "OffsetMode";
+			Icon = "";
+			ToolTip = "Offset Mode";
+			Select = function()
+
+			end;
+		};
+		'----------------';
+		{
+			Name = "ToggleGrid";
+			Icon = "";
+			ToolTip = "Toggle the grid";
+			Select = function()
+
+			end;
+		};
+		{
+			Name = "ConfigGrid";
+			Icon = "";
+			ToolTip = "Configure the grid";
+			Select = function()
+
+			end;
+		};
+		'----------------';
+		{
+			Name = "ToggleBackground";
+			Icon = "";
+			ToolTip = "Toggle the visiblity of the canvas background";
+			Select = function()
+
+			end;
+		};
+		{
+			Name = "SetBackgoundColor";
+			Icon = "";
+			ToolTip = "Set the color of the canvas background";
+			Select = function()
+
+			end;
+		};
+--]]
+	}
+
+	local buttonSize = 22
+	local menuSize = buttonSize + 8
+
+	local MenuFrame = Widgets.ButtonMenu(MenuButtons,Vector2.new(buttonSize,buttonSize),true)
+
+	local ToolbarFrame = Widgets.ButtonMenu(ToolManager.ToolList,Vector2.new(buttonSize,buttonSize),false,function(tool)
+		ToolManager:SelectTool(tool)
+	end)
+	ToolManager.ToolSelected:connect(function(tool)
+		if tool.Button then
+			tool.Button.BorderColor3 = Color3.new(1,0,0)
+		end
+	end)
+	ToolManager.ToolDeselected:connect(function(tool)
+		if tool.Button then
+			tool.Button.BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235)
+		end
+	end)
+	if ToolManager.CurrentTool.Button then
+		ToolManager.CurrentTool.Button.BorderColor3 = Color3.new(1,0,0)
+	end
+
 	Screen = Create'ScreenGui'{
 		Name = "GuiStudio";
 		Create'Frame'{
@@ -9,11 +126,11 @@ local function InitializeGUI()
 			Position = UDim2.new(0, 0, 0, -1);
 			BackgroundTransparency = 1;
 			Create'Frame'{
-				Size = UDim2.new(1, -40, 1, -40);
-				BorderColor3 = Color3.new(0, 0, 0);
+				Size = UDim2.new(1, -menuSize, 1, -menuSize*2);
+				BorderSizePixel = 0;
 				Name = "Background";
-				Position = UDim2.new(0, 40, 0, 40);
-				BackgroundColor3 = Color3.new(0.501961, 0.501961, 0.501961);
+				Position = UDim2.new(0, menuSize, 0, menuSize*2);
+				BackgroundColor3 = Color3.new(0.5, 0.5, 0.5);
 				Create'Frame'{
 					Size = UDim2.new(1, 0, 1, 0);
 					Name = "ScaleGrid";
@@ -26,88 +143,38 @@ local function InitializeGUI()
 				};
 			};
 			Create(Canvas.CanvasFrame){
-				Size = UDim2.new(1, -40, 1, -40);
+				Size = UDim2.new(1, -menuSize, 1, -menuSize*2);
 				Name = "Canvas";
-				Position = UDim2.new(0, 40, 0, 40);
+				Position = UDim2.new(0, menuSize, 0, menuSize*2);
 				BackgroundTransparency = 1;
 			};
-			Create'Frame'{
-				Size = UDim2.new(0, 112, 0, 40);
-				BorderColor3 = Color3.new(0, 0, 0);
-				Name = "Menu";
-				BackgroundColor3 = Color3.new(0.698039, 0.698039, 0.698039);
-				Create'ImageButton'{
-					Size = UDim2.new(0, 32, 0, 32);
-					BackgroundTransparency = 0.6;
-					Name = "ExportButton";
-					Position = UDim2.new(0, 4, 0, 4);
-					BackgroundColor3 = Color3.new(0.698039, 0.698039, 0.698039);
-				};
-				Create'ImageButton'{
-					Size = UDim2.new(0, 32, 0, 32);
-					BackgroundTransparency = 0.6;
-					Name = "ImportButton";
-					Position = UDim2.new(0, 40, 0, 4);
-					BackgroundColor3 = Color3.new(0.698039, 0.698039, 0.698039);
-				};
-				Create'ImageButton'{
-					Size = UDim2.new(0, 32, 0, 32);
-					BackgroundTransparency = 0.6;
-					Name = "PreviewButton";
-					Position = UDim2.new(0, 76, 0, 4);
-					BackgroundColor3 = Color3.new(0.698039, 0.698039, 0.698039);
-				};
+			Create(MenuFrame){
+				Name = "MainMenu ButtonMenu";
+				Size = UDim2.new(1,0,0,menuSize);
+			};
+			Create(ToolbarFrame){
+				Name = "Toolbar ButtonMenu";
+				Position = UDim2.new(0, 0, 0, menuSize*2);
+				Size = UDim2.new(0, menuSize, 1, -menuSize);
 			};
 			Create'Frame'{
-				Size = UDim2.new(0, 40, 1, -40);
-				BorderColor3 = Color3.new(0, 0, 0);
-				Name = "Tools";
-				Position = UDim2.new(0, 0, 0, 40);
-				BackgroundColor3 = Color3.new(0.698039, 0.698039, 0.698039);
-				Create'ImageButton'{
-					Size = UDim2.new(0, 32, 0, 32);
-					BackgroundTransparency = 0.6;
-					Name = "SelectionTool";
-					Position = UDim2.new(0, 4, 0, 4);
-					BackgroundColor3 = Color3.new(0.698039, 0.698039, 0.698039);
-				};
-				Create'ImageButton'{
-					Size = UDim2.new(0, 32, 0, 32);
-					BackgroundTransparency = 0.6;
-					Name = "ObjectTool";
-					Position = UDim2.new(0, 4, 0, 40);
-					BackgroundColor3 = Color3.new(0.698039, 0.698039, 0.698039);
-				};
-			};
-			Create'Frame'{
-				Size = UDim2.new(1, -112, 0, 40);
-				BorderColor3 = Color3.new(0, 0, 0);
-				Name = "DynamicToolbar";
-				Position = UDim2.new(0, 112, 0, 0);
-				BackgroundColor3 = Color3.new(0.698039, 0.698039, 0.698039);
+				Name = "ToolOptions";
+				Position = UDim2.new(0, 0, 0, menuSize);
+				Size = UDim2.new(1, 0, 0, menuSize);
+				BackgroundColor3 = Color3.new(0.917647, 0.917647, 0.917647);
+				BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
 			};
 		};
 		Create'Frame'{
-			Size = UDim2.new(1, 0, 0, -60);
-			BorderColor3 = Color3.new(0, 0, 0);
 			Name = "BottomPanel";
 			Position = UDim2.new(0, 0, 1, -1);
-			BackgroundColor3 = Color3.new(0.698039, 0.698039, 0.698039);
+			Size = UDim2.new(1, 0, 0, -60);
+			BackgroundColor3 = Color3.new(0.917647, 0.917647, 0.917647);
+			BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
 		};
 	}
-	local StudioFrame    = Screen.StudioFrame
-	local Background     = StudioFrame.Background
-	local ScaleGrid      = Background.ScaleGrid
-	local OffsetGrid     = Background.OffsetGrid
-	local Canvas         = StudioFrame.Canvas
-	local Menu           = StudioFrame.Menu
-	local ExportButton   = Menu.ExportButton
-	local ImportButton   = Menu.ImportButton
-	local PreviewButton  = Menu.PreviewButton
-	local Tools          = StudioFrame.Tools
-	local SelectionTool  = Tools.SelectionTool
-	local ObjectTool     = Tools.ObjectTool
-	local DynamicToolbar = StudioFrame.DynamicToolbar
+
+	ToolTipService.Parent = Screen
 end
 
 local function ActivateGUI()
