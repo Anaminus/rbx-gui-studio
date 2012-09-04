@@ -51,6 +51,7 @@ read [[source/ScreenHandler.lua]] {'main'}
 tools = [[source/tools]]
 read [[source/ToolManager.lua]]   {'main'}
 read (tools/[[Selector.lua]])     {'main'}
+read (tools/[[Insert.lua]])       {'main'}
 
 read [[source/GUI.lua]]           {'main'}
 read [[source/Activator.lua]]     {'main'}
