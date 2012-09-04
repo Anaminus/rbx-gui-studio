@@ -12,6 +12,7 @@ local function RunInsertDialog(parent)
 			ZIndex = 10;
 		};
 		Create'Frame'{
+			Name = "Shadow";
 			BorderSizePixel = 0;
 			Size = UDim2.new(0, 300, 0, 186);
 			Position = UDim2.new(0.5, -146, 0.5, -89);
@@ -156,12 +157,12 @@ local function RunInsertDialog(parent)
 		};
 	};
 
-	local NameInput = Dialog['DialogFrame']['Name TextInputGroup']['InputBox']
-	local ParentInputLabel = Dialog['DialogFrame']['Parent SelectInputGroup']['SelectionLabel']
-	local SetCanvasInput = Dialog['DialogFrame']['SetCanvas CheckInputGroup']['CheckBox']
+	local NameInput = Descendant(Dialog,3,2,2)
+	local ParentInputLabel = Descendant(Dialog,3,3,2)
+	local SetCanvasInput = Descendant(Dialog,3,4,1)
 
-	local OKButton = Dialog['DialogFrame']['OKButton']
-	local CancelButton = Dialog['DialogFrame']['CancelButton']
+	local OKButton = Descendant(Dialog,3,5)
+	local CancelButton = Descendant(Dialog,3,6)
 
 	local ParentInput
 
@@ -217,8 +218,8 @@ local function RunInsertDialog(parent)
 	Dialog.Parent = Game:GetService("CoreGui")
 --[=[]]
 	-- roblox bug: drawing order of ScreenGuis behaves erratically
-	local DialogFrame = Dialog['DialogFrame']
-	local Shield = Dialog['Shield']
+	local DialogFrame = Descendant(Dialog,3)
+	local Shield = Descendant(Dialog,1)
 
 	Shield.Parent = parent
 	DialogFrame.Parent = parent

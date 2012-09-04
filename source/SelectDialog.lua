@@ -71,29 +71,17 @@ local function RunSelectDialog(parent)
 		};
 	};
 
-	local OKButton = Dialog['DialogFrame']['OKButton']
-	local CancelButton = Dialog['DialogFrame']['CancelButton']
+	local OKButton = Descendant(Dialog,3,2)
+	local CancelButton = Descendant(Dialog,3,3)
 
-	local thisScreen = GetScreen(Canvas.CanvasFrame)
-
-	local function recurse(object,class,list)
-		if object:IsA(class) and object ~= thisScreen then
-			list[#list+1] = object
-		end
-		for i,child in pairs(object:GetChildren()) do
-			recurse(child,class,list)
-		end
-	end
-
-	local screens = {}
-	recurse(Game:GetService("StarterGui"),"ScreenGui",screens)
+	local screens = GetScreens(Game:GetService("StarterGui"))
 
 	local SelectionList = Widgets.List(screens)
 	SelectionList.Boundary.BackgroundColor3 = Color3.new(1,1,1)
 	SelectionList.Boundary.BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
 	SelectionList.GUI.Position = UDim2.new(0,8,0,32)
 	SelectionList.GUI.Size = UDim2.new(1,-16,1,-80)
-	SelectionList.GUI.Parent = Dialog['DialogFrame']
+	SelectionList.GUI.Parent = Descendant(Dialog,3)
 
 	local SelectedScreen
 	local Selection = Game:GetService("Selection")
@@ -125,8 +113,8 @@ local function RunSelectDialog(parent)
 	Dialog.Parent = Game:GetService("CoreGui")
 --[=[]]
 	-- roblox bug: drawing order of ScreenGuis behaves erratically
-	local DialogFrame = Dialog['DialogFrame']
-	local Shield = Dialog['Shield']
+	local DialogFrame = Descendant(Dialog,3)
+	local Shield = Descendant(Dialog,1)
 
 	Shield.Parent = parent
 	DialogFrame.Parent = parent

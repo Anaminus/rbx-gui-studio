@@ -17,6 +17,16 @@ local function Create(ty)
 	end
 end
 
+local function Descendant(object,...)
+	local children = object:GetChildren()
+	for i,v in pairs{...} do
+		object = children[v]
+		if not object then return nil end
+		children = object:GetChildren()
+	end
+	return object
+end
+
 local Enums,CreateEnum do
 	Enums = {}
 	local EnumName = {} -- used as unique key for enum name
