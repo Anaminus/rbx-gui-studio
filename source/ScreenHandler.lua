@@ -27,7 +27,7 @@ local ScreenHandler do
 	function ScreenHandler:SelectDialog()
 		local parent = GetScreen(Canvas.CanvasFrame)
 		if parent then
-			local screen = RunSelectDialog(parent)
+			local screen = Dialogs.SelectDialog(parent)
 			if screen then
 				self:Select(screen)
 			end
@@ -37,7 +37,7 @@ local ScreenHandler do
 	function ScreenHandler:InsertDialog()
 		local parent = GetScreen(Canvas.CanvasFrame)
 		if parent then
-			local screen,set_canvas = RunInsertDialog(parent)
+			local screen,set_canvas = Dialogs.InsertDialog(parent)
 			if screen and set_canvas then
 				Game:GetService("Selection"):Set{screen}
 				ScreenHandler:Select(screen)

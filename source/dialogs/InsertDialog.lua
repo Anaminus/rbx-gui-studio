@@ -1,6 +1,6 @@
-local RunInsertDialog do
+do
 	local select_flag = true
-	function RunInsertDialog(parent)
+	function Dialogs.InsertDialog(parent)
 		local Dialog = Create'ScreenGui'{
 			Name = "Insert Dialog";
 			Create'ImageButton'{

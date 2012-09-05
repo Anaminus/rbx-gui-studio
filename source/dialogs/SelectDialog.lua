@@ -1,4 +1,4 @@
-local function RunSelectDialog(parent)
+function Dialogs.SelectDialog(parent)
 	local Dialog = Create'ScreenGui'{
 		Name = "Select Dialog";
 		Create'ImageButton'{
