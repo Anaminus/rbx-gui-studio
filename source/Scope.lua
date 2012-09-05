@@ -18,23 +18,47 @@ local Scope do
 
 	local eventScopeChanged = CreateSignal(Scope,'ScopeChanged')
 
+	local StarterGui = Game:GetService("StarterGui")
+
+	local function hierarchyChanged()
+	--	if Scope.Top:IsDescendantOf(Game) then
+		if Scope.Top:IsDescendantOf(StarterGui) then -- bug #1
+			if Scope.Current ~= Scope.Top then
+				if not Scope.Current:IsDescendantOf(Scope.Top) then
+					Scope:SetCurrent(Scope.Top)
+				end
+			end
+	--	else -- this is handled by the canvas
+		end
+	end
+
+	local conChanged
+	function Scope:SetCurrent(object)
+		if object:IsDescendantOf(self.Top) or object == self.Top then
+			self.Current = object
+			if conChanged then conChanged:disconnect() end
+			conChanged = object.AncestryChanged:connect(hierarchyChanged)
+			eventScopeChanged:Fire(object)
+		else
+			error("Scope:SetCurrent: argument must be top scope or a descendant of top scope",2)
+		end
+	end
+
 	function Scope:SetTop(object)
 		if not object then
 			error("Scope:SetTop: argument must be an Instance",2)
 		end
 		self.Top = object
-		self.Current = object
-		eventScopeChanged:Fire(object)
+		self:SetCurrent(object)
 	end
 
 	function Scope:In(child)
 		if not self.Top then
 			error("Scope:In: top scope not set",2)
 		end
-		if self.Top:IsAncestorOf(child) then
+		if child:IsDescendantOf(self.Top) then
 			if child.Parent == self.Current then
-				self.Current = child
-				eventScopeChanged:Fire(child)
+				self:SetCurrent(child)
 			else
 				error("Scope:In: argument must be child of current scope",2)
 			end
@@ -48,8 +72,7 @@ local Scope do
 			error("Scope:Out: top scope not set",2)
 		end
 		if self.Current ~= self.Top then
-			self.Current = self.Current.Parent
-			eventScopeChanged:Fire(self.Current)
+			self:SetCurrent(self.Current.Parent)
 		end
 	end
 

@@ -185,6 +185,14 @@ local Canvas do
 	local eventStopped = CreateSignal(Canvas,'Stopped')
 	local eventStopping = CreateSignal(Canvas,'Stopping')
 
+	local conScreenChanged
+	local function screenChanged()
+	--	if not CurrentScreen:IsDescendantOf(Game) then
+		if not CurrentScreen:IsDescendantOf(StarterGui) then -- bug #1
+			Canvas:Stop()
+		end
+	end
+
 	AddServiceStatus{Canvas;
 		Start = function(self,container)
 			local function r(object,list)
@@ -199,6 +207,8 @@ local Canvas do
 				Canvas.CurrentScreen = container
 			end
 			if not CurrentScreen then error("Canvas: CurrentScreen not defined",2) end
+
+			conScreenChanged = CurrentScreen.AncestryChanged:connect(screenChanged)
 
 			NullScreenLabel.Visible = false
 
@@ -221,8 +231,9 @@ local Canvas do
 			local function clear(t)
 				for k in pairs(t) do t[k] = nil end
 			end
-			conAdded:disconnect()
-			conRemoved:disconnect()
+			conScreenChanged:disconnect(); conScreenChanged = nil
+			conAdded:disconnect(); conAdded = nil
+			conRemoved:disconnect(); conRemoved = nil
 			for object,con in pairs(conChangedLookup) do
 				con:disconnect()
 				conChangedLookup[object] = nil
