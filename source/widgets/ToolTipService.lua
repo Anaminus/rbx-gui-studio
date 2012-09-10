@@ -1,3 +1,22 @@
+--[[ToolTipService
+Allows text to be displayed when an object is hovered over.
+
+When an object with a tooltip is hovered over, some things happen:
+	- There is a delay of 0.5 seconds before the tooltip is displayed.
+	- If a tooltip is already being displayed, the tooltip is displayed instantly.
+	- The tooltip is displayed below the cursor (~40 pixels in size; no way to actually get this, yet)
+	- The tooltip is constrained within the boundary of the screen, so that it's always readable.
+
+API:
+	ToolTipManager.DisplayingToolTip            Whether a tooltip is currently being displayed.
+	ToolTipManager.Frame                        The label used to display text.
+	ToolTipManager.Parent                       The parent of the Frame.
+
+	ToolTipManager:AddToolTip(object,message)   Adds a message to be displayed when an object is hovered over.
+	                                            Only removes the tooltip if `message` is nil.
+	ToolTipManager:RemoveToolTip(object)        Removes a tooltip from an object.
+
+]]
 local ToolTipService do
 	ToolTipService = {
 		ToolTips = {}; --setmetatable({},{__mode='k'});

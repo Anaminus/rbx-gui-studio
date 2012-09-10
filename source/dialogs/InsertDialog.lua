@@ -1,3 +1,23 @@
+--[[Insert Dialog
+Creates a new ScreenGui.
+The Name can be set by text field, and the Parent can be set by selecting it in the Explorer panel*.
+The screen can also be automatically bound to the Canvas.
+
+*Because of bug #1, the Parent must be the StarterGui.
+
+Arguments:
+	parent
+		Where to put the dialog.
+		Because of bug #2, this should be a ScreenGui.
+		When this bug is fixed, this will be an object that contains ScreenGuis, such as CoreGui or PlayerGui.
+
+Returns:
+	screen
+		The new ScreenGui.
+		This will be nil if the dialog was canceled.
+	set_canvas
+		A bool indicating whether the screen should be set to the canvas.
+]]
 do
 	local select_flag = true
 	function Dialogs.InsertDialog(parent)

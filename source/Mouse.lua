@@ -1,3 +1,18 @@
+--[[Mouse
+"extends" the PluginMouse to add some extra features.
+
+API:
+	Has the same members as the PluginMouse.
+
+	Mouse.ShiftIsDown   Returns whether the Shift modifier key is down.
+	Mouse.CtrlIsDown    Returns whether thr Ctrl modifier key is down.
+	Mouse.AltIsDown     Returns whether the Alt modifier key is down.
+	Mouse.KeyIsDown     A table containg keys that are currently down (use Mouse.KeyIsDown[key]).
+	Mouse.KeyEvents     Allows listeners to be connected to specific keys.
+	                    The Mouse is passed to the listener.
+	                        conn = Mouse.KeyEvents[key]:connect( {up = (listener), down = (listener)} )
+	                        conn:disconnect()
+]]
 local Mouse do
 	local PluginMouse = Plugin:GetMouse()
 	local Enabled = false

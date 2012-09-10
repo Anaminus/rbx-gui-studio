@@ -1,14 +1,22 @@
---[[
-handles the current scope; the object whose children are manipulated by tools
+--[[Scope
+Handles scoping; the object whose children are manipluated by tools.
+This automatically handles hierarchy changes; if the current scope
+is moved outside of the top scope, then the current scope is set to the top.
+
 API:
-	Scope.Top                   The top of the scope hierarchy
-	Scope.Current               The current scope
+	Scope.Top                   The top of the scope hierarchy.
+	Scope.Current               The current scope.
 
-	Scope:In(object)            Scope into a child object
-	Scope:Out()                 Scope out to the parent object
-	Scope:GetContainer(object)  Return the ancestor whose parent is the current scope
+	Scope:In(object)            Set the scope to a child object.
+	                            The object must be a child of the current scope.
+	Scope:Out()                 Set the current scope to the parent objec.
+	                            Does not go above the top scope.
+	Scope:SetCurrent(object)    Explicitly sets the current scope.
+	                            The object must be, or be a descendant of, the top scope.
+	Scope:SetTop(object)        Sets the top scope. The current scope is automatically set to the top.
+	Scope:GetContainer(object)  Return the ancestor of the object whose parent is the current scope.
 
-	Scope.ScopeChanged(object)  Fired after the scope changes
+	Scope.ScopeChanged(object)  Fired after the scope changes, passing the new scope.
 ]]
 local Scope do
 	Scope = {

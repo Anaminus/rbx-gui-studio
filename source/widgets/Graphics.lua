@@ -1,3 +1,23 @@
+--[[ArrowGraphic
+Makes a pretty graphic of an arrow out of Frame objects.
+
+Arguments:
+	size
+		A number indicating the size of the arrow. THe arrow will be (size x size).
+	dir
+		The direction of the arrow.
+		Optional. Defaults to "Up".
+	scaled
+		Whether the Frames will be scale or offset.
+		Optional. Defaults to false.
+	template
+		A template for each Frame.
+		Optional.
+
+Returns:
+	graphic
+		A frame containing the graphic.
+]]
 CreateEnum'ArrowGraphicDirection'{'Up', 'Down','Left','Right'}
 
 function Widgets.ArrowGraphic(size,dir,scaled,template)
@@ -67,6 +87,30 @@ function Widgets.ArrowGraphic(size,dir,scaled,template)
 	end
 	return Frame
 end
+
+--[[GripGraphic
+Makes a graphic of a grip texture out of Frame objects.
+
+Arguments:
+	size
+		A Vector2 specifying the size of the grip.
+	dir
+		The direction of the lines in the grip.
+		Optional. Defaults to horizontal.
+	spacing
+		The amount of pixels between each line.
+		Optional. Defaults to 2.
+	scaled
+		Whether the Frames will be scale or offset.
+		Optional. Defaults to false.
+	template
+		A template for each Frame.
+		Optional.
+
+Returns:
+	graphic
+		A frame containing the graphic.
+]]
 
 CreateEnum'GripGraphicDirection'{'Horizontal','Vertical'}
 

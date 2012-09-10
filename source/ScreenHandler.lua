@@ -1,20 +1,26 @@
---[[
-handles ScreenGuis for Canvas on plugin activation
-implements ScreenSelect and ScreenInsert dialogs
-API:
-	ScreenHandler.CurrentScreen   The current ScreenGui
+--[[ScreenHandler
+Handles ScreenGuis for the Canvas on plugin activation.
 
-	ScreenHandler:Select(screen)  Selects the ScreenGui that the Canvas will be bound to
-	ScreenHandler:RunStartup()    does the startup procedure for plugin activation
-	ScreenHandler:InsertDialog()  runs the ScreenGui insert dialog
-	ScreenHandler:SelectDialog()  runs the ScreenGui select dialog
+API:
+	ScreenHandler.CurrentScreen     The current ScreenGui
+	                                If the plugin deactivates, this value persists, and is used to recall
+	                                the last selected ScreenGui if the plugin activates again
+
+	ScreenHandler:Select(screen)    Selects the ScreenGui that the Canvas will be bound to
+	                                Deselects the current screen if nil is passed
+	ScreenHandler:RunStartup()      Does the startup procedure for when the plugin is activated
+	                                If the CurrentScreen exists, then it is automatically selected
+	                                Otherwise, the insert or select dialog is run, depending on how many screens exist in the game
+	ScreenHandler:InsertDialog()    Runs the ScreenGui insert dialog and handles the results
+	                                If the dialog returns the set canvas flag, this selects the returned screen
+	ScreenHandler:SelectDialog()    Runs the ScreenGui select dialog and handles the results
+	                                If the dialog returns a screen, this selects it
 ]]
 local ScreenHandler do
 	ScreenHandler = {
 		CurrentScreen = nil;
 	}
 
-	-- bind canvas to a screen
 	function ScreenHandler:Select(screen)
 		self.CurrentScreen = screen
 		if screen then
@@ -45,7 +51,6 @@ local ScreenHandler do
 		end
 	end
 
-	-- look for ScreenGuis on plugin startup
 	function ScreenHandler:RunStartup()
 		if self.CurrentScreen and Game:GetService("StarterGui"):IsAncestorOf(self.CurrentScreen) then
 			self:Select(self.CurrentScreen)

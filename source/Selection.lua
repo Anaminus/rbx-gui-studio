@@ -1,21 +1,25 @@
---[[
-handles selection of GUIs the Canvas is bound to
-when Selection service selects a GUI, it's corresponding active object in Canvas is highlighted
+--[[Selection
+Handles selection of GUIs the Canvas is bound to.
+When Selection service selects a save object, it's corresponding active object in Canvas is highlighted.
+
 API:
-	Selection.SelectedObjects                  A list of objects that are currently selected (no-edit)
-	Selection.SelectFrameLookup                object-to-select lookup table
-	ServiceStatus.Status                       whether the service is started
+	Selection.SelectedObjects                   A list of objects that are currently selected (don't edit).
+	                                            Only contains objects in the container the Canvas is bound to.
+	Selection.SelectFrameLookup                 Gets the selection highlight frame from a selected object.
+	ServiceStatus.Status                        whether the service is started.
 
-	Selection:Get()                            Returns a copy of Selecton.SelectedObjects
-	Selection:Set(objects)                     Sets the selection to a list of objects (SelectionService.Set)
-	Selection:Add(object)                      Adds an object to the selection
-	Selection:Remove(object)                   Removes an object from the selection
-	Selection:Contains(object)                 Returns whether an object is selected
-	Selection:Start()                          Starts the service
-	Selection:Stop()                           Stops the service
+	Selection:Get()                             Returns a copy of Selecton.SelectedObjects.
+	Selection:Set(objects)                      Sets the selection to a list of objects.
+	                                            Same as the Selection service's Set.
+	Selection:Add(object)                       Adds an object to the selection.
+	Selection:Remove(object)                    Removes an object from the selection.
+	Selection:Contains(object)                  Returns whether an object is selected.
+	                                            Only works with objects in the container the Canvas is bound to.
+	Selection:Start()                           Starts the service.
+	Selection:Stop()                            Stops the service.
 
-	Selection.ObjectSelected(object,active)    Fired after an object is selected, passing the object and its active object
-	Selection.ObjectDeselected(object,active)  Fired after an object is deselected
+	Selection.ObjectSelected(object,active)     Fired after an object is selected, passing the object and its active object
+	Selection.ObjectDeselected(object,active)   Fired after an object is deselected
 ]]
 local Selection do
 	local SelectionService = Game:GetService("Selection")

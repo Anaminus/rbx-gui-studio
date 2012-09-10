@@ -1,3 +1,20 @@
+--[[Select Dialog
+Let's the user select a ScreenGui that exists in the game*.
+
+Because of bug #1, the selection is limited to the StarterGui.
+
+Arguments:
+	parent
+		Where to put the dialog.
+		Because of bug #2, this should be a ScreenGui
+		When this bug is fixed, this will be the parent of a ScreenGui
+
+Returns:
+	screen
+		The selected screen.
+		If the dialog is canceled, or no screen is selected, this will be nil.
+]]
+
 function Dialogs.SelectDialog(parent)
 	local Dialog = Create'ScreenGui'{
 		Name = "Select Dialog";
@@ -75,7 +92,7 @@ function Dialogs.SelectDialog(parent)
 	local OKButton = Descendant(Dialog,3,2)
 	local CancelButton = Descendant(Dialog,3,3)
 
-	local screens = GetScreens(Game:GetService("StarterGui"))
+	local screens = GetScreens(Game:GetService("StarterGui")) -- bug #1
 
 	local SelectionList = Widgets.List(screens)
 	SelectionList.Boundary.BackgroundColor3 = Color3.new(1,1,1)

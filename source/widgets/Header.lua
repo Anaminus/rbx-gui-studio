@@ -1,12 +1,15 @@
 Widgets = {}
 
--- fixes AutoButtonColor
+-- AutoButtonColor doesn't always reset properly
 local function ResetButtonColor(button)
 	local active = button.Active
 	button.Active = not active
 	button.Active = active
 end
 
+-- sets the ZIndex of an object and its descendants
+-- objects are locked so that SetZIndexOnChanged doesn't
+-- spawn multiple threads that set the ZIndex of the same object
 local SetZIndex do
 	local ZIndexLock = {}
 	function SetZIndex(object,z)

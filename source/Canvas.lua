@@ -1,21 +1,37 @@
---[[
-Synchronizes a container to the canvas
-save: the saved copy of the object; the *actual* object
-active: the representation of the save object on the canvas
+--[[Canvas
+Provides basic services for interacting with and manipulating a GUI.
+When started, the Canvas binds to a ScreenGui (referred to as "save" copy).
+It then replicates the save copy to the "active" copy. This is a representation of the
+save copy that can be interacted with by the user.
+Changes to the save copy are detected, and the active copy is synchronized accordingly.
+This includes property changes and additions, removals, and changes to the hierarchy.
+
 API:
-	Canvas.CurrentScreen     the current ScreenGui the Canvas is bound to
-	Canvas.CanvasFrame       the Frame instance representing the Canvas
-	Canvas.ActiveLookup      save-to-active lookup table
-	Canvas.GlobalButton      a representation of every button
-	ServiceStatus.Status     whether the service is started or not
+	Canvas.CurrentScreen            The current ScreenGui the Canvas is bound to
+	Canvas.CanvasFrame              The GuiObject instance representing the Canvas
+	Canvas.ActiveLookup             Save-to-active lookup table
+	Canvas.GlobalButton             A representation of every button in the canvas
+	ServiceStatus.Status            Whether the service is started or not
 
-	Canvas:Start(screen)     starts the service with a ScreenGui to bind to
-	Canvas:Stop()            stops the service
-	Canvas:Restart(screen)   restarts the service with a ScreenGui to bind to
+	Canvas:Start(screen)            Starts the service with a ScreenGui to bind to
+	Canvas:Stop()                   Stops the service, unbinding from the current screen
+	                                This
+	Canvas:Restart(screen)          Restarts the service with a ScreenGui to bind to
+	                                This really just does a Stop(), then a Start()
+	!Canvas:LockObject(object)      Prevents an active object from synchronizing
+	                                with its save counterpart, allowing it to be manipluated.
+	                                `object` is a save object, not an active object.
+	!Canvas:ReleaseObject(object)   Releases a locked object, allowing it to synchronize again.
+	                                When the object is released, the save object is updated
+	                                to reflect any changes made to the active object.
 
-	Canvas.Started(screen)   fired after the Canvas starts
-	Canvas.Stopping(screen)  fired before the Canvas stops
-	Canvas.Stopped(screen)   fired after the Canvas stops
+	Canvas.Started(screen)          Fired after the Canvas starts
+	                                Used to start other services that require the Canvas
+	Canvas.Stopping(screen)         Fired before the Canvas stops
+	                                Used to stop other services that require the Canvas to be started
+	Canvas.Stopped(screen)          Fired after the Canvas stops
+	                                This can probably be removed in favor of Canvas.Stopping,
+	                                unless there are services that require the Canvas to be stopped before stopping
 ]]
 local Canvas do
 	local CurrentScreen
@@ -187,7 +203,7 @@ local Canvas do
 
 	local conScreenChanged
 	local function screenChanged()
-	--	if not CurrentScreen:IsDescendantOf(Game) then
+	--  if not CurrentScreen:IsDescendantOf(Game) then
 		if not CurrentScreen:IsDescendantOf(StarterGui) then -- bug #1
 			Canvas:Stop()
 		end
