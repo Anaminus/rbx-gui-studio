@@ -6,21 +6,19 @@ API:
 
 	TransformHandles:SetParent(object)  Sets the save object to bind to
 ]]
-function Widgets.TransformHandles(Canvas,Mouse,event)
-	if not event then
-		event = CreateEventManager()
-	end
-
+function Widgets.TransformHandles(Canvas,Mouse)
 	local hsize,pad = 6,2 --handle size; padding
 	local handleTemplate = Create'ImageButton'{
 		BorderSizePixel = 0;
 		BackgroundColor3 = Color3.new(1,0,0);
 		Size = UDim2.new(0,hsize,0,hsize);
+		ZIndex = 10;
 	}
 	local Frame = Create'Frame'{
 		Name = "Transform";
 		Transparency = 1;
 		Size = UDim2.new(1,0,1,0);
+		ZIndex = 10;
 		Create(handleTemplate:Clone()){
 			Name = "TopLeft";
 			Position = UDim2.new(0,-hsize-pad,0,-hsize-pad);
@@ -55,7 +53,6 @@ function Widgets.TransformHandles(Canvas,Mouse,event)
 		};
 	}
 
-	local Dragger = Widgets.Dragger()
 	local BoundObject
 	local Active = nil
 
@@ -76,50 +73,17 @@ function Widgets.TransformHandles(Canvas,Mouse,event)
 			self[k] = nil
 		end
 		Frame:Destroy()
-		Dragger:Destroy()
-		event:disconnect('mouse_up','drag')
 		Active = nil
 	end
 
-	do local handle = Frame.TopLeft
+	for i,handle in pairs(Frame:GetChildren()) do
+		local name = handle.Name
 		handle.MouseButton1Down:connect(function(x,y)
 			if Handles.Parent then
-				local offset = Vector2.new(x,y) - Active.AbsolutePosition
-				local high_pos = Active.Position + Active.Size
-				event.mouse_up = Dragger.MouseButton1Up:connect(function()
-					event:disconnect('mouse_up','drag')
-					Dragger.Parent = nil
-					ResetButtonColor(handle)
-					BoundObject.Position = Active.Position
-					BoundObject.Size = Active.Size
-				end)
-				event.drag = Dragger.MouseMoved:connect(function(x,y)
-					local pos = Vector2.new(x,y) - offset - Active.Parent.AbsolutePosition
-					pos = UDim2.new(0,pos.x,0,pos.y)
-					Active.Position = pos
-					Active.Size = high_pos - pos
-				end)
-				Dragger.Parent = GetScreen(Active)
-			end
-		end)
-	end
-
-	do local handle = Frame.BottomRight
-		handle.MouseButton1Down:connect(function(x,y)
-			if Handles.Parent then
-				local offset = Vector2.new(x,y) - Active.AbsolutePosition - Active.AbsoluteSize
-				event.mouse_up = Dragger.MouseButton1Up:connect(function()
-					event:disconnect('mouse_up','drag')
-					Dragger.Parent = nil
-					ResetButtonColor(handle)
-					BoundObject.Size = Active.Size
-				end)
-				event.drag = Dragger.MouseMoved:connect(function(x,y)
-					local pos = Vector2.new(x,y) - offset - Active.Parent.AbsolutePosition
-					pos = UDim2.new(0,pos.x,0,pos.y)
-					Active.Size = pos - Active.Position
-				end)
-				Dragger.Parent = GetScreen(Active)
+				local p,s = Widgets.DragGUI(Active,Vector2.new(x,y),name)
+				ResetButtonColor(handle)
+				BoundObject.Position = p
+				BoundObject.Size = s
 			end
 		end)
 	end
