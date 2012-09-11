@@ -24,6 +24,8 @@ API:
 	!Canvas:ReleaseObject(object)   Releases a locked object, allowing it to synchronize again.
 	                                When the object is released, the save object is updated
 	                                to reflect any changes made to the active object.
+	Canvas:WaitForObject(object)    Wait until an object has been added to the canvas.
+	                                Returns the object's corresponding active object.
 
 	Canvas.Started(screen)          Fired after the Canvas starts
 	                                Used to start other services that require the Canvas
@@ -32,6 +34,9 @@ API:
 	Canvas.Stopped(screen)          Fired after the Canvas stops
 	                                This can probably be removed in favor of Canvas.Stopping,
 	                                unless there are services that require the Canvas to be stopped before stopping
+	Canvas.ObjectAdded              Fired after an object is added to the Canvas.
+	                                Passes the object and its active counterpart.
+	Canvas.ObjectRemoving           Fired before an object is removed from the Canvas.
 ]]
 local Canvas do
 	local CurrentScreen
@@ -147,6 +152,9 @@ local Canvas do
 		end
 	end
 
+	local eventObjectAdded = CreateSignal(Canvas,'ObjectAdded')
+	local eventObjectRemoving = CreateSignal(Canvas,'ObjectRemoving')
+
 	local conAdded,conRemoved
 	local conChangedLookup = {}
 
@@ -170,30 +178,32 @@ local Canvas do
 					end
 				end
 			end)
+			eventObjectAdded:Fire(saveObject,activeObject)
 		end
 	end
 
 	local function saveRemoving(saveObject)
-		if not CurrentScreen:IsAncestorOf(saveObject) then return end
+		if not saveObject:IsDescendantOf(CurrentScreen) then return end
+		local activeObject = ActiveLookup[saveObject]
+
+		eventObjectRemoving:Fire(saveObject,activeObject)
+
 		local changed = conChangedLookup[saveObject]
 		if changed then
 			changed:disconnect()
 			conChangedLookup[saveObject] = nil
 		end
-		local activeObject = ActiveLookup[saveObject]
 		if activeObject then
 			ActiveLookup[saveObject] = nil
 			activeObject.Parent = nil
 		end
 	end
 
-	local function loadActiveObject(saveObject)
-		for i,saveChild in pairs(saveObject:GetChildren()) do
-			if saveChild:IsA"GuiBase" then
-				makeActiveCopy(saveChild)
-				loadActiveObject(saveChild)
-			end
+	function Canvas:WaitForObject(object)
+		while ActiveLookup[object] == nil do
+			Canvas.ObjectAdded:wait()
 		end
+		return ActiveLookup[object]
 	end
 
 	local StarterGui = Game:GetService("StarterGui")
