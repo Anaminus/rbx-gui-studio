@@ -2,7 +2,7 @@ local function InitializeGUI()
 	local MenuButtons = {
 		{
 			Name = "InsertScreenGui";
-			Icon = "http://www.roblox.com/asset/?id=92035432";
+			Icon = "http://www.roblox.com/asset/?id=92518177";
 			ToolTip = "Insert a new ScreenGui";
 			Select = function()
 				ScreenHandler:InsertDialog()
