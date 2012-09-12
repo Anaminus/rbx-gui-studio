@@ -101,7 +101,7 @@ local function InitializeGUI()
 
 	local MenuFrame = Widgets.ButtonMenu(MenuButtons,Vector2.new(buttonSize,buttonSize),true)
 
-	local ToolbarFrame = ToolManager:InitializeToolbar()
+	local ToolbarFrame = ToolManager:InitializeTools()
 
 	Screen = Create'ScreenGui'{
 		Name = "GuiStudio";
@@ -142,7 +142,7 @@ local function InitializeGUI()
 				Position = UDim2.new(0, 0, 0, menuSize*2);
 				Size = UDim2.new(0, menuSize, 1, -menuSize);
 			};
-			Create'Frame'{
+			Create(ToolManager.ToolOptionsFrame){
 				Name = "ToolOptions";
 				Position = UDim2.new(0, 0, 0, menuSize);
 				Size = UDim2.new(1, 0, 0, menuSize);

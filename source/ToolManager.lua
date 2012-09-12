@@ -8,21 +8,23 @@ They contain the following fields:
 	Shortcut    A shortcut key that selects the tool (unused).
 	Select      A function called when the tool is selected.
 	Deselect    A function called when the tool is deselected.
+	Options     A GuiObject that contains options for the tools.
+	            This will be put into the tool options GUI when the tool is selected.
 These fields are added later:
 	Button      the GUI button associated with the tool.
 	Index       the index of the tool in the manager's tool list.
 
 If the manager is not started, tools can still be selected, but they wont do anything until the manager starts.
 
-
 API:
 	ToolManager.ToolList                A list of tools added to the manager.
 	ToolManager.CurrentTool             The currently selected tool.
 	ToolManager.ToolbarFrame            A GUI containing buttons for each tool (must be initialized).
+	ToolManager.ToolOptionsFrame        A GUI containing the tool options for a selected tool.
 	ServiceStatus.Status                Whether the service is started or not.
 
 	ToolManager:AddTool(data)           Adds a new tool. This must be done before the manager is started.
-	!ToolManager:InitializeTools()      Indicates that all tools have been added, and create the toolbar.
+	ToolManager:InitializeTools()       Indicates that all tools have been added, and creates the toolbar.
 	ToolManager:SelectTool(tool)        Selects a tool. The previous tool is deselected.
 	ToolManager:Start()                 Starts the manager.
 	ToolManager:Stop()                  Stops the manager.
@@ -31,17 +33,21 @@ API:
 	ToolManager.ToolDeselected(tool)    Fired after a tool is deselected.
 ]]
 local ToolManager do
+	local ToolOptionsFrame = Instance.new("Frame")
+
 	ToolManager = {
 		ToolList = {};
 		CurrentTool = nil;
+		ToolbarFrame = nil;
+		ToolOptionsFrame = ToolOptionsFrame;
 	}
 
 	local eventToolSelected = CreateSignal(ToolManager,'ToolSelected')
 	local eventToolDeselected = CreateSignal(ToolManager,'ToolDeselected')
 
 	function ToolManager:AddTool(tool)
-		if not self.Status('Stopped') then
-			error("ToolManager:AddTool: service must be stopped",2)
+		if self.ToolbarFrame then
+			error("ToolManager:AddTool: tools have already been initialized",2)
 		end
 		local index = #self.ToolList+1
 		self.ToolList[index] = tool
@@ -56,6 +62,9 @@ local ToolManager do
 		if tool and tool ~= self.CurrentTool then
 			local started = self.Status('Started')
 			if started then
+				if self.CurrentTool.Options then
+					self.CurrentTool.Options.Parent = nil
+				end
 				self.CurrentTool:Deselect()
 			end
 			eventToolDeselected:Fire(self.CurrentTool,started)
@@ -63,12 +72,15 @@ local ToolManager do
 			self.CurrentTool = tool
 			if started then
 				tool:Select()
+				if tool.Options then
+					tool.Options.Parent = ToolOptionsFrame
+				end
 			end
 			eventToolSelected:Fire(tool,started)
 		end
 	end
 
-	function ToolManager:InitializeToolbar()
+	function ToolManager:InitializeTools()
 		if not self.ToolbarFrame then
 			local buttonSize = InternalSettings.GuiButtonSize
 			self.ToolbarFrame = Widgets.ButtonMenu(self.ToolList,Vector2.new(buttonSize,buttonSize),false,function(tool)
@@ -93,6 +105,9 @@ local ToolManager do
 
 	AddServiceStatus{ToolManager;
 		Start = function(self)
+			if not self.ToolbarFrame then
+				self:InitializeTools()
+			end
 			if self.CurrentTool then
 				self.CurrentTool:Select()
 			else
