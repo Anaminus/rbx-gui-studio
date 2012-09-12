@@ -101,22 +101,7 @@ local function InitializeGUI()
 
 	local MenuFrame = Widgets.ButtonMenu(MenuButtons,Vector2.new(buttonSize,buttonSize),true)
 
-	local ToolbarFrame = Widgets.ButtonMenu(ToolManager.ToolList,Vector2.new(buttonSize,buttonSize),false,function(tool)
-		ToolManager:SelectTool(tool)
-	end)
-	ToolManager.ToolSelected:connect(function(tool)
-		if tool.Button then
-			tool.Button.BorderColor3 = Color3.new(1,0,0)
-		end
-	end)
-	ToolManager.ToolDeselected:connect(function(tool)
-		if tool.Button then
-			tool.Button.BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235)
-		end
-	end)
-	if ToolManager.CurrentTool.Button then
-		ToolManager.CurrentTool.Button.BorderColor3 = Color3.new(1,0,0)
-	end
+	local ToolbarFrame = ToolManager:InitializeToolbar()
 
 	Screen = Create'ScreenGui'{
 		Name = "GuiStudio";

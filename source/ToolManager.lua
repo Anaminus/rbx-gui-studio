@@ -12,14 +12,13 @@ These fields are added later:
 	Button      the GUI button associated with the tool.
 	Index       the index of the tool in the manager's tool list.
 
-Currently, the toolbar GUI that contains the tool buttons is handled by the UI, but that will probably be moved here.
-	This will be done Canvas-style, with a specific GUI object associated with this service.
 If the manager is not started, tools can still be selected, but they wont do anything until the manager starts.
 
 
 API:
 	ToolManager.ToolList                A list of tools added to the manager.
 	ToolManager.CurrentTool             The currently selected tool.
+	ToolManager.ToolbarFrame            A GUI containing buttons for each tool (must be initialized).
 	ServiceStatus.Status                Whether the service is started or not.
 
 	ToolManager:AddTool(data)           Adds a new tool. This must be done before the manager is started.
@@ -67,6 +66,29 @@ local ToolManager do
 			end
 			eventToolSelected:Fire(tool,started)
 		end
+	end
+
+	function ToolManager:InitializeToolbar()
+		if not self.ToolbarFrame then
+			local buttonSize = InternalSettings.GuiButtonSize
+			self.ToolbarFrame = Widgets.ButtonMenu(self.ToolList,Vector2.new(buttonSize,buttonSize),false,function(tool)
+				self:SelectTool(tool)
+			end)
+			self.ToolSelected:connect(function(tool)
+				if tool.Button then
+					tool.Button.BorderColor3 = Color3.new(1,0,0)
+				end
+			end)
+			self.ToolDeselected:connect(function(tool)
+				if tool.Button then
+					tool.Button.BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235)
+				end
+			end)
+			if self.CurrentTool.Button then
+				self.CurrentTool.Button.BorderColor3 = Color3.new(1,0,0)
+			end
+		end
+		return self.ToolbarFrame
 	end
 
 	AddServiceStatus{ToolManager;
