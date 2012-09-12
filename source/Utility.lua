@@ -1,3 +1,8 @@
+local InternalSettings = {
+	GuiButtonSize = 22;
+	GuiWidgetSize = 16;
+}
+
 local function Create(ty)
 	return function(data)
 		local obj

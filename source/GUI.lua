@@ -96,7 +96,7 @@ local function InitializeGUI()
 --]]
 	}
 
-	local buttonSize = 22
+	local buttonSize = InternalSettings.GuiButtonSize
 	local menuSize = buttonSize + 8
 
 	local MenuFrame = Widgets.ButtonMenu(MenuButtons,Vector2.new(buttonSize,buttonSize),true)

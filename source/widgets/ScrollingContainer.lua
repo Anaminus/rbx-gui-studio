@@ -20,7 +20,7 @@ do
 	}
 
 	function Widgets.ScrollingContainer()
-		local scroll_width = 16
+		local scroll_width = InternalSettings.GuiWidgetSize
 
 		local ParentFrame = Create'Frame'{
 			Name = "ScrollingContainer";

@@ -34,7 +34,7 @@ do
 	mt.__index.ScrollRight = mt.__index.ScrollDown
 
 	function Widgets.ScrollBar(horizontal)
-		local size = 16
+		local size = InternalSettings.GuiWidgetSize
 
 		-- create row scroll bar
 		local ScrollFrame = Create'Frame'{
