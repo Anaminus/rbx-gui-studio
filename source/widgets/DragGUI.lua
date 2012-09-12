@@ -12,6 +12,12 @@ Arguments:
 		Modifies how the drag will manipluate the object's position and size
 	scaled
 		Whether the Scale or Offset component is being manipulated
+
+Returns:
+	position
+		The new position of the object after the drag
+	size
+		The new size of the object after the drag
 ]]
 
 do
