@@ -5,6 +5,11 @@ do
 		ToolTip = "Insert new objects";
 		Shortcut = "";
 	}
+
+	local Options = {
+		InsertType = nil;
+	}
+
 	local SelectedObjects = Selection.SelectedObjects
 	local GlobalButton = Canvas.GlobalButton
 	local CanvasFrame = Canvas.CanvasFrame
@@ -13,7 +18,34 @@ do
 	local TransformHandles
 	local Dragger
 
+	local function initOptions()
+		local insertTypes = {
+			{Name="Frame",       Icon="http://www.roblox.com/asset/?id=92581491", ToolTip="Frame"};
+			{Name="ImageLabel",  Icon="http://www.roblox.com/asset/?id=92581501", ToolTip="ImageLabel"};
+			{Name="TextLabel",   Icon="http://www.roblox.com/asset/?id=92581513", ToolTip="TextLabel"};
+			{Name="ImageButton", Icon="http://www.roblox.com/asset/?id=92581528", ToolTip="ImageButton"};
+			{Name="TextButton",  Icon="http://www.roblox.com/asset/?id=92581517", ToolTip="TextButton"};
+			{Name="TextBox",     Icon="http://www.roblox.com/asset/?id=92581517", ToolTip="TextBox"};
+		}
+
+		local buttonSize = InternalSettings.GuiButtonSize
+		local InsertTypeFrame = Widgets.ButtonMenu(insertTypes,Vector2.new(buttonSize,buttonSize),true,function(type)
+			Options.InsertType.Button.BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235)
+			Options.InsertType = type
+			type.Button.BorderColor3 = Color3.new(1,0,0)
+		end)
+		Create(InsertTypeFrame){
+			Name = "Insert ToolOptions";
+		}
+		Options.InsertType = insertTypes[1]
+		insertTypes[1].Button.BorderColor3 = Color3.new(1,0,0)
+
+		Tool.Options = InsertTypeFrame
+	end
+
 	function Tool:Select()
+		if not self.Options then initOptions() end
+
 		Dragger = Widgets.Dragger()
 		TransformHandles = Widgets.TransformHandles(Canvas,Mouse)
 		do
@@ -53,7 +85,7 @@ do
 			event.drag = Dragger.MouseMoved:connect(function(x,y)
 				if not has_dragged then
 					has_dragged = true
-					object = Instance.new("Frame",Scope.Current)
+					object = Instance.new(Options.InsertType.Name,Scope.Current)
 					active = Canvas:WaitForObject(object)
 
 					click_offset = Vector2.new(x,y) - active.Parent.AbsolutePosition
