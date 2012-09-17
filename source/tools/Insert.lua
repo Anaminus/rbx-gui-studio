@@ -113,43 +113,27 @@ do
 				active = Canvas.ActiveLookup[o]
 			end
 
-			-- click & drag to move
-			-- on drag or on up, select object
-			local has_dragged = false
-			local click_pos = Vector2.new(x,y)
-
-			local clickOffset = click_pos - active.AbsolutePosition
-
-			local drag_pos
-			event.mouse_up = Dragger.MouseButton1Up:connect(function()
-				event:disconnect('mouse_up','drag')
-				Dragger.Parent = nil
-				if has_dragged then
-					local pos = drag_pos - clickOffset - active.Parent.AbsolutePosition
-					object.Position = UDim2.new(0,pos.x,0,pos.y)
-				elseif not Selection:Contains(object) then
-					Selection:Set{object}
-				end
-			end)
-			event.drag = Dragger.MouseMoved:connect(function(x,y)
-				if not has_dragged then
-				--[[ if this object isn't selected, insert a new object instead
-					if not Selection:Contains(object) then
-						event:disconnect('mouse_up','drag')
-						Dragger.Parent = nil
-						addNewObject(x,y)
-						return
+			local finishDrag = Widgets.DragGUI(active,Vector2.new(x,y),'Center',{
+				OnDrag = function(x,y,hasDragged)
+					if not hasDragged then
+					--[[ if this object isn't selected, insert a new object instead
+						if not Selection:Contains(object) then
+							finishDrag(x,y)
+							addNewObject(x,y)
+							return
+						end
+					--]]
+						Selection:Set{object}
 					end
-				--]]
-					has_dragged = true
-					Selection:Set{object}
-					clickOffset = click_pos - active.AbsolutePosition
-				end
-				drag_pos = Vector2.new(x,y)
-				local pos = drag_pos - clickOffset - active.Parent.AbsolutePosition
-				active.Position = UDim2.new(0,pos.x,0,pos.y)
-			end)
-			Dragger.Parent = GetScreen(active)
+				end;
+				OnRelease = function(x,y,hasDragged)
+					if hasDragged then
+						object.Position = active.Position
+					elseif not Selection:Contains(object) then
+						Selection:Set{object}
+					end
+				end;
+			})
 		end)
 		event.select_nil = CanvasFrame.MouseButton1Down:connect(addNewObject)
 

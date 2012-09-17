@@ -11,10 +11,8 @@ do
 
 	local event = CreateEventManager()
 	local TransformHandles
-	local Dragger
 
 	function Tool:Select()
-		Dragger = Widgets.Dragger()
 		TransformHandles = Widgets.TransformHandles(Canvas,Mouse,event)
 
 		local function select_nothing()
@@ -52,49 +50,37 @@ do
 			if can_drag then
 				-- click & drag to move
 				-- on drag or on up, select object
-				local has_dragged = false
-				local click_pos = Vector2.new(x,y)
-
-				local selectedObjects = Selection:Get()
-				for i,object in pairs(selectedObjects) do
-					local active = Canvas.ActiveLookup[object]
-					selectedObjects[i] = {object,active,click_pos - active.AbsolutePosition}
+				local dragObjects = Selection:Get()
+				local activeObjects = {}
+				table.insert(dragObjects,1,object)
+				for i,object in pairs(dragObjects) do
+					activeObjects[i] = Canvas.ActiveLookup[object]
 				end
 
-				local drag_pos
-				event.mouse_up = Dragger.MouseButton1Up:connect(function()
-					event:disconnect('mouse_up','drag')
-					Dragger.Parent = nil
-					if has_dragged then
-						for i = 1,#selectedObjects do
-							local v = selectedObjects[i]
-							local pos = drag_pos - v[3] - v[2].Parent.AbsolutePosition
-							v[1].Position = UDim2.new(0,pos.x,0,pos.y)
-						end
-					elseif not Selection:Contains(object) then
-						Selection:Set{object}
-					end
-				end)
-				event.drag = Dragger.MouseMoved:connect(function(x,y)
-					if not has_dragged then
-						has_dragged = true
-						if not Selection:Contains(object) then
-							Selection:Set{object}
-							for i in pairs(selectedObjects) do
-								selectedObjects[i] = nil
+				Widgets.DragGUI(activeObjects,Vector2.new(x,y),'Center',{
+					OnDrag = function(x,y,hasDragged,setObjects)
+						if not hasDragged then
+							if not Selection:Contains(object) then
+								Selection:Set{object}
+								dragObjects = {object}
+								activeObjects = {Canvas.ActiveLookup[object]}
+								setObjects(activeObjects)
 							end
-							selectedObjects[1] = {object,active,click_pos - active.AbsolutePosition}
 						end
-					end
-					drag_pos = Vector2.new(x,y)
-					for i = 1,#selectedObjects do
-						local v = selectedObjects[i]
-						local active = v[2]
-						local pos = drag_pos - v[3] - active.Parent.AbsolutePosition
-						active.Position = UDim2.new(0,pos.x,0,pos.y)
-					end
-				end)
-				Dragger.Parent = GetScreen(active)
+					end;
+					OnRelease = function(x,y,hasDragged)
+						if hasDragged then
+							for i = 1,#dragObjects do
+								local object = dragObjects[i]
+								local active = activeObjects[i]
+								object.Position = active.Position
+								object.Size = active.Size
+							end
+						elseif not Selection:Contains(object) then
+							Selection:Set{object}
+						end
+					end;
+				})
 			end
 		end)
 		event.select_nil = CanvasFrame.MouseButton1Down:connect(select_nothing)
@@ -119,10 +105,6 @@ do
 		if TransformHandles then
 			TransformHandles:Destroy()
 			TransformHandles = nil
-		end
-		if Dragger then
-			Dragger:Destroy()
-			Dragger = nil
 		end
 	end
 
