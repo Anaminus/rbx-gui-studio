@@ -3,6 +3,7 @@ local InternalSettings = {
 	GuiWidgetSize = 16;
 }
 
+-- Sets the properties of a new or existing Instance using values from a table.
 local function Create(ty)
 	return function(data)
 		local obj
@@ -22,6 +23,7 @@ local function Create(ty)
 	end
 end
 
+--Gets a descendant of an object by child order
 local function Descendant(object,...)
 	local children = object:GetChildren()
 	for i,v in pairs{...} do
@@ -32,6 +34,23 @@ local function Descendant(object,...)
 	return object
 end
 
+--[[Enums, CreateEnum
+A system for custom enums.
+
+API:
+	CreateEnum(string)(table)    Returns a new enum. This Enum is also added to the Enums table.
+
+	Enums[string]                Returns an Enum.
+
+	Enum.EnumItemName            Gets an EnumItem.
+	EnumItem:GetEnumItems()      Returns a list of the Enum's EnumItems.
+	Enum(value)                  Returns the EnumItem that matches the value, by the EnumItem, or its Name or Value.
+	                             Returns nil if no match is found.
+
+	EnumItem.Name                The name of the EnumItem.
+	EnumItem.Value               The EnumItem's Value.
+	EnumItem(value)              Returns whether the value matches the EnumItem, or its Name or Value.
+]]
 local Enums,CreateEnum do
 	Enums = {}
 	local EnumName = {} -- used as unique key for enum name
@@ -78,8 +97,8 @@ local Enums,CreateEnum do
 	end
 end
 
+-- Adds values to a class that enable it to be started and stopped.
 CreateEnum'ServiceStatus'{'Stopped','Started','Starting','Stopping'}
-
 local function AddServiceStatus(data)
 	local service = data[1]
 	local start = data.Start
@@ -158,6 +177,7 @@ local function CreateSignal(instance,name)
 	return Invoker
 end
 
+-- remove all instances of a value from a list
 local function removeValue(list,value)
 	local i,n = 0,#list
 	while i <= n do
@@ -170,6 +190,7 @@ local function removeValue(list,value)
 	end
 end
 
+-- returns the ascendant ScreenGui of an object
 local function GetScreen(screen)
 	if screen == nil then return nil end
 	while not screen:IsA("ScreenGui") do
@@ -179,6 +200,7 @@ local function GetScreen(screen)
 	return screen
 end
 
+-- gets a list of all ScreenGuis in an object
 local function GetScreens(object,list)
 	list = list or {}
 	if object:IsA("ScreenGui") and object ~= Screen then
@@ -190,24 +212,32 @@ local function GetScreens(object,list)
 	return list
 end
 
-local EventManager_mt = {
-	__index = {
-		disconnect = function(self,...)
-			for _,name in pairs{...} do
-				if self[name] then
+--[[CreateEventManager
+API:
+	EventManager[key] = (event connection)    Adds an event connection to the manager.
+	EventManager:disconnect(...)              Disconnects one or more events.
+	EventManager:clear()                      Disconnects all events.
+]]
+local CreateEventManager do
+	local EventManager_mt = {
+		__index = {
+			disconnect = function(self,...)
+				for _,name in pairs{...} do
+					if self[name] then
+						self[name]:disconnect()
+						self[name] = nil
+					end
+				end
+			end;
+			clear = function(self)
+				for name in pairs(self) do
 					self[name]:disconnect()
 					self[name] = nil
 				end
-			end
-		end;
-		clear = function(self)
-			for name in pairs(self) do
-				self[name]:disconnect()
-				self[name] = nil
-			end
-		end;
-	};
-}
-local function CreateEventManager()
-	return setmetatable({},EventManager_mt)
+			end;
+		};
+	}
+	function CreateEventManager()
+		return setmetatable({},EventManager_mt)
+	end
 end
