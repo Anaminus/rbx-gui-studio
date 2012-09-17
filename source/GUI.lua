@@ -2,7 +2,7 @@ local function InitializeGUI()
 	local MenuButtons = {
 		{
 			Name = "InsertScreenGui";
-			Icon = "http://www.roblox.com/asset/?id=92518177";
+			Icon = Preload"http://www.roblox.com/asset/?id=92518177";
 			ToolTip = "Insert a new ScreenGui";
 			Select = function()
 				ScreenHandler:InsertDialog()
@@ -10,7 +10,7 @@ local function InitializeGUI()
 		};
 		{
 			Name = "SelectScreenGui";
-			Icon = "http://www.roblox.com/asset/?id=92033564";
+			Icon = Preload"http://www.roblox.com/asset/?id=92033564";
 			ToolTip = "Set a ScreenGui to the canvas";
 			Select = function()
 				ScreenHandler:SelectDialog()

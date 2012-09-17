@@ -1,7 +1,7 @@
 do
 	local Tool = {
 		Name = "InsertObject";
-		Icon = "http://www.roblox.com/asset/?id=92518186";
+		Icon = Preload"http://www.roblox.com/asset/?id=92518186";
 		ToolTip = "Insert new objects";
 		Shortcut = "";
 	}
@@ -20,12 +20,12 @@ do
 
 	local function initOptions()
 		local insertTypes = {
-			{Name="Frame",       Icon="http://www.roblox.com/asset/?id=92581491", ToolTip="Frame"};
-			{Name="ImageLabel",  Icon="http://www.roblox.com/asset/?id=92581501", ToolTip="ImageLabel"};
-			{Name="TextLabel",   Icon="http://www.roblox.com/asset/?id=92581513", ToolTip="TextLabel"};
-			{Name="ImageButton", Icon="http://www.roblox.com/asset/?id=92581528", ToolTip="ImageButton"};
-			{Name="TextButton",  Icon="http://www.roblox.com/asset/?id=92581517", ToolTip="TextButton"};
-			{Name="TextBox",     Icon="http://www.roblox.com/asset/?id=92581517", ToolTip="TextBox"};
+			{Name="Frame",       Icon=Preload"http://www.roblox.com/asset/?id=92581491", ToolTip="Frame"};
+			{Name="ImageLabel",  Icon=Preload"http://www.roblox.com/asset/?id=92581501", ToolTip="ImageLabel"};
+			{Name="TextLabel",   Icon=Preload"http://www.roblox.com/asset/?id=92581513", ToolTip="TextLabel"};
+			{Name="ImageButton", Icon=Preload"http://www.roblox.com/asset/?id=92581528", ToolTip="ImageButton"};
+			{Name="TextButton",  Icon=Preload"http://www.roblox.com/asset/?id=92581517", ToolTip="TextButton"};
+			{Name="TextBox",     Icon=Preload"http://www.roblox.com/asset/?id=92581517", ToolTip="TextBox"};
 		}
 
 		local buttonSize = InternalSettings.GuiButtonSize

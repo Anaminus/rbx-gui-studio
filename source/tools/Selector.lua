@@ -1,7 +1,7 @@
 do
 	local Tool = {
 		Name = "Selector";
-		Icon = "http://www.roblox.com/asset/?id=92033578";
+		Icon = Preload"http://www.roblox.com/asset/?id=92033578";
 		ToolTip = "Select and transform objects";
 		Shortcut = "";
 	}

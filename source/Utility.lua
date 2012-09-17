@@ -34,6 +34,11 @@ local function Descendant(object,...)
 	return object
 end
 
+local function Preload(content)
+	Game:GetService('ContentProvider'):Preload(content)
+	return content
+end
+
 --[[Enums, CreateEnum
 A system for custom enums.
 
