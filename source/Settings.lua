@@ -29,3 +29,7 @@ local Settings do
 		end;
 	})
 end
+
+-- LayoutMode settings
+CreateEnum'LayoutMode'{'Scale','Offset'}
+Settings.LayoutMode = Enums.LayoutMode(1)

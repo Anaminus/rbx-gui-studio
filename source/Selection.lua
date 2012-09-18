@@ -62,6 +62,33 @@ local Selection do
 		};
 	}
 
+	local function layoutChanged(key,value)
+		if key == 'LayoutMode' then
+			if value('Offset') then
+				for _,frame in pairs(SelectFrameLookup) do
+					for i,v in pairs(frame:GetChildren()) do
+						v.BackgroundColor3 = InternalSettings.OffsetModeColor
+					end
+				end
+				for i,v in pairs(selectTemplate:GetChildren()) do
+					v.BackgroundColor3 = InternalSettings.OffsetModeColor
+				end
+			else
+				for _,frame in pairs(SelectFrameLookup) do
+					for i,v in pairs(frame:GetChildren()) do
+						v.BackgroundColor3 = InternalSettings.ScaleModeColor
+					end
+				end
+				for i,v in pairs(selectTemplate:GetChildren()) do
+					v.BackgroundColor3 = InternalSettings.ScaleModeColor
+				end
+			end
+		end
+	end
+
+	Settings.Changed:connect(layoutChanged)
+	layoutChanged('LayoutMode',Settings.LayoutMode)
+
 	local function filter(v)
 		return v:IsA"GuiObject" and Canvas.ActiveLookup[v]
 	end
@@ -83,7 +110,6 @@ local Selection do
 			end
 		end
 		for object in pairs(deselected) do
-		--	print("---- DESELECT",object)
 			SelectedObjectsSet[object] = nil
 			removeValue(SelectedObjects,object)
 
@@ -96,7 +122,6 @@ local Selection do
 			eventObjectDeselected:Fire(object,Canvas.ActiveLookup[object])
 		end
 		for object in pairs(selected) do
-		--	print("---- SELECT",object)
 			local active = Canvas.ActiveLookup[object]
 
 			local select_frame = selectTemplate:Clone()

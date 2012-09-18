@@ -1,6 +1,8 @@
 local InternalSettings = {
 	GuiButtonSize = 22;
 	GuiWidgetSize = 16;
+	ScaleModeColor = Color3.new(42/255,127/255,255/255);
+	OffsetModeColor = Color3.new(255/255,127/255,42/255);
 }
 
 -- Sets the properties of a new or existing Instance using values from a table.

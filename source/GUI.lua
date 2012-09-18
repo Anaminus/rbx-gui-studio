@@ -42,23 +42,25 @@ local function InitializeGUI()
 
 			end;
 		};
+	--]]
 		'----------------';
 		{
 			Name = "ScaleMode";
 			Icon = "";
 			ToolTip = "Scale Mode";
-			Select = function()
-
+			Select = function(self)
+				Settings.LayoutMode = Enums.LayoutMode.Scale
 			end;
 		};
 		{
 			Name = "OffsetMode";
 			Icon = "";
 			ToolTip = "Offset Mode";
-			Select = function()
-
+			Select = function(self)
+				Settings.LayoutMode = Enums.LayoutMode.Offset
 			end;
 		};
+	--[[
 		'----------------';
 		{
 			Name = "ToggleGrid";
@@ -100,6 +102,23 @@ local function InitializeGUI()
 	local menuSize = buttonSize + 8
 
 	local MenuFrame = Widgets.ButtonMenu(MenuButtons,Vector2.new(buttonSize,buttonSize),true)
+	do
+		local scaleButton = MenuButtons[4].Button
+		local offsetButton = MenuButtons[5].Button
+		local function layoutChanged(key,value)
+			if key == 'LayoutMode' then
+				if value('Offset') then
+					scaleButton.BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235)
+					offsetButton.BorderColor3 = Color3.new(1,0,0)
+				else
+					scaleButton.BorderColor3 = Color3.new(1,0,0)
+					offsetButton.BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235)
+				end
+			end
+		end
+		Settings.Changed:connect(layoutChanged)
+		layoutChanged('LayoutMode',Settings.LayoutMode)
+	end
 
 	local ToolbarFrame = ToolManager:InitializeTools()
 

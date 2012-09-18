@@ -53,6 +53,23 @@ function Widgets.TransformHandles(Canvas,Mouse)
 		};
 	}
 
+	local function layoutChanged(key,value)
+		if key == 'LayoutMode' then
+			if value('Offset') then
+				for i,v in pairs(Frame:GetChildren()) do
+					v.BackgroundColor3 = InternalSettings.OffsetModeColor
+				end
+			else
+				for i,v in pairs(Frame:GetChildren()) do
+					v.BackgroundColor3 = InternalSettings.ScaleModeColor
+				end
+			end
+		end
+	end
+
+	local conMode = Settings.Changed:connect(layoutChanged)
+	layoutChanged('LayoutMode',Settings.LayoutMode)
+
 	local BoundObject
 	local Active = nil
 
@@ -69,6 +86,8 @@ function Widgets.TransformHandles(Canvas,Mouse)
 	end
 
 	function Handles:Destroy()
+		conMode:disconnect()
+		conMode = nil
 		for k in pairs(self) do
 			self[k] = nil
 		end

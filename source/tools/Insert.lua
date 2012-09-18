@@ -58,7 +58,7 @@ do
 			Create(br){
 				Position = UDim2.new(1,-4,1,-4);
 				Size = UDim2.new(0,8,0,8);
-				BackgroundColor3 = Color3.new(1,1,1);
+			--	BackgroundColor3 = Color3.new(1,1,1);
 				BorderColor3 = Color3.new(0,0,0);
 				BorderSizePixel = 1;
 			}
@@ -75,10 +75,11 @@ do
 						active = Canvas:WaitForObject(object)
 
 						local pos = originClick - active.Parent.AbsolutePosition
-						if scaled then
-
+						if Settings.LayoutMode('Scale') then
+							pos = pos/active.Parent.AbsoluteSize
+							active.Position = UDim2.new(pos.x,0,pos.y,0)
 						else
-							object.Position = UDim2.new(0,pos.x,0,pos.y)
+							active.Position = UDim2.new(0,pos.x,0,pos.y)
 						end
 
 						setObjects{active}
@@ -87,6 +88,7 @@ do
 				OnRelease = function(x,y,hasDragged)
 					if hasDragged then
 						if object and active then
+							object.Position = active.Position
 							object.Size = active.Size
 							Selection:Set{object}
 						end

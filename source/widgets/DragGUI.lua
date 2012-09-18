@@ -85,17 +85,28 @@ do
 		setObjects(objectList)
 
 		local Dragger = Widgets.Dragger()
-		local conDrag,conUp
+		local conDrag,conUp,conMode
 		local hasDragged = false
 
 		local function finishDrag(x,y)
 			conDrag:disconnect()
 			conUp:disconnect()
+			conMode:disconnect()
 			Dragger:Destroy()
 			if callbacks.OnRelease then
 				callbacks.OnRelease(x,y,hasDragged)
 			end
 		end
+
+		local scaled = Settings.LayoutMode('Scale')
+		conMode = Settings.Changed:connect(function(key,value)
+			if key == 'LayoutMode' then
+				-- switching the mode mid-drag probably produces undesirable behavior
+				-- so, if the layout mode changes, end the dragging operation
+				finishDrag(0,0)
+				-- scaled = value('Scale')
+			end
+		end)
 
 		conUp = Dragger.MouseButton1Up:connect(finishDrag)
 		conDrag = Dragger.MouseMoved:connect(function(x,y)
@@ -111,17 +122,29 @@ do
 			hasDragged = true
 			local diff = Vector2.new(x,y) - originClick
 			if scaled then
+				for i = 1,#objectList do
+					local object = objectList[i]
+					local oPos = originPos[i]
+					local oSize = originSize[i]
 
+					local absSize = object.Parent.AbsoluteSize
+
+					local pos = (Vector2.new(oPos.X.Scale,oPos.Y.Scale)*absSize + diff*modPos)/absSize
+					object.Position = UDim2.new(pos.x,oPos.X.Offset,pos.y,oPos.Y.Offset)
+
+					local size = (Vector2.new(oSize.X.Scale,oSize.Y.Scale)*absSize + diff*modSize)/absSize
+					object.Size = UDim2.new(size.x,oSize.X.Offset,size.y,oSize.Y.Offset)
+				end
 			else
 				for i = 1,#objectList do
 					local object = objectList[i]
 					local oPos = originPos[i]
 					local oSize = originSize[i]
 
-					local pos = Vector2.new(oPos.X.Offset,oPos.Y.Offset) + diff * modPos
+					local pos = Vector2.new(oPos.X.Offset,oPos.Y.Offset) + diff*modPos
 					object.Position = UDim2.new(oPos.X.Scale,pos.x,oPos.Y.Scale,pos.y)
 
-					local size = Vector2.new(oSize.X.Offset,oSize.Y.Offset) + diff * modSize
+					local size = Vector2.new(oSize.X.Offset,oSize.Y.Offset) + diff*modSize
 					object.Size = UDim2.new(oSize.X.Scale,size.x,oSize.Y.Scale,size.y)
 				end
 			end
