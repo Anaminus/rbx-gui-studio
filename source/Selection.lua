@@ -164,14 +164,19 @@ local Selection do
 		return not not SelectedObjectsSet[object]
 	end
 
-	local conChanged
+	local conChanged,conScope
 	AddServiceStatus{Selection;
-		Start = function()
+		Start = function(self)
 			conChanged = SelectionService.SelectionChanged:connect(updateSelection)
+			conScope = Scope.ScopeChanged:connect(function(scope)
+				-- changing the scope deselects everything
+				self:Set{}
+			end)
 			updateSelection()
 		end;
 		Stop = function()
 			conChanged:disconnect()
+			conScope:disconnect()
 			for k in pairs(SelectedObjectsSet) do
 				SelectedObjectsSet[k] = nil
 			end

@@ -34,6 +34,7 @@ local Scope do
 			if Scope.Current ~= Scope.Top then
 				if not Scope.Current:IsDescendantOf(Scope.Top) then
 					Scope:SetCurrent(Scope.Top)
+					print("Scope was set to",Scope.Top)
 				end
 			end
 	--	else -- this is handled by the canvas
@@ -66,6 +67,7 @@ local Scope do
 		end
 		if child:IsDescendantOf(self.Top) then
 			if child.Parent == self.Current then
+				print("Scope in to",child)
 				self:SetCurrent(child)
 			else
 				error("Scope:In: argument must be child of current scope",2)
@@ -80,6 +82,7 @@ local Scope do
 			error("Scope:Out: top scope not set",2)
 		end
 		if self.Current ~= self.Top then
+			print("Scope out to",self.Current.Parent)
 			self:SetCurrent(self.Current.Parent)
 		end
 	end
