@@ -56,7 +56,7 @@ do
 		[DragModifier.Center]      = {Vector2.new(1, 1), Vector2.new( 0, 0)};
 	}
 
-	function Widgets.DragGUI(objectList,originClick,modifier,callbacks)
+	function Widgets.DragGUI(objectList,originClick,modifier,callbacks,parent)
 		if type(objectList) ~= 'table' then
 			objectList = {objectList}
 		end
@@ -126,7 +126,7 @@ do
 				end
 			end
 		end)
-		Dragger.Parent = GetScreen(objectList[1])
+		Dragger.Parent = GetScreen(parent or objectList[1])
 		return finishDrag
 	end
 end

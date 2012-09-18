@@ -65,37 +65,36 @@ do
 		end
 
 		local function addNewObject(x,y)
-			local object,active,click_offset
+			local object,active
+			local originClick = Vector2.new(x,y)
 
-			local has_dragged = false
+			Widgets.DragGUI({},originClick,'BottomRight',{
+				OnDrag = function(x,y,hasDragged,setObjects)
+					if not hasDragged then
+						object = Instance.new(Options.InsertType.Name,Scope.Current)
+						active = Canvas:WaitForObject(object)
 
-			local drag_pos
-			event.mouse_up = Dragger.MouseButton1Up:connect(function()
-				event:disconnect('mouse_up','drag')
-				Dragger.Parent = nil
+						local pos = originClick - active.Parent.AbsolutePosition
+						if scaled then
 
-				if has_dragged then
-					local diff = drag_pos - click_offset - active.Parent.AbsolutePosition
-					object.Size = UDim2.new(0,diff.x,0,diff.y)
-					Selection:Set{object}
-				else
-					Selection:Set{}
-				end
-			end)
-			event.drag = Dragger.MouseMoved:connect(function(x,y)
-				if not has_dragged then
-					has_dragged = true
-					object = Instance.new(Options.InsertType.Name,Scope.Current)
-					active = Canvas:WaitForObject(object)
+						else
+							object.Position = UDim2.new(0,pos.x,0,pos.y)
+						end
 
-					click_offset = Vector2.new(x,y) - active.Parent.AbsolutePosition
-					object.Position = UDim2.new(0,click_offset.x,0,click_offset.y) -- scale/offset
-				end
-				drag_pos = Vector2.new(x,y)
-				local diff = drag_pos - click_offset - active.Parent.AbsolutePosition
-				active.Size = UDim2.new(0,diff.x,0,diff.y)
-			end)
-			Dragger.Parent = GetScreen(Canvas.CanvasFrame)
+						setObjects{active}
+					end
+				end;
+				OnRelease = function(x,y,hasDragged)
+					if hasDragged then
+						if object and active then
+							object.Size = active.Size
+							Selection:Set{object}
+						end
+					else
+						Selection:Set{}
+					end
+				end;
+			},Canvas.CanvasFrame)
 		end
 
 		event.select = GlobalButton.MouseButton1Down:connect(function(object,active,x,y)
