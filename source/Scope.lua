@@ -41,9 +41,67 @@ local Scope do
 		end
 	end
 
+	-- shows a visual effect of a box tweening from the previous scope to the next scope
+	local visualFrame
+	local function visualScopeChange(previous,current)
+		previous = Canvas.ActiveLookup[previous]
+		current = Canvas.ActiveLookup[current]
+		if previous and current then
+			if visualFrame then visualFrame:Destroy() end
+
+			local pPos,pSize = previous.AbsolutePosition,previous.AbsoluteSize
+			local cPos,cSize = current.AbsolutePosition,current.AbsoluteSize
+
+			local color = Color3.new(1,0,0)
+			visualFrame = Create'Frame'{
+				Name = "ScopeVisualEffect";
+				Position = UDim2.new(0,pPos.x,0,pPos.y);
+				Size = UDim2.new(0,pSize.x,0,pSize.y);
+				Transparency = 1;
+				Create'Frame'{ -- top
+					BackgroundColor3 = color;
+					BorderSizePixel = 0;
+					Position = UDim2.new(0,0,0,-1);
+					Size = UDim2.new(1,0,0,3);
+				};
+				Create'Frame'{ -- right
+					BackgroundColor3 = color;
+					BorderSizePixel = 0;
+					Position = UDim2.new(1,-1,0,0);
+					Size = UDim2.new(0,3,1,0);
+				};
+				Create'Frame'{ -- bottom
+					BackgroundColor3 = color;
+					BorderSizePixel = 0;
+					Position = UDim2.new(0,0,1,0);
+					Size = UDim2.new(1,0,0,3);
+				};
+				Create'Frame'{ -- left
+					BackgroundColor3 = color;
+					BorderSizePixel = 0;
+					Position = UDim2.new(0,-1,0,0);
+					Size = UDim2.new(0,3,1,0);
+				};
+			}
+
+			visualFrame.Parent = GetScreen(Canvas.CanvasFrame)
+			visualFrame:TweenSizeAndPosition(
+				UDim2.new(0,cSize.x,0,cSize.y),
+				UDim2.new(0,cPos.x,0,cPos.y),
+				'Out',
+				'Quad',
+				0.25,
+				false,
+				function() delay(0.1,function() visualFrame:Destroy() end) end
+			)
+
+		end
+	end
+
 	local conChanged
 	function Scope:SetCurrent(object)
 		if object:IsDescendantOf(self.Top) or object == self.Top then
+			visualScopeChange(self.Current,object)
 			self.Current = object
 			if conChanged then conChanged:disconnect() end
 			conChanged = object.AncestryChanged:connect(hierarchyChanged)
