@@ -15,7 +15,7 @@ do
 	function Tool:Select()
 		TransformHandles = Widgets.TransformHandles(Canvas,Mouse,event)
 
-		local function scopeIn(object)
+		local function setScope(object)
 			local newScope = Scope:GetContainer(object)
 			if newScope then
 				Scope:In(newScope)
@@ -24,105 +24,106 @@ do
 			end
 		end
 
-		local selectNothing do
-			local clickStamp = 0
-			function selectNothing()
-				do  -- check for double-click
-					local t = tick()
-					if t-clickStamp < 0.5 then
-						Scope:Out()
-						return
-					end
-					clickStamp = t
-				end
+		local clickStamp = 0
+		local function checkDoubleClick(object)
+			local t = tick()
+			if t-clickStamp < 0.5 then
+				clickStamp = 0
+				setScope(object)
+				return true
+			end
+			clickStamp = t
+			return false
+		end
 
-				if not Mouse.CtrlIsDown then
-					Selection:Set{}
-				end
+		local function resetClick()
+			clickStamp = 0
+		end
+
+		local function selectNothing()
+			if not Mouse.CtrlIsDown then
+				Selection:Set{}
 			end
 		end
 
-		do
-			-- there seems to be some kind of bug involving this tool
-			-- I somehow managed to get to a point where I was unable to drag
-			-- objects, and clicking on a descendant multiple times switched
-			-- between the descendant and it's parent, without any scope changes
-			-- not sure if this bug can still occur
-			local clickStamp = 0
-			event.select = GlobalButton.MouseButton1Down:connect(function(object,active,x,y)
-				do  -- check for double-click
-					local t = tick()
-					if t-clickStamp < 0.5 then
-						scopeIn(object)
-						return
-					end
-					clickStamp = t
+		event.move = GlobalButton.MouseMoved:connect(resetClick)
+		-- there seems to be some kind of bug involving this tool
+		-- I somehow managed to get to a point where I was unable to drag
+		-- objects, and clicking on a descendant multiple times switched
+		-- between the descendant and it's parent, without any scope changes
+		-- not sure if this bug can still occur
+		event.select = GlobalButton.MouseButton1Down:connect(function(object,active,x,y)
+			if checkDoubleClick(object) then return end
+
+			local can_drag = true
+			-- click to select
+			if not Mouse.ShiftIsDown then
+				-- act upon the clicked object's container
+				local o = Scope:GetContainer(object)
+				if o == nil then
+				-- clicked object is above current scope
+					-- for now, treat it as if it were invisible
+					selectNothing()
+					return
+				end
+				object = o
+				active = Canvas.ActiveLookup[o]
+			end
+			if Mouse.CtrlIsDown then
+			-- multi-select
+				can_drag = false
+				if Selection:Contains(object) then
+				-- deselect selected
+					Selection:Remove(object)
+				else
+				-- select unselected
+					Selection:Add(object)
+				end
+			end
+			if can_drag then
+				-- click & drag to move
+				-- on drag or on up, select object
+				local dragObjects = Selection:Get()
+				local activeObjects = {}
+				table.insert(dragObjects,1,object)
+				for i,object in pairs(dragObjects) do
+					activeObjects[i] = Canvas.ActiveLookup[object]
 				end
 
-				local can_drag = true
-				-- click to select
-				if not Mouse.ShiftIsDown then
-					-- act upon the clicked object's container
-					local o = Scope:GetContainer(object)
-					if o == nil then
-					-- clicked object is above current scope
-						-- for now, treat it as if it were invisible
-						selectNothing()
-						return
-					end
-					object = o
-					active = Canvas.ActiveLookup[o]
-				end
-				if Mouse.CtrlIsDown then
-				-- multi-select
-					can_drag = false
-					if Selection:Contains(object) then
-					-- deselect selected
-						Selection:Remove(object)
-					else
-					-- select unselected
-						Selection:Add(object)
-					end
-				end
-				if can_drag then
-					-- click & drag to move
-					-- on drag or on up, select object
-					local dragObjects = Selection:Get()
-					local activeObjects = {}
-					table.insert(dragObjects,1,object)
-					for i,object in pairs(dragObjects) do
-						activeObjects[i] = Canvas.ActiveLookup[object]
-					end
-
-					Widgets.DragGUI(activeObjects,Vector2.new(x,y),'Center',{
-						OnDrag = function(x,y,hasDragged,setObjects)
-							if not hasDragged then
-								if not Selection:Contains(object) then
-									Selection:Set{object}
-									dragObjects = {object}
-									activeObjects = {Canvas.ActiveLookup[object]}
-									setObjects(activeObjects)
-								end
-							end
-						end;
-						OnRelease = function(x,y,hasDragged)
-							if hasDragged then
-								clickStamp = 0
-								for i = 1,#dragObjects do
-									local object = dragObjects[i]
-									local active = activeObjects[i]
-									object.Position = active.Position
-									object.Size = active.Size
-								end
-							elseif not Selection:Contains(object) then
+				Widgets.DragGUI(activeObjects,Vector2.new(x,y),'Center',{
+					OnDrag = function(x,y,hasDragged,setObjects)
+						if not hasDragged then
+							if not Selection:Contains(object) then
 								Selection:Set{object}
+								dragObjects = {object}
+								activeObjects = {Canvas.ActiveLookup[object]}
+								setObjects(activeObjects)
 							end
-						end;
-					})
-				end
-			end)
-		end
-		event.select_nil = CanvasFrame.MouseButton1Down:connect(selectNothing)
+						end
+					end;
+					OnRelease = function(x,y,hasDragged)
+						if hasDragged then
+							clickStamp = 0
+							for i = 1,#dragObjects do
+								local object = dragObjects[i]
+								local active = activeObjects[i]
+								object.Position = active.Position
+								object.Size = active.Size
+							end
+						elseif not Selection:Contains(object) then
+							Selection:Set{object}
+						end
+					end;
+				})
+			end
+		end)
+
+		event.move_nil = CanvasFrame.MouseMoved:connect(resetClick)
+		event.select_nil = CanvasFrame.MouseButton1Down:connect(function()
+			if checkDoubleClick() then return end
+
+			selectNothing()
+		end)
 
 		event.selected = Selection.ObjectSelected:connect(function(object,active)
 			TransformHandles:SetParent(object)

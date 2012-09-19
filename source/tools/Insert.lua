@@ -64,115 +64,115 @@ do
 			}
 		end
 
-		local addNewObject do
-			local clickStamp = 0
-			function addNewObject(x,y)
-				do  -- check for double-click
-					local t = tick()
-					if t-clickStamp < 0.5 then
-						Scope:Out()
-						return
-					end
-					clickStamp = t
-				end
-
-				local object,active
-				local originClick = Vector2.new(x,y)
-
-				Widgets.DragGUI({},originClick,'BottomRight',{
-					OnDrag = function(x,y,hasDragged,setObjects)
-						if hasDragged then
-							clickStamp = 0
-						else
-							object = Instance.new(Options.InsertType.Name,Scope.Current)
-							active = Canvas:WaitForObject(object)
-
-							local pos = originClick - active.Parent.AbsolutePosition
-							if Settings.LayoutMode('Scale') then
-								pos = pos/active.Parent.AbsoluteSize
-								active.Position = UDim2.new(pos.x,0,pos.y,0)
-							else
-								active.Position = UDim2.new(0,pos.x,0,pos.y)
-							end
-
-							setObjects{active}
-						end
-					end;
-					OnRelease = function(x,y,hasDragged)
-						if hasDragged then
-							if object and active then
-								object.Position = active.Position
-								object.Size = active.Size
-								Selection:Set{object}
-							end
-						else
-							Selection:Set{}
-						end
-					end;
-				},Canvas.CanvasFrame)
+		local function setScope(object)
+			local newScope = Scope:GetContainer(object)
+			if newScope then
+				Scope:In(newScope)
+			else
+				Scope:Out()
 			end
 		end
 
-		do
-			local clickStamp = 0
-			event.select = GlobalButton.MouseButton1Down:connect(function(object,active,x,y)
-				do  -- check for double-click
-					local t = tick()
-					if t-clickStamp < 0.5 then
-						-- scope in or out
-						local newScope = Scope:GetContainer(object)
-						if newScope then
-						-- if object inside scope was clicked
-							Scope:In(newScope)
-						else
-						-- if scope itself was clicked
-							Scope:Out()
-						end
-						return
-					end
-					clickStamp = t
-				end
-
-				-- click to select
-				if not Mouse.ShiftIsDown then
-					-- act upon the clicked object's container
-					local o = Scope:GetContainer(object)
-					if o == nil then
-					-- clicked object is above current scope
-						-- for now, treat it as if it were invisible
-						addNewObject(x,y)
-						return
-					end
-					object = o
-					active = Canvas.ActiveLookup[o]
-				end
-
-				local finishDrag = Widgets.DragGUI(active,Vector2.new(x,y),'Center',{
-					OnDrag = function(x,y,hasDragged)
-						if not hasDragged then
-						--[[ if this object isn't selected, insert a new object instead
-							if not Selection:Contains(object) then
-								finishDrag(x,y)
-								addNewObject(x,y)
-								return
-							end
-						--]]
-							Selection:Set{object}
-						end
-					end;
-					OnRelease = function(x,y,hasDragged)
-						if hasDragged then
-							clickStamp = 0
-							object.Position = active.Position
-						elseif not Selection:Contains(object) then
-							Selection:Set{object}
-						end
-					end;
-				})
-			end)
+		local clickStamp = 0
+		local function checkDoubleClick(object)
+			local t = tick()
+			if t-clickStamp < 0.5 then
+				clickStamp = 0
+				setScope(object)
+				return true
+			end
+			clickStamp = t
+			return false
 		end
 
-		event.select_nil = CanvasFrame.MouseButton1Down:connect(addNewObject)
+		local function resetClick()
+			clickStamp = 0
+		end
+
+		local function addNewObject(x,y)
+			local object,active
+			local originClick = Vector2.new(x,y)
+
+			Widgets.DragGUI({},originClick,'BottomRight',{
+				OnDrag = function(x,y,hasDragged,setObjects)
+					if hasDragged then
+						clickStamp = 0
+					else
+						object = Instance.new(Options.InsertType.Name,Scope.Current)
+						active = Canvas:WaitForObject(object)
+
+						local pos = originClick - active.Parent.AbsolutePosition
+						if Settings.LayoutMode('Scale') then
+							pos = pos/active.Parent.AbsoluteSize
+							active.Position = UDim2.new(pos.x,0,pos.y,0)
+						else
+							active.Position = UDim2.new(0,pos.x,0,pos.y)
+						end
+
+						setObjects{active}
+					end
+				end;
+				OnRelease = function(x,y,hasDragged)
+					if hasDragged then
+						if object and active then
+							object.Position = active.Position
+							object.Size = active.Size
+							Selection:Set{object}
+						end
+					else
+						Selection:Set{}
+					end
+				end;
+			},Canvas.CanvasFrame)
+		end
+
+		event.move = GlobalButton.MouseMoved:connect(resetClick)
+		event.select = GlobalButton.MouseButton1Down:connect(function(object,active,x,y)
+			if checkDoubleClick(object) then return end
+
+			-- click to select
+			if not Mouse.ShiftIsDown then
+				-- act upon the clicked object's container
+				local o = Scope:GetContainer(object)
+				if o == nil then
+				-- clicked object is above current scope
+					-- for now, treat it as if it were invisible
+					addNewObject(x,y)
+					return
+				end
+				object = o
+				active = Canvas.ActiveLookup[o]
+			end
+
+			local finishDrag = Widgets.DragGUI(active,Vector2.new(x,y),'Center',{
+				OnDrag = function(x,y,hasDragged)
+					if not hasDragged then
+					--[[ if this object isn't selected, insert a new object instead
+						if not Selection:Contains(object) then
+							finishDrag(x,y)
+							addNewObject(x,y)
+							return
+						end
+					--]]
+						Selection:Set{object}
+					end
+				end;
+				OnRelease = function(x,y,hasDragged)
+					if hasDragged then
+						clickStamp = 0
+						object.Position = active.Position
+					elseif not Selection:Contains(object) then
+						Selection:Set{object}
+					end
+				end;
+			})
+		end)
+
+		event.move_nil = CanvasFrame.MouseMoved:connect(resetClick)
+		event.select_nil = CanvasFrame.MouseButton1Down:connect(function(...)
+			if checkDoubleClick() then return end
+			addNewObject(...)
+		end)
 
 		event.selected = Selection.ObjectSelected:connect(function(object,active)
 			if #SelectedObjects > 1 then
