@@ -88,6 +88,7 @@ local Scope do
 	end
 
 	function Scope:GetContainer(object)
+		if object == nil then return nil end
 		while object.Parent ~= Scope.Current do
 			object = object.Parent
 			if object == nil then return nil end
