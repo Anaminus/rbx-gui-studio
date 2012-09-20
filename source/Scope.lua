@@ -42,18 +42,15 @@ local Scope do
 	end
 
 	-- shows a visual effect of a box tweening from the previous scope to the next scope
-	local visualFrame
 	local function visualScopeChange(previous,current)
 		previous = Canvas.ActiveLookup[previous]
 		current = Canvas.ActiveLookup[current]
 		if previous and current then
-			if visualFrame then visualFrame:Destroy() end
-
 			local pPos,pSize = previous.AbsolutePosition,previous.AbsoluteSize
 			local cPos,cSize = current.AbsolutePosition,current.AbsoluteSize
 
 			local color = Color3.new(1,0,0)
-			visualFrame = Create'Frame'{
+			local visualFrame = Create'Frame'{
 				Name = "ScopeVisualEffect";
 				Position = UDim2.new(0,pPos.x,0,pPos.y);
 				Size = UDim2.new(0,pSize.x,0,pSize.y);
@@ -85,16 +82,18 @@ local Scope do
 			}
 
 			visualFrame.Parent = GetScreen(Canvas.CanvasFrame)
-			visualFrame:TweenSizeAndPosition(
-				UDim2.new(0,cSize.x,0,cSize.y),
-				UDim2.new(0,cPos.x,0,cPos.y),
-				'Out',
-				'Quad',
-				0.25,
-				false,
-				function() delay(0.1,function() visualFrame:Destroy() end) end
-			)
-
+			wait(0.03)
+			if visualFrame.Parent then
+				visualFrame:TweenSizeAndPosition(
+					UDim2.new(0,cSize.x,0,cSize.y),
+					UDim2.new(0,cPos.x,0,cPos.y),
+					'Out',
+					'Quad',
+					0.25,
+					true,
+					function() delay(0.1,function() visualFrame:Destroy() end) end
+				)
+			end
 		end
 	end
 
