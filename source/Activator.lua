@@ -16,7 +16,7 @@ end
 local function Activate()
 	Mouse:Start()
 	ActivateGUI()
-	ScreenHandler:RunStartup()
+	ScreenManager:RunStartup()
 end
 
 local function Deactivate()

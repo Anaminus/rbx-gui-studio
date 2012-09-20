@@ -5,7 +5,7 @@ local function InitializeGUI()
 			Icon = Preload"http://www.roblox.com/asset/?id=92518177";
 			ToolTip = "Insert a new ScreenGui";
 			Select = function()
-				ScreenHandler:InsertDialog()
+				ScreenManager:InsertDialog()
 			end;
 		};
 		{
@@ -13,7 +13,7 @@ local function InitializeGUI()
 			Icon = Preload"http://www.roblox.com/asset/?id=92033564";
 			ToolTip = "Set a ScreenGui to the canvas";
 			Select = function()
-				ScreenHandler:SelectDialog()
+				ScreenManager:SelectDialog()
 			end;
 		};
 --[[
