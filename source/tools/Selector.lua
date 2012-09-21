@@ -24,6 +24,32 @@ do
 			end
 		end
 
+		local function selectRegion(low,high)
+			low,high =
+				Vector2.new(math.min(low.x,high.x),math.min(low.y,high.y)),
+				Vector2.new(math.max(low.x,high.x),math.max(low.y,high.y))
+
+			local activeLookup = Canvas.ActiveLookup
+			local selectionList = {}
+			for i,child in pairs(Scope.Current:GetChildren()) do
+				local active = activeLookup[child]
+				if active then
+					local checkLow = active.AbsolutePosition
+					local checkHigh = checkLow + active.AbsoluteSize
+
+					if   checkLow.x >=  low.x and  checkLow.y >=  low.y
+					and checkHigh.x <= high.x and checkHigh.y <= high.y then
+						selectionList[#selectionList+1] = child
+					end
+				end
+			end
+			if Mouse.CtrlIsDown then
+				Selection:Add(selectionList)
+			else
+				Selection:Set(selectionList)
+			end
+		end
+
 		local clickStamp = 0
 		local function checkDoubleClick(object)
 			local t = tick()
@@ -56,7 +82,73 @@ do
 			if object == Canvas.CurrentScreen then
 			-- clicked nothing
 				if checkDoubleClick() then return end
-				selectNothing()
+
+				local selectBox
+				local originClick = Vector2.new(x,y)
+
+				Widgets.DragGUI({},originClick,'BottomRight',{
+					OnDrag = function(x,y,hasDragged,setObjects)
+						if hasDragged then
+							clickStamp = 0
+						else
+							local color = Color3.new(1,0,0)
+							selectBox = Create'Frame'{
+								Name = "RubberBandSelect";
+								Transparency = 1;
+								Create'Frame'{ -- top
+									BackgroundColor3 = color;
+									BorderSizePixel = 0;
+									Position = UDim2.new(0,-3,0,-3);
+									Size = UDim2.new(1,6,0,3);
+								};
+								Create'Frame'{ -- right
+									BackgroundColor3 = color;
+									BorderSizePixel = 0;
+									Position = UDim2.new(1,0,0,0);
+									Size = UDim2.new(0,3,1,0);
+								};
+								Create'Frame'{ -- bottom
+									BackgroundColor3 = color;
+									BorderSizePixel = 0;
+									Position = UDim2.new(0,-3,1,0);
+									Size = UDim2.new(1,6,0,3);
+								};
+								Create'Frame'{ -- left
+									BackgroundColor3 = color;
+									BorderSizePixel = 0;
+									Position = UDim2.new(0,-3,0,0);
+									Size = UDim2.new(0,3,1,0);
+								};
+							}
+							local canvasFrame = Canvas.CanvasFrame
+							selectBox.Parent = canvasFrame
+
+							local pos = originClick - canvasFrame.AbsolutePosition
+							if Settings.LayoutMode('Scale') then
+								pos = pos/canvasFrame.AbsoluteSize
+								selectBox.Position = UDim2.new(pos.x,0,pos.y,0)
+							else
+								selectBox.Position = UDim2.new(0,pos.x,0,pos.y)
+							end
+
+							setObjects{selectBox}
+						end
+					end;
+					OnRelease = function(x,y,hasDragged)
+						if hasDragged then
+							clickStamp = 0
+							if selectBox then
+								local low = selectBox.AbsolutePosition
+								local high = low + selectBox.AbsoluteSize
+								selectBox:Destroy()
+								selectRegion(low,high)
+							end
+						else
+							selectNothing()
+						end
+					end;
+				},Canvas.CanvasFrame)
+
 				return
 			end
 			-- clicked object
