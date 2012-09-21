@@ -11,7 +11,7 @@ API:
 	Selection:Get()                             Returns a copy of Selecton.SelectedObjects.
 	Selection:Set(objects)                      Sets the selection to a list of objects.
 	                                            Same as the Selection service's Set.
-	Selection:Add(object)                       Adds an object to the selection.
+	Selection:Add(objects)                      Adds one or more objects to the selection.
 	Selection:Remove(object)                    Removes an object from the selection.
 	Selection:Contains(object)                  Returns whether an object is selected.
 	                                            Only works with objects in the container the Canvas is bound to.
@@ -136,9 +136,15 @@ local Selection do
 		end
 	end
 
-	function Selection:Add(object)
+	function Selection:Add(objects)
+		if type(objects) ~= 'table' then
+			objects = {objects}
+		end
 		local s = SelectionService:Get()
-		s[#s+1] = object
+		local n = #s
+		for i = 1,#objects do
+			s[n+i] = objects[i]
+		end
 		SelectionService:Set(s)
 	end
 
