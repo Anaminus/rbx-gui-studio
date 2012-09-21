@@ -72,16 +72,17 @@ do
 			end
 		end
 
+		-- used to prevent actions from occurring at the same time
+		local inAction = false
+
 		event.move = GlobalButton.MouseMoved:connect(resetClick)
-		-- there seems to be some kind of bug involving this tool
-		-- I somehow managed to get to a point where I was unable to drag
-		-- objects, and clicking on a descendant multiple times switched
-		-- between the descendant and it's parent, without any scope changes
-		-- not sure if this bug can still occur
 		event.select = GlobalButton.MouseButton1Down:connect(function(object,active,x,y)
+			if inAction then return end
+			inAction = true
+
 			if object == Canvas.CurrentScreen then
 			-- clicked nothing
-				if checkDoubleClick() then return end
+				if checkDoubleClick() then inAction = false return end
 
 				local selectBox
 				local originClick = Vector2.new(x,y)
@@ -146,14 +147,14 @@ do
 						else
 							selectNothing()
 						end
+						inAction = false
 					end;
 				},Canvas.CanvasFrame)
-
 				return
 			end
 			-- clicked object
 
-			if checkDoubleClick(object) then return end
+			if checkDoubleClick(object) then inAction = false return end
 
 			local can_drag = true
 			-- click to select
@@ -164,6 +165,7 @@ do
 				-- clicked object is above current scope
 					-- for now, treat it as if it were invisible
 					selectNothing()
+					inAction = false
 					return
 				end
 				object = o
@@ -213,6 +215,7 @@ do
 						elseif not Selection:Contains(object) then
 							Selection:Set{object}
 						end
+						inAction = false
 					end;
 				})
 			end
@@ -230,6 +233,107 @@ do
 		end)
 		if #SelectedObjects > 0 then
 			TransformHandles:SetParent(SelectedObjects[#SelectedObjects])
+		end
+
+		do
+			local activeLookup = Canvas.ActiveLookup
+			local function moveSelection(dir,scaled)
+				if Mouse.CtrlIsDown then
+					if scaled then
+						for i,object in pairs(Selection.SelectedObjects) do
+							local active = activeLookup[object]
+							local dir = dir/active.Parent.AbsoluteSize
+							active.Size = active.Size + UDim2.new(dir.x,0,dir.y,0)
+							object.Size = active.Size
+						end
+					else
+						for i,object in pairs(Selection.SelectedObjects) do
+							local active = activeLookup[object]
+							active.Size = active.Size + UDim2.new(0,dir.x,0,dir.y)
+							object.Size = active.Size
+						end
+					end
+				else
+					if scaled then
+						for i,object in pairs(Selection.SelectedObjects) do
+							local active = activeLookup[object]
+							local dir = dir/active.Parent.AbsoluteSize
+							active.Position = active.Position + UDim2.new(dir.x,0,dir.y,0)
+							object.Position = active.Position
+						end
+					else
+						for i,object in pairs(Selection.SelectedObjects) do
+							local active = activeLookup[object]
+							active.Position = active.Position + UDim2.new(0,dir.x,0,dir.y)
+							object.Position = active.Position
+						end
+					end
+				end
+			end
+
+			local up    = string.char(17)
+			local down  = string.char(18)
+			local right = string.char(19)
+			local left  = string.char(20)
+
+			local arrowDirection = {
+				[up   ] = Vector2.new( 0,-1);
+				[down ] = Vector2.new( 0, 1);
+				[right] = Vector2.new( 1, 0);
+				[left ] = Vector2.new(-1, 0);
+			}
+
+			local scaled = Settings.LayoutMode('Scale')
+
+			local arrowIsDown = Mouse.KeyIsDown
+			local MoveID = 0
+			local function startMoving()
+				if inAction and MoveID == 0 then return end
+				inAction = true
+
+				local cid = MoveID + 1
+				MoveID = cid
+				do
+					local moveDirection = Vector2.new(0,0)
+					local nDown = 0
+					for key,dir in pairs(arrowDirection) do
+						if arrowIsDown[key] then
+							nDown = nDown + 1
+							moveDirection = moveDirection + dir
+						end
+					end
+					moveSelection(moveDirection,scaled)
+					if nDown == 1 then
+						wait(0.2)
+						if MoveID ~= cid then return end
+					end
+				end
+
+				while true do
+					if MoveID ~= cid then return end
+					local running = false
+					local moveDirection = Vector2.new(0,0)
+					for key,dir in pairs(arrowDirection) do
+						if arrowIsDown[key] then
+							running = true
+							moveDirection = moveDirection + dir
+						end
+					end
+					if running then
+						moveSelection(moveDirection,scaled)
+						wait(0.05)
+					else
+						break
+					end
+				end
+				MoveID = 0
+				inAction = false
+			end
+
+			event.arrow_up    = Mouse.KeyEvents[up   ]:connect{down=startMoving}
+			event.arrow_down  = Mouse.KeyEvents[down ]:connect{down=startMoving}
+			event.arrow_right = Mouse.KeyEvents[right]:connect{down=startMoving}
+			event.arrow_left  = Mouse.KeyEvents[left ]:connect{down=startMoving}
 		end
 	end
 
