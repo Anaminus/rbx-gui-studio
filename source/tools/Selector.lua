@@ -53,6 +53,14 @@ do
 		-- between the descendant and it's parent, without any scope changes
 		-- not sure if this bug can still occur
 		event.select = GlobalButton.MouseButton1Down:connect(function(object,active,x,y)
+			if object == Canvas.CurrentScreen then
+			-- clicked nothing
+				if checkDoubleClick() then return end
+				selectNothing()
+				return
+			end
+			-- clicked object
+
 			if checkDoubleClick(object) then return end
 
 			local can_drag = true
@@ -116,13 +124,6 @@ do
 					end;
 				})
 			end
-		end)
-
-		event.move_nil = CanvasFrame.MouseMoved:connect(resetClick)
-		event.select_nil = CanvasFrame.MouseButton1Down:connect(function()
-			if checkDoubleClick() then return end
-
-			selectNothing()
 		end)
 
 		event.selected = Selection.ObjectSelected:connect(function(object,active)

@@ -114,6 +114,7 @@ do
 				end;
 				OnRelease = function(x,y,hasDragged)
 					if hasDragged then
+						clickStamp = 0
 						if object and active then
 							object.Position = active.Position
 							object.Size = active.Size
@@ -128,6 +129,12 @@ do
 
 		event.move = GlobalButton.MouseMoved:connect(resetClick)
 		event.select = GlobalButton.MouseButton1Down:connect(function(object,active,x,y)
+			if object == Canvas.CurrentScreen then
+				if checkDoubleClick() then return end
+				addNewObject(x,y)
+				return
+			end
+
 			if checkDoubleClick(object) then return end
 
 			-- click to select
@@ -166,12 +173,6 @@ do
 					end
 				end;
 			})
-		end)
-
-		event.move_nil = CanvasFrame.MouseMoved:connect(resetClick)
-		event.select_nil = CanvasFrame.MouseButton1Down:connect(function(...)
-			if checkDoubleClick() then return end
-			addNewObject(...)
 		end)
 
 		event.selected = Selection.ObjectSelected:connect(function(object,active)

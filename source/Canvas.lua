@@ -242,6 +242,10 @@ local Canvas do
 			r(CurrentScreen,descendants)
 
 			ActiveLookup[CurrentScreen] = CanvasFrame
+			local button = buttonTemplate:Clone()
+				button.Archivable = false
+				button.Parent = CanvasFrame
+				connectButton(CurrentScreen,CanvasFrame,button)
 
 			conAdded = StarterGui.DescendantAdded:connect(saveAdded)
 			conRemoved = StarterGui.DescendantRemoving:connect(saveRemoving)
@@ -274,6 +278,7 @@ local Canvas do
 			local screen = CurrentScreen
 			CurrentScreen = nil
 			Canvas.CurrentScreen = nil
+			CanvasFrame:ClearAllChildren()
 			eventStopped:Fire(screen)
 			NullScreenLabel.Visible = true
 		end;
