@@ -108,10 +108,17 @@ do
 			end
 		end)
 
+		local OnDrag = callbacks.OnDrag
+
 		conUp = Dragger.MouseButton1Up:connect(finishDrag)
 		conDrag = Dragger.MouseMoved:connect(function(x,y)
-			if callbacks.OnDrag then
-				local result = callbacks.OnDrag(x,y,hasDragged,setObjects)
+		--[[ amount in pixels before a click is considered a drag
+			if not hasDragged and (originClick - Vector2.new(x,y)).magnitude <= Settings.ClickDragThreshold then
+				return
+			end
+		--]]
+			if OnDrag then
+				local result = OnDrag(x,y,hasDragged,setObjects)
 				if result == false then
 					return
 				elseif result == true then
