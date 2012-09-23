@@ -41,6 +41,7 @@ read (widgets/[[List.lua]])                {'main'}
 read (widgets/[[DialogBase.lua]])          {'main'}
 read (widgets/[[Dragger.lua]])             {'main'}
 read (widgets/[[DragGUI.lua]])             {'main'}
+read (widgets/[[RubberbandSelect.lua]])    {'main'}
 read (widgets/[[TransformHandles.lua]])    {'main'}
 
 dialogs = [[source/dialogs]]
