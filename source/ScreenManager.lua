@@ -57,11 +57,11 @@ do
 		else
 			local screens = GetScreens(Game:GetService("StarterGui"))
 			if #screens == 0 then
-				self:InsertDialog(Screen)
+				self:InsertDialog(UserInterface.Screen)
 		--	elseif #screens == 1 then
 		--		self:Select(screens[1])
 			else
-				self:SelectDialog(Screen)
+				self:SelectDialog(UserInterface.Screen)
 			end
 		end
 	end

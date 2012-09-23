@@ -199,7 +199,7 @@ end
 -- gets a list of all ScreenGuis in an object
 function GetScreens(object,list)
 	list = list or {}
-	if object:IsA("ScreenGui") and object ~= Screen then
+	if object:IsA("ScreenGui") and object ~= UserInterface.Screen then
 		list[#list+1] = object
 	end
 	for i,child in pairs(object:GetChildren()) do
