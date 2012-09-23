@@ -21,7 +21,7 @@ API:
 	PluginActivator.OnDeactivate()    Called when then plugin deactivates.
 ]]
 
-local PluginActivator do
+do
 	local Plugin = PluginManager():CreatePlugin()
 	local Toolbar = Plugin:CreateToolbar(PluginData.Toolbar)
 	local Button = Toolbar:CreateButton(unpack(PluginData.ActivationButton))

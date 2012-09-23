@@ -10,7 +10,7 @@ API:
 	UserInterface:Stop()          Stops displaying the UI. Must be initialized before calling.
 ]]
 
-local UserInterface do
+do
 	UserInterface = {}
 
 	function UserInterface:Initialize()

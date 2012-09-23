@@ -6,7 +6,7 @@ API:
 
 	TransformHandles:SetParent(object)  Sets the save object to bind to
 ]]
-function Widgets.TransformHandles(Canvas,Mouse)
+function Widgets.TransformHandles(Canvas)
 	local hsize,pad = 6,2 --handle size; padding
 	local handleTemplate = Create'ImageButton'{
 		BorderSizePixel = 0;
@@ -56,12 +56,14 @@ function Widgets.TransformHandles(Canvas,Mouse)
 	local function layoutChanged(key,value)
 		if key == 'LayoutMode' then
 			if value('Offset') then
+				local offsetModeColor = InternalSettings.OffsetModeColor
 				for i,v in pairs(Frame:GetChildren()) do
-					v.BackgroundColor3 = InternalSettings.OffsetModeColor
+					v.BackgroundColor3 = offsetModeColor
 				end
 			else
+				local scaleModeColor = InternalSettings.ScaleModeColor
 				for i,v in pairs(Frame:GetChildren()) do
-					v.BackgroundColor3 = InternalSettings.ScaleModeColor
+					v.BackgroundColor3 = scaleModeColor
 				end
 			end
 		end

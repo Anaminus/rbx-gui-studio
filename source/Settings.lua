@@ -8,7 +8,7 @@ API:
 	Settings.Changed(key,value)    Fired after a setting changes value.
 ]]
 
-local Settings do
+do
 	Settings = {}
 
 	local eventChanged = CreateSignal(Settings,'Changed')

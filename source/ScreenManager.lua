@@ -16,7 +16,7 @@ API:
 	ScreenManager:SelectDialog()    Runs the ScreenGui select dialog and handles the results
 	                                If the dialog returns a screen, this selects it
 ]]
-local ScreenManager do
+do
 	ScreenManager = {
 		CurrentScreen = nil;
 	}

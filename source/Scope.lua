@@ -146,7 +146,7 @@ local Scope do
 
 	function Scope:GetContainer(object)
 		if object == nil then return nil end
-		while object.Parent ~= Scope.Current do
+		while object.Parent ~= self.Current do
 			object = object.Parent
 			if object == nil then return nil end
 		end

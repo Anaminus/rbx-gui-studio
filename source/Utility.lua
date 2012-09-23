@@ -1,4 +1,4 @@
-local InternalSettings = {
+InternalSettings = {
 	GuiButtonSize = 22;
 	GuiWidgetSize = 16;
 	ScaleModeColor = Color3.new(42/255,127/255,255/255);
@@ -26,7 +26,7 @@ local function Create(ty)
 end
 
 --Gets a descendant of an object by child order
-local function Descendant(object,...)
+function Descendant(object,...)
 	local children = object:GetChildren()
 	for i,v in pairs{...} do
 		object = children[v]
@@ -36,7 +36,7 @@ local function Descendant(object,...)
 	return object
 end
 
-local function Preload(content)
+function Preload(content)
 	Game:GetService('ContentProvider'):Preload(content)
 	return content
 end
@@ -58,7 +58,7 @@ API:
 	EnumItem.Value               The EnumItem's Value.
 	EnumItem(value)              Returns whether the value matches the EnumItem, or its Name or Value.
 ]]
-local Enums,CreateEnum do
+local Enums do
 	Enums = {}
 	local EnumName = {} -- used as unique key for enum name
 	local enum_mt = {
@@ -105,29 +105,31 @@ local Enums,CreateEnum do
 end
 
 -- Adds values to a class that enable it to be started and stopped.
-CreateEnum'ServiceStatus'{'Stopped','Started','Starting','Stopping'}
-local function AddServiceStatus(data)
-	local service = data[1]
-	local start = data.Start
-	local stop = data.Stop
-	service.Status = Enums.ServiceStatus.Stopped
-	service.Start = function(...)
-		if Enums.ServiceStatus.Stopped(service.Status) then
-			service.Status = Enums.ServiceStatus.Starting
-			start(...)
-			service.Status = Enums.ServiceStatus.Started
+do
+	local enumServiceStatus = CreateEnum'ServiceStatus'{'Stopped','Started','Starting','Stopping'}
+	function AddServiceStatus(data)
+		local service = data[1]
+		local start = data.Start
+		local stop = data.Stop
+		service.Status = enumServiceStatus.Stopped
+		service.Start = function(...)
+			if enumServiceStatus.Stopped(service.Status) then
+				service.Status = enumServiceStatus.Starting
+				start(...)
+				service.Status = enumServiceStatus.Started
+			end
 		end
-	end
-	service.Stop = function(...)
-		if Enums.ServiceStatus.Started(service.Status) then
-			service.Status = Enums.ServiceStatus.Stopping
-			stop(...)
-			service.Status = Enums.ServiceStatus.Stopped
+		service.Stop = function(...)
+			if enumServiceStatus.Started(service.Status) then
+				service.Status = enumServiceStatus.Stopping
+				stop(...)
+				service.Status = enumServiceStatus.Stopped
+			end
 		end
 	end
 end
 
-local function CreateSignal(instance,name)
+function CreateSignal(instance,name)
 	local connections = {}
 	local waitEvent = Instance.new('BoolValue')
 	local waitArguments = {} -- holds arguments from Fire to be returned by event:wait()
@@ -184,19 +186,6 @@ local function CreateSignal(instance,name)
 	return Invoker
 end
 
--- remove all instances of a value from a list
-local function removeValue(list,value)
-	local i,n = 0,#list
-	while i <= n do
-		if list[i] == value then
-			table.remove(list,i)
-			n = n - 1
-		else
-			i = i + 1
-		end
-	end
-end
-
 -- returns the ascendant ScreenGui of an object
 local function GetScreen(screen)
 	if screen == nil then return nil end
@@ -208,7 +197,7 @@ local function GetScreen(screen)
 end
 
 -- gets a list of all ScreenGuis in an object
-local function GetScreens(object,list)
+function GetScreens(object,list)
 	list = list or {}
 	if object:IsA("ScreenGui") and object ~= Screen then
 		list[#list+1] = object
@@ -225,7 +214,7 @@ API:
 	EventManager:disconnect(...)              Disconnects one or more events.
 	EventManager:clear()                      Disconnects all events.
 ]]
-local CreateEventManager do
+do
 	local EventManager_mt = {
 		__index = {
 			disconnect = function(self,...)

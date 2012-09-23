@@ -26,12 +26,15 @@ local Mouse do
 		[52] = 'AltIsDown';
 	}
 
+	local KeyIsDown = {}
+	local KeyEvents = {}
+
 	Mouse = {
 		CtrlIsDown = false;
 		ShiftIsDown = false;
 		AltIsDown = false;
-		KeyIsDown = {};
-		KeyEvents = {};
+		KeyIsDown = KeyIsDown;
+		KeyEvents = KeyEvents;
 	}
 
 	local keyEventMT = {
@@ -52,7 +55,7 @@ local Mouse do
 		};
 	}
 
-	setmetatable(Mouse.KeyEvents,{
+	setmetatable(KeyEvents,{
 		__index = function(self,key)
 			local v = setmetatable({},keyEventMT)
 			self[key] = v
@@ -61,13 +64,13 @@ local Mouse do
 	})
 
 	PluginMouse.KeyDown:connect(function(key)
-		Mouse.KeyIsDown[key] = true
+		KeyIsDown[key] = true
 
 		local mod_key = MOD_KEYS[key:byte()]
 		if mod_key then Mouse[mod_key] = true end
 
 		if Enabled then
-			local listeners = Mouse.KeyEvents[key]
+			local listeners = KeyEvents[key]
 			if listeners then
 				for i,listener in pairs(listeners) do
 					if listener.down then
@@ -79,13 +82,13 @@ local Mouse do
 	end)
 
 	PluginMouse.KeyUp:connect(function(key)
-		Mouse.KeyIsDown[key] = nil
+		KeyIsDown[key] = nil
 
 		local mod_key = MOD_KEYS[key:byte()]
 		if mod_key then Mouse[mod_key] = false end
 
 		if Enabled then
-			local listeners = Mouse.KeyEvents[key]
+			local listeners = KeyEvents[key]
 			if listeners then
 				for i,listener in pairs(listeners) do
 					if listener.up then

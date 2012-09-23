@@ -32,7 +32,7 @@ API:
 	ToolManager.ToolSelected(tool)      Fired after a tool is selected.
 	ToolManager.ToolDeselected(tool)    Fired after a tool is deselected.
 ]]
-local ToolManager do
+do
 	local ToolOptionsFrame = Instance.new("Frame")
 
 	ToolManager = {

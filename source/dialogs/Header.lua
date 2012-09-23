@@ -1,1 +1,1 @@
-local Dialogs = {}
+Dialogs = {}

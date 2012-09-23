@@ -47,7 +47,7 @@ do
 		if not self.Options then initOptions() end
 
 		Dragger = Widgets.Dragger()
-		TransformHandles = Widgets.TransformHandles(Canvas,Mouse)
+		TransformHandles = Widgets.TransformHandles(Canvas)
 		do
 			local br = TransformHandles.Frame.BottomRight
 			for i,handle in pairs(TransformHandles.Frame:GetChildren()) do

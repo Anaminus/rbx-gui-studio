@@ -65,22 +65,24 @@ local Selection do
 	local function layoutChanged(key,value)
 		if key == 'LayoutMode' then
 			if value('Offset') then
+				local offsetModeColor = InternalSettings.OffsetModeColor
 				for _,frame in pairs(SelectFrameLookup) do
 					for i,v in pairs(frame:GetChildren()) do
-						v.BackgroundColor3 = InternalSettings.OffsetModeColor
+						v.BackgroundColor3 = offsetModeColor
 					end
 				end
 				for i,v in pairs(selectTemplate:GetChildren()) do
-					v.BackgroundColor3 = InternalSettings.OffsetModeColor
+					v.BackgroundColor3 = offsetModeColor
 				end
 			else
+				local scaleModeColor = InternalSettings.ScaleModeColor
 				for _,frame in pairs(SelectFrameLookup) do
 					for i,v in pairs(frame:GetChildren()) do
-						v.BackgroundColor3 = InternalSettings.ScaleModeColor
+						v.BackgroundColor3 = scaleModeColor
 					end
 				end
 				for i,v in pairs(selectTemplate:GetChildren()) do
-					v.BackgroundColor3 = InternalSettings.ScaleModeColor
+					v.BackgroundColor3 = scaleModeColor
 				end
 			end
 		end
@@ -89,12 +91,27 @@ local Selection do
 	Settings.Changed:connect(layoutChanged)
 	layoutChanged('LayoutMode',Settings.LayoutMode)
 
+	local activeLookup = Canvas.ActiveLookup
+
 	local function filter(v)
-		return v:IsA"GuiObject" and Canvas.ActiveLookup[v]
+		return v:IsA"GuiObject" and activeLookup[v]
 	end
 
 	local eventObjectSelected = CreateSignal(Selection,'ObjectSelected')
 	local eventObjectDeselected = CreateSignal(Selection,'ObjectDeselected')
+
+	-- remove all instances of a value from a list
+	local function removeValue(list,value)
+		local i,n = 0,#list
+		while i <= n do
+			if list[i] == value then
+				table.remove(list,i)
+				n = n - 1
+			else
+				i = i + 1
+			end
+		end
+	end
 
 	local function updateSelection()
 		local selected = {}
@@ -119,10 +136,10 @@ local Selection do
 				select_frame:Destroy()
 			end
 
-			eventObjectDeselected:Fire(object,Canvas.ActiveLookup[object])
+			eventObjectDeselected:Fire(object,activeLookup[object])
 		end
 		for object in pairs(selected) do
-			local active = Canvas.ActiveLookup[object]
+			local active = activeLookup[object]
 
 			local select_frame = selectTemplate:Clone()
 			select_frame.Archivable = false

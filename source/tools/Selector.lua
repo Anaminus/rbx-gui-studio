@@ -13,7 +13,9 @@ do
 	local TransformHandles
 
 	function Tool:Select()
-		TransformHandles = Widgets.TransformHandles(Canvas,Mouse,event)
+		TransformHandles = Widgets.TransformHandles(Canvas)
+
+		local activeLookup = Canvas.ActiveLookup
 
 		local function setScope(object)
 			local newScope = Scope:GetContainer(object)
@@ -29,7 +31,6 @@ do
 				Vector2.new(math.min(low.x,high.x),math.min(low.y,high.y)),
 				Vector2.new(math.max(low.x,high.x),math.max(low.y,high.y))
 
-			local activeLookup = Canvas.ActiveLookup
 			local selectionList = {}
 			for i,child in pairs(Scope.Current:GetChildren()) do
 				local active = activeLookup[child]
@@ -169,7 +170,7 @@ do
 					return
 				end
 				object = o
-				active = Canvas.ActiveLookup[o]
+				active = activeLookup[o]
 			end
 			if Mouse.CtrlIsDown then
 			-- multi-select
@@ -189,7 +190,7 @@ do
 				local activeObjects = {}
 				table.insert(dragObjects,1,object)
 				for i,object in pairs(dragObjects) do
-					activeObjects[i] = Canvas.ActiveLookup[object]
+					activeObjects[i] = activeLookup[object]
 				end
 
 				Widgets.DragGUI(activeObjects,Vector2.new(x,y),'Center',{
@@ -198,7 +199,7 @@ do
 							if not Selection:Contains(object) then
 								Selection:Set{object}
 								dragObjects = {object}
-								activeObjects = {Canvas.ActiveLookup[object]}
+								activeObjects = {activeLookup[object]}
 								setObjects(activeObjects)
 							end
 						end
@@ -236,18 +237,18 @@ do
 		end
 
 		do
-			local activeLookup = Canvas.ActiveLookup
+			local Mouse = Mouse
 			local function moveSelection(dir,scaled)
 				if Mouse.CtrlIsDown then
 					if scaled then
-						for i,object in pairs(Selection.SelectedObjects) do
+						for i,object in pairs(SelectedObjects) do
 							local active = activeLookup[object]
 							local dir = dir/active.Parent.AbsoluteSize
 							active.Size = active.Size + UDim2.new(dir.x,0,dir.y,0)
 							object.Size = active.Size
 						end
 					else
-						for i,object in pairs(Selection.SelectedObjects) do
+						for i,object in pairs(SelectedObjects) do
 							local active = activeLookup[object]
 							active.Size = active.Size + UDim2.new(0,dir.x,0,dir.y)
 							object.Size = active.Size
@@ -255,14 +256,14 @@ do
 					end
 				else
 					if scaled then
-						for i,object in pairs(Selection.SelectedObjects) do
+						for i,object in pairs(SelectedObjects) do
 							local active = activeLookup[object]
 							local dir = dir/active.Parent.AbsoluteSize
 							active.Position = active.Position + UDim2.new(dir.x,0,dir.y,0)
 							object.Position = active.Position
 						end
 					else
-						for i,object in pairs(Selection.SelectedObjects) do
+						for i,object in pairs(SelectedObjects) do
 							local active = activeLookup[object]
 							active.Position = active.Position + UDim2.new(0,dir.x,0,dir.y)
 							object.Position = active.Position

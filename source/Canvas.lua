@@ -62,6 +62,7 @@ local Canvas do
 		ActiveLookup       = ActiveLookup;
 		Replicate          = true;
 	}
+	local Canvas = Canvas
 
 	local excludedProp = {
 	-- read-only properties
@@ -169,13 +170,11 @@ local Canvas do
 				print('---- ACTIVE PARENT:',ActiveLookup[saveObject.Parent])
 			end
 			conChangedLookup[saveObject] = saveObject.Changed:connect(function(p)
-				if Canvas.Replicate then
-					if p == "Parent" and CurrentScreen:IsAncestorOf(saveObject) then
-						activeObject.Parent = ActiveLookup[saveObject.Parent]
-					elseif excludedProp[p:lower()] == nil then
-						local v = saveObject[p]
-						activeObject[p] = v
-					end
+				if p == "Parent" and CurrentScreen:IsAncestorOf(saveObject) then
+					activeObject.Parent = ActiveLookup[saveObject.Parent]
+				elseif excludedProp[p:lower()] == nil then
+					local v = saveObject[p]
+					activeObject[p] = v
 				end
 			end)
 			eventObjectAdded:Fire(saveObject,activeObject)
