@@ -1,5 +1,5 @@
 local function Initialize()
-	InitializeGUI()
+	UserInterface:Initialize()
 	Canvas.Started:connect(function(screen)
 		Scope:SetTop(screen)
 		Selection:Start()
@@ -15,13 +15,13 @@ end
 
 local function Activate()
 	Mouse:Start()
-	ActivateGUI()
+	UserInterface:Start()
 	ScreenManager:RunStartup()
 end
 
 local function Deactivate()
 	Canvas:Stop()
-	DeactivateGUI()
+	UserInterface:Stop()
 	Mouse:Stop()
 end
 
