@@ -219,6 +219,8 @@ do
 						inAction = false
 					end;
 				})
+			else
+				inAction = false
 			end
 		end)
 
