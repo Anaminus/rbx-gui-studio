@@ -14,7 +14,7 @@ API:
 	                        conn:disconnect()
 ]]
 local Mouse do
-	local PluginMouse = Plugin:GetMouse()
+	local PluginMouse = PluginActivator.Plugin:GetMouse()
 	local Enabled = false
 
 	local MOD_KEYS = {

@@ -59,6 +59,6 @@ read (tools/[[Selector.lua]])     {'main'}
 read (tools/[[Insert.lua]])       {'main'}
 
 read [[source/UserInterface.lua]] {'main'}
-read [[source/Activator.lua]]     {'main'}
+read [[source/Initialize.lua]]    {'main'}
 
 write 'main' (output_files)
