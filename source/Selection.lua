@@ -21,7 +21,7 @@ API:
 	Selection.ObjectSelected(object,active)     Fired after an object is selected, passing the object and its active object
 	Selection.ObjectDeselected(object,active)   Fired after an object is deselected
 ]]
-local Selection do
+do
 	local SelectionService = Game:GetService("Selection")
 	local SelectedObjects = {}
 	local SelectedObjectsSet = {}

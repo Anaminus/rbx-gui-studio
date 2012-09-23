@@ -38,7 +38,7 @@ API:
 	                                Passes the object and its active counterpart.
 	Canvas.ObjectRemoving           Fired before an object is removed from the Canvas.
 ]]
-local Canvas do
+do
 	local CurrentScreen
 	local CanvasFrame = Create'ImageButton'{
 		Create'TextLabel'{

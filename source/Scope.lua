@@ -18,7 +18,7 @@ API:
 
 	Scope.ScopeChanged(object)  Fired after the scope changes, passing the new scope.
 ]]
-local Scope do
+do
 	Scope = {
 		Top = nil;
 		Current = nil;

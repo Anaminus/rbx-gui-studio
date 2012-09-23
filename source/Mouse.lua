@@ -13,7 +13,7 @@ API:
 	                        conn = Mouse.KeyEvents[key]:connect( {up = (listener), down = (listener)} )
 	                        conn:disconnect()
 ]]
-local Mouse do
+do
 	local PluginMouse = PluginActivator.Plugin:GetMouse()
 	local Enabled = false
 
