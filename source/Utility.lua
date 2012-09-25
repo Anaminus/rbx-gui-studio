@@ -1,8 +1,18 @@
+function Preload(content)
+	Game:GetService('ContentProvider'):Preload(content)
+	return content
+end
+
 InternalSettings = {
-	GuiButtonSize = 22;
+	GuiButtonSize = 30;
 	GuiWidgetSize = 16;
 	ScaleModeColor = Color3.new(42/255,127/255,255/255);
 	OffsetModeColor = Color3.new(255/255,127/255,42/255);
+	IconMap = {
+		Menu   = Preload"http://www.roblox.com/asset/?id=93526019";
+		Tool   = Preload"http://www.roblox.com/asset/?id=93526037";
+		Insert = Preload"http://www.roblox.com/asset/?id=93526058";
+	};
 }
 
 -- Sets the properties of a new or existing Instance using values from a table.
@@ -34,11 +44,6 @@ function Descendant(object,...)
 		children = object:GetChildren()
 	end
 	return object
-end
-
-function Preload(content)
-	Game:GetService('ContentProvider'):Preload(content)
-	return content
 end
 
 --[[Enums, CreateEnum

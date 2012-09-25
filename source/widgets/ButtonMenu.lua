@@ -3,6 +3,7 @@ Creates a menu of clickable buttons from a list of button data.
 Button data are tables that contain the following fields:
 	Name       The name of the button.
 	Icon       An icon to display on the button.
+	           This can be a Content string referencing an icon image, or an Icon widget.
 	ToolTip    (optional) A tooltip to display when the button is hovered over.
 	Select     (optional) A function called when the button is clicked.
 
@@ -50,14 +51,24 @@ function Widgets.ButtonMenu(buttons,size,horizontal,on_click)
 				BackgroundColor3 = Color3.new(0.866667, 0.866667, 0.866667);
 				BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
 				Size = UDim2.new(0,size.x,0,size.y);
-			--	Image = button.Icon;
-				Create'ImageLabel'{
-					Name = "MenuButtonIcon";
-					BackgroundTransparency = 1;
-					Position = UDim2.new(0,3,0,3);
-					Size = UDim2.new(1,-6,1,-6);
-					Image = button.Icon;
-				};
+				(function()
+					if type(button.Icon) == 'string' then
+						return Create'ImageLabel'{
+							Name = "MenuButtonIcon";
+							BackgroundTransparency = 1;
+							Position = UDim2.new(0,3,0,3);
+							Size = UDim2.new(1,-6,1,-6);
+							Image = button.Icon;
+						}
+					else
+						return Create(button.Icon){
+							Name = "MenuButtonIcon";
+							BackgroundTransparency = 1;
+							Position = UDim2.new(0,3,0,3);
+							Size = UDim2.new(1,-6,1,-6);
+						}
+					end
+				end)();
 				Parent = ButtonMenuFrame;
 			}
 			button.Button = ButtonFrame

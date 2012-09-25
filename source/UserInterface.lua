@@ -17,7 +17,7 @@ do
 		local MenuButtons = {
 			{
 				Name = "InsertScreenGui";
-				Icon = Preload"http://www.roblox.com/asset/?id=92518177";
+				Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,0,0);
 				ToolTip = "Insert a new ScreenGui";
 				Select = function()
 					ScreenManager:InsertDialog()
@@ -25,7 +25,7 @@ do
 			};
 			{
 				Name = "SelectScreenGui";
-				Icon = Preload"http://www.roblox.com/asset/?id=92033564";
+				Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,0,1);
 				ToolTip = "Set a ScreenGui to the canvas";
 				Select = function()
 					ScreenManager:SelectDialog()
@@ -60,19 +60,19 @@ do
 		--]]
 			'----------------';
 			{
-				Name = "ScaleMode";
-				Icon = "";
-				ToolTip = "Scale Mode";
+				Name = "LayoutMode";
+				Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,0,2);
+				ToolTip = "Toggle Layout Mode (currently Scale)";
 				Select = function(self)
-					Settings.LayoutMode = Enums.LayoutMode.Scale
-				end;
-			};
-			{
-				Name = "OffsetMode";
-				Icon = "";
-				ToolTip = "Offset Mode";
-				Select = function(self)
-					Settings.LayoutMode = Enums.LayoutMode.Offset
+					if Settings.LayoutMode('Scale') then
+						Settings.LayoutMode = Enums.LayoutMode.Offset
+						Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,0,3)
+						ToolTipService:AddToolTip(self.Button,"Toggle Layout Mode (currently Offset)")
+					else
+						Settings.LayoutMode = Enums.LayoutMode.Scale
+						Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,0,2)
+						ToolTipService:AddToolTip(self.Button,"Toggle Layout Mode (currently Scale)")
+					end
 				end;
 			};
 		--[[
@@ -117,23 +117,6 @@ do
 		local menuSize = buttonSize + 8
 
 		local MenuFrame = Widgets.ButtonMenu(MenuButtons,Vector2.new(buttonSize,buttonSize),true)
-		do
-			local scaleButton = MenuButtons[4].Button
-			local offsetButton = MenuButtons[5].Button
-			local function layoutChanged(key,value)
-				if key == 'LayoutMode' then
-					if value('Offset') then
-						scaleButton.BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235)
-						offsetButton.BorderColor3 = Color3.new(1,0,0)
-					else
-						scaleButton.BorderColor3 = Color3.new(1,0,0)
-						offsetButton.BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235)
-					end
-				end
-			end
-			Settings.Changed:connect(layoutChanged)
-			layoutChanged('LayoutMode',Settings.LayoutMode)
-		end
 
 		local ToolbarFrame = ToolManager:InitializeTools()
 

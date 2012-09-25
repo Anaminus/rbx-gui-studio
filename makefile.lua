@@ -32,6 +32,7 @@ read (widgets/[[Header.lua]])              {'main'}
 read (widgets/[[ToolTipService.lua]])      {'main'}
 read (widgets/[[AutoSizeLabel.lua]])       {'main'}
 read (widgets/[[Graphics.lua]])            {'main'}
+read (widgets/[[Icon.lua]])                {'main'}
 read (widgets/[[StackingFrame.lua]])       {'main'}
 read (widgets/[[StaticStackingFrame.lua]]) {'main'}
 read (widgets/[[ScrollBar.lua]])           {'main'}

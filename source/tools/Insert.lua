@@ -1,7 +1,7 @@
 do
 	local Tool = {
 		Name = "InsertObject";
-		Icon = Preload"http://www.roblox.com/asset/?id=92518186";
+		Icon = Widgets.Icon(nil,InternalSettings.IconMap.Tool,32,0,1);
 		ToolTip = "Insert new objects";
 		Shortcut = "";
 	}
@@ -20,12 +20,12 @@ do
 
 	local function initOptions()
 		local insertTypes = {
-			{Name="Frame",       Icon=Preload"http://www.roblox.com/asset/?id=92581491", ToolTip="Frame"};
-			{Name="ImageLabel",  Icon=Preload"http://www.roblox.com/asset/?id=92581501", ToolTip="ImageLabel"};
-			{Name="TextLabel",   Icon=Preload"http://www.roblox.com/asset/?id=92581513", ToolTip="TextLabel"};
-			{Name="ImageButton", Icon=Preload"http://www.roblox.com/asset/?id=92581528", ToolTip="ImageButton"};
-			{Name="TextButton",  Icon=Preload"http://www.roblox.com/asset/?id=92581517", ToolTip="TextButton"};
-			{Name="TextBox",     Icon=Preload"http://www.roblox.com/asset/?id=92581517", ToolTip="TextBox"};
+			{Name="Frame",       Icon=Widgets.Icon(nil,InternalSettings.IconMap.Insert,32,0,0), ToolTip="Frame"};
+			{Name="ImageLabel",  Icon=Widgets.Icon(nil,InternalSettings.IconMap.Insert,32,0,1), ToolTip="ImageLabel"};
+			{Name="TextLabel",   Icon=Widgets.Icon(nil,InternalSettings.IconMap.Insert,32,0,2), ToolTip="TextLabel"};
+			{Name="ImageButton", Icon=Widgets.Icon(nil,InternalSettings.IconMap.Insert,32,0,3), ToolTip="ImageButton"};
+			{Name="TextButton",  Icon=Widgets.Icon(nil,InternalSettings.IconMap.Insert,32,0,4), ToolTip="TextButton"};
+			{Name="TextBox",     Icon=Widgets.Icon(nil,InternalSettings.IconMap.Insert,32,0,5), ToolTip="TextBox"};
 		}
 
 		local buttonSize = InternalSettings.GuiButtonSize
