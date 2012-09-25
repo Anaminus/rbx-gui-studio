@@ -31,23 +31,17 @@ do
 	end
 
 	function ScreenManager:SelectDialog()
-		local parent = GetScreen(Canvas.CanvasFrame)
-		if parent then
-			local screen = Dialogs.SelectDialog(parent)
-			if screen then
-				self:Select(screen)
-			end
+		local screen = Dialogs.SelectDialog(UserInterface.Screen)
+		if screen then
+			self:Select(screen)
 		end
 	end
 
 	function ScreenManager:InsertDialog()
-		local parent = GetScreen(Canvas.CanvasFrame)
-		if parent then
-			local screen,set_canvas = Dialogs.InsertDialog(parent)
-			if screen and set_canvas then
-				Game:GetService("Selection"):Set{screen}
-				ScreenManager:Select(screen)
-			end
+		local screen,set_canvas = Dialogs.InsertDialog(UserInterface.Screen)
+		if screen and set_canvas then
+			Game:GetService("Selection"):Set{screen}
+			ScreenManager:Select(screen)
 		end
 	end
 
@@ -57,11 +51,11 @@ do
 		else
 			local screens = GetScreens(Game:GetService("StarterGui"))
 			if #screens == 0 then
-				self:InsertDialog(UserInterface.Screen)
+				self:InsertDialog()
 		--	elseif #screens == 1 then
 		--		self:Select(screens[1])
 			else
-				self:SelectDialog(UserInterface.Screen)
+				self:SelectDialog()
 			end
 		end
 	end

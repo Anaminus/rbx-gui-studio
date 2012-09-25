@@ -201,10 +201,13 @@ local function GetScreen(screen)
 	return screen
 end
 
+-- A set of screens that should never be bound to the canvas
+IllegalScreen = {}
+
 -- gets a list of all ScreenGuis in an object
 function GetScreens(object,list)
 	list = list or {}
-	if object:IsA("ScreenGui") and object ~= UserInterface.Screen then
+	if object:IsA("ScreenGui") and not IllegalScreen[object] then
 		list[#list+1] = object
 	end
 	for i,child in pairs(object:GetChildren()) do

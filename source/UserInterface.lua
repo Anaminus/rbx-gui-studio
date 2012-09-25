@@ -3,6 +3,7 @@ The plugin's user interface.
 
 API:
     UserInterface.Screen          The ScreenGui of the UI. Must be initialized.
+    UserInterface.Initialized     Whether the UI as been initialized.
 	ServiceStatus.Status          Whether the service is started or not
 
 	UserInterface:Initialize()    Creates the UI Screen, allowing this service to be started and stopped.
@@ -133,16 +134,6 @@ do
 					Name = "Background";
 					Position = UDim2.new(0, menuSize, 0, menuSize*2);
 					BackgroundColor3 = Color3.new(0.5, 0.5, 0.5);
-					Create'Frame'{
-						Size = UDim2.new(1, 0, 1, 0);
-						Name = "ScaleGrid";
-						BackgroundTransparency = 1;
-					};
-					Create'Frame'{
-						Size = UDim2.new(1, 0, 1, 0);
-						Name = "OffsetGrid";
-						BackgroundTransparency = 1;
-					};
 				};
 				Create(Canvas.CanvasFrame){
 					Size = UDim2.new(1, -menuSize, 1, -menuSize*2);
@@ -177,18 +168,21 @@ do
 		}
 
 		ToolTipService.Parent = self.Screen
+		IllegalScreen[self.Screen] = true
+
+		self.Initialized = true
 	end
 
 	AddServiceStatus{UserInterface;
 		Start = function(self)
-			if self.Screen then
+			if self.Initialized then
 				self.Screen.Parent = Game:GetService("CoreGui")
 			else
 				error("UserInterface:Start: UI has not been initialized",2)
 			end
 		end;
 		Stop = function(self)
-			if self.Screen then
+			if self.Initialized then
 				self.Screen.Parent = nil
 			else
 				error("UserInterface:Stop: UI has not been initialized",2)
