@@ -63,6 +63,12 @@ function Widgets.List(items)
 		end
 		d = true
 	end)
+	SelectorButton.MouseWheelForward:connect(function()
+		Class.VScroll:ScrollUp()
+	end)
+	SelectorButton.MouseWheelBackward:connect(function()
+		Class.VScroll:ScrollDown()
+	end)
 	SelectorButton.Parent = Class.Boundary
 
 	SetZIndex(Class.GUI,10)
