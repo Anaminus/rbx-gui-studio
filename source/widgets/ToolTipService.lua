@@ -107,7 +107,8 @@ local ToolTipService do
 				end
 			end
 		end)
-		tooltip.conLeave = object.MouseLeave:connect(function(x,y)
+
+		local function leave(x,y)
 			local cid = self.HoverID + 1
 			self.HoverID = cid
 			if self.CurrentToolTip == tooltip then
@@ -121,7 +122,11 @@ local ToolTipService do
 					end
 				end
 			end
-		end)
+		end
+		tooltip.conLeave = object.MouseLeave:connect(leave)
+		if object:IsA"GuiButton" then
+			tooltip.conDown = object.MouseButton1Down:connect(leave)
+		end
 
 		self.ToolTips[object] = tooltip
 	end
@@ -131,6 +136,9 @@ local ToolTipService do
 		if tooltip then
 			tooltip.conEnter:disconnect()
 			tooltip.conLeave:disconnect()
+			if tooltip.conDown then
+				tooltip.conDown:disconnect()
+			end
 			self.ToolTips[object] = nil
 			if self.Frame.Parent == object then
 				self.Frame.Parent = nil
