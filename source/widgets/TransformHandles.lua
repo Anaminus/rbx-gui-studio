@@ -4,6 +4,7 @@ API:
 	TransformHandles.Frame              The GUI frame portion
 	TransformHandles.Parent             The object currently bound to
 
+	TransformHandles:Destroy()          Destroys the handles
 	TransformHandles:SetParent(object)  Sets the save object to bind to
 ]]
 function Widgets.TransformHandles(Canvas)
