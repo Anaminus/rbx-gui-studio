@@ -36,6 +36,12 @@ Arguments:
 			x, y
 				The mouse coordinates where the button was released.
 
+	parent
+		Where to put the Dragger object. Optional.
+
+	no_hide
+		If true, selection highlights are not hidden.
+
 Returns:
 	finishDrag
 		A function that, when called, ends the dragging operation.
@@ -56,7 +62,7 @@ do
 		[DragModifier.Center]      = {Vector2.new(1, 1), Vector2.new( 0, 0)};
 	}
 
-	function Widgets.DragGUI(objectList,originClick,modifier,callbacks,parent)
+	function Widgets.DragGUI(objectList,originClick,modifier,callbacks,parent,no_hide)
 		if type(objectList) ~= 'table' then
 			objectList = {objectList}
 		end
@@ -96,6 +102,7 @@ do
 			conUp:disconnect()
 			conMode:disconnect()
 			Dragger:Destroy()
+			Selection:SetVisible(true)
 			if callbacks.OnRelease then
 				callbacks.OnRelease(x,y,hasDragged)
 			end
@@ -129,6 +136,7 @@ do
 					return
 				end
 			end
+
 			hasDragged = true
 			local diff = Vector2.new(x,y) - originClick
 			if scaled then
@@ -159,6 +167,9 @@ do
 				end
 			end
 		end)
+		if not no_hide then
+			Selection:SetVisible(false)
+		end
 		Dragger.Parent = GetScreen(parent or objectList[1])
 		return finishDrag
 	end
