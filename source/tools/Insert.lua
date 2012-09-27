@@ -123,7 +123,7 @@ do
 					end
 					Maid.drag_gui = nil
 				end;
-			},Canvas.CanvasFrame)
+			},Canvas.CanvasFrame,true)
 		end
 
 		Maid.move = GlobalButton.MouseMoved:connect(resetClick)
@@ -150,6 +150,7 @@ do
 				active = Canvas.ActiveLookup[o]
 			end
 
+			TransformHandles.Frame.Visible = false
 			local finishDrag = Widgets.DragGUI(active,Vector2.new(x,y),'Center',{
 				OnDrag = function(x,y,hasDragged)
 					if not hasDragged then
@@ -170,6 +171,7 @@ do
 					elseif not Selection:Contains(object) then
 						Selection:Set{object}
 					end
+					TransformHandles.Frame.Visible = true
 					Maid.drag_gui = nil
 				end;
 			})
