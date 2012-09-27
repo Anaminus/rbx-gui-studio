@@ -70,6 +70,7 @@ function Widgets.TransformHandles(Canvas)
 		end
 	end
 
+	local finishDrag
 	local conMode = Settings.Changed:connect(layoutChanged)
 	layoutChanged('LayoutMode',Settings.LayoutMode)
 
@@ -89,6 +90,7 @@ function Widgets.TransformHandles(Canvas)
 	end
 
 	function Handles:Destroy()
+		if finishDrag then finishDrag() end
 		conMode:disconnect()
 		conMode = nil
 		for k in pairs(self) do
@@ -102,11 +104,12 @@ function Widgets.TransformHandles(Canvas)
 		local name = handle.Name
 		handle.MouseButton1Down:connect(function(x,y)
 			if Handles.Parent then
-				Widgets.DragGUI(Active,Vector2.new(x,y),name,{
+				finishDrag = Widgets.DragGUI(Active,Vector2.new(x,y),name,{
 					OnRelease = function()
 						ResetButtonColor(handle)
 						BoundObject.Position = Active.Position
 						BoundObject.Size = Active.Size
+						finishDrag = nil
 					end;
 				})
 			end
