@@ -120,6 +120,7 @@ do
 					activeObjects[i] = activeLookup[object]
 				end
 
+				TransformHandles.Frame.Visible = false
 				Maid.drag_gui = Widgets.DragGUI(activeObjects,Vector2.new(x,y),'Center',{
 					OnDrag = function(x,y,hasDragged,setObjects)
 						if not hasDragged then
@@ -143,6 +144,7 @@ do
 						elseif not Selection:Contains(object) then
 							Selection:Set{object}
 						end
+						TransformHandles.Frame.Visible = true
 						Maid.drag_gui = nil
 						inAction = false
 					end;
@@ -226,6 +228,8 @@ do
 			Maid:GiveTask(function() MoveID = MoveID + 1 end)
 			local function startMoving()
 				if inAction and MoveID == 0 then return end
+				TransformHandles.Frame.Visible = false
+				Selection:SetVisible(false)
 				inAction = true
 
 				local cid = MoveID + 1
@@ -264,6 +268,8 @@ do
 					end
 				end
 				MoveID = 0
+				TransformHandles.Frame.Visible = true
+				Selection:SetVisible(true)
 				inAction = false
 			end
 
