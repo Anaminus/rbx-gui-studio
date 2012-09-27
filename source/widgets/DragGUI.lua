@@ -88,7 +88,10 @@ do
 		local conDrag,conUp,conMode
 		local hasDragged = false
 
+		local dragFinished = false
 		local function finishDrag(x,y)
+			if dragFinished then return end
+			dragFinished = true
 			conDrag:disconnect()
 			conUp:disconnect()
 			conMode:disconnect()
