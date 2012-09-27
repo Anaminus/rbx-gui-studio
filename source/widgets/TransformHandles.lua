@@ -104,11 +104,13 @@ function Widgets.TransformHandles(Canvas)
 		local name = handle.Name
 		handle.MouseButton1Down:connect(function(x,y)
 			if Handles.Parent then
+				Frame.Visible = false
 				finishDrag = Widgets.DragGUI(Active,Vector2.new(x,y),name,{
 					OnRelease = function()
 						ResetButtonColor(handle)
 						BoundObject.Position = Active.Position
 						BoundObject.Size = Active.Size
+						Frame.Visible = true
 						finishDrag = nil
 					end;
 				})
