@@ -117,5 +117,5 @@ function Widgets.RubberbandSelect(originClick,callbacks)
 				if callbacks.OnClick then callbacks.OnClick(x,y) end
 			end
 		end;
-	},Canvas.CanvasFrame)
+	},Canvas.CanvasFrame,true)
 end
