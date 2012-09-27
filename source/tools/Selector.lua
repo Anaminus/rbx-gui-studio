@@ -210,6 +210,11 @@ do
 			}
 
 			local scaled = Settings.LayoutMode('Scale')
+			event.layout_changed = Settings.Changed:connect(function(key,value)
+				if key == 'LayoutMode' then
+					scaled = value('Scale')
+				end
+			end)
 
 			local arrowIsDown = Mouse.KeyIsDown
 			local MoveID = 0
