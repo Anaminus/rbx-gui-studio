@@ -9,50 +9,205 @@ API:
 ]]
 function Widgets.TransformHandles(Canvas)
 	local hsize,pad = 6,2 --handle size; padding
-	local handleTemplate = Create'ImageButton'{
-		BorderSizePixel = 0;
-		BackgroundColor3 = Color3.new(1,0,0);
-		Size = UDim2.new(0,hsize,0,hsize);
-		ZIndex = 10;
-	}
-	local Frame = Create'Frame'{
-		Name = "Transform";
-		Transparency = 1;
-		Size = UDim2.new(1,0,1,0);
-		ZIndex = 10;
-		Create(handleTemplate:Clone()){
-			Name = "TopLeft";
-			Position = UDim2.new(0,-hsize-pad,0,-hsize-pad);
+	local Frame do
+		local handleTemplate = Create'ImageButton'{
+			BorderSizePixel = 0;
+			BackgroundColor3 = Color3.new(1,0,0);
+			Size = UDim2.new(0,hsize,0,hsize);
+			ZIndex = 10;
+		}
+		local borderTemplate = Create'Frame'{
+			BorderSizePixel = 0;
+			BackgroundTransparency = 0.5;
+			BackgroundColor3 = Color3.new(0, 0, 0);
+		}
+		Frame = Create'Frame'{
+			ZIndex = 10;
+			Size = UDim2.new(1, 0, 1, 0);
+			Name = "Transform";
+			BackgroundTransparency = 1;
+			Create(handleTemplate:Clone()){
+				Size = UDim2.new(0, hsize, 0, hsize);
+				Name = "TopLeft";
+				Position = UDim2.new(0, -hsize-pad, 0, -hsize-pad);
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(1, 2, 0, 1);
+					Name = "Top";
+					Position = UDim2.new(0, -1, 0, -1);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(0, 1, 1, -pad);
+					Name = "Right";
+					Position = UDim2.new(1, 0, 0, 0);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(1, -pad+1, 0, 1);
+					Name = "Bottom";
+					Position = UDim2.new(0, -1, 1, 0);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(0, 1, 1, 0);
+					Name = "Left";
+					Position = UDim2.new(0, -1, 0, 0);
+				};
+			};
+			Create(handleTemplate:Clone()){
+				Size = UDim2.new(0, hsize, 0, hsize);
+				Name = "Top";
+				Position = UDim2.new(0.5, -hsize/2, 0, -hsize-pad);
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(1, 2, 0, 1);
+					Name = "Top";
+					Position = UDim2.new(0, -1, 0, -1);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(0, 1, 1, -pad);
+					Name = "Right";
+					Position = UDim2.new(1, 0, 0, 0);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(0, 1, 1, -pad);
+					Name = "Left";
+					Position = UDim2.new(0, -1, 0, 0);
+				};
+			};
+			Create(handleTemplate:Clone()){
+				Size = UDim2.new(0, hsize, 0, hsize);
+				Name = "TopRight";
+				Position = UDim2.new(1, pad, 0, -hsize-pad);
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(1, 2, 0, 1);
+					Name = "Top";
+					Position = UDim2.new(0, -1, 0, -1);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(0, 1, 1, 0);
+					Name = "Right";
+					Position = UDim2.new(1, 0, 0, 0);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(0, 1, 1, -pad);
+					Name = "Left";
+					Position = UDim2.new(0, -1, 0, 0);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(1, -pad+1, 0, 1);
+					Name = "Bottom";
+					Position = UDim2.new(0, pad, 1, 0);
+				};
+			};
+			Create(handleTemplate:Clone()){
+				Size = UDim2.new(0, hsize, 0, hsize);
+				Name = "Right";
+				Position = UDim2.new(1, pad, 0.5, -hsize/2);
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(1, -pad+1, 0, 1);
+					Name = "Top";
+					Position = UDim2.new(0, pad, 0, -1);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(0, 1, 1, 0);
+					Name = "Right";
+					Position = UDim2.new(1, 0, 0, 0);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(1, -pad+1, 0, 1);
+					Name = "Bottom";
+					Position = UDim2.new(0, pad, 1, 0);
+				};
+			};
+			Create(handleTemplate:Clone()){
+				Size = UDim2.new(0, hsize, 0, hsize);
+				Name = "BottomRight";
+				Position = UDim2.new(1, pad, 1, pad);
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(1, -pad+1, 0, 1);
+					Name = "Top";
+					Position = UDim2.new(0, pad, 0, -1);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(0, 1, 1, 0);
+					Name = "Right";
+					Position = UDim2.new(1, 0, 0, 0);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(0, 1, 1, -pad);
+					Name = "Left";
+					Position = UDim2.new(0, -1, 0, pad);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(1, 2, 0, 1);
+					Name = "Bottom";
+					Position = UDim2.new(0, -1, 1, 0);
+				};
+			};
+			Create(handleTemplate:Clone()){
+				Size = UDim2.new(0, hsize, 0, hsize);
+				Name = "Bottom";
+				Position = UDim2.new(0.5, -hsize/2, 1, pad);
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(0, 1, 1, -pad);
+					Name = "Right";
+					Position = UDim2.new(1, 0, 0, pad);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(0, 1, 1, -pad);
+					Name = "Left";
+					Position = UDim2.new(0, -1, 0, pad);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(1, 2, 0, 1);
+					Name = "Bottom";
+					Position = UDim2.new(0, -1, 1, 0);
+				};
+			};
+			Create(handleTemplate:Clone()){
+				Size = UDim2.new(0, hsize, 0, hsize);
+				Name = "BottomLeft";
+				Position = UDim2.new(0, -hsize-pad, 1, pad);
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(1, -pad+1, 0, 1);
+					Name = "Top";
+					Position = UDim2.new(0, -1, 0, -1);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(0, 1, 1, -pad);
+					Name = "Right";
+					Position = UDim2.new(1, 0, 0, pad);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(0, 1, 1, 0);
+					Name = "Left";
+					Position = UDim2.new(0, -1, 0, 0);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(1, 2, 0, 1);
+					Name = "Bottom";
+					Position = UDim2.new(0, -1, 1, 0);
+				};
+			};
+			Create(handleTemplate:Clone()){
+				Size = UDim2.new(0, hsize, 0, hsize);
+				Name = "Left";
+				Position = UDim2.new(0, -hsize-pad, 0.5, -hsize/2);
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(1, -pad+1, 0, 1);
+					Name = "Top";
+					Position = UDim2.new(0, -1, 0, -1);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(0, 1, 1, 0);
+					Name = "Left";
+					Position = UDim2.new(0, -1, 0, 0);
+				};
+				Create(borderTemplate:Clone()){
+					Size = UDim2.new(1, -pad+1, 0, 1);
+					Name = "Bottom";
+					Position = UDim2.new(0, -1, 1, 0);
+				};
+			};
 		};
-		Create(handleTemplate:Clone()){
-			Name = "Top";
-			Position = UDim2.new(0.5,-hsize/2,0,-hsize-pad);
-		};
-		Create(handleTemplate:Clone()){
-			Name = "TopRight";
-			Position = UDim2.new(1,pad,0,-hsize-pad);
-		};
-		Create(handleTemplate:Clone()){
-			Name = "Right";
-			Position = UDim2.new(1,pad,0.5,-hsize/2);
-		};
-		Create(handleTemplate:Clone()){
-			Name = "BottomRight";
-			Position = UDim2.new(1,pad,1,pad);
-		};
-		Create(handleTemplate:Clone()){
-			Name = "Bottom";
-			Position = UDim2.new(0.5,-hsize/2,1,pad);
-		};
-		Create(handleTemplate:Clone()){
-			Name = "BottomLeft";
-			Position = UDim2.new(0,-hsize-pad,1,pad);
-		};
-		Create(handleTemplate:Clone()){
-			Name = "Left";
-			Position = UDim2.new(0,-hsize-pad,0.5,-hsize/2);
-		};
-	}
+	end
 
 	local function layoutChanged(key,value)
 		if key == 'LayoutMode' then

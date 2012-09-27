@@ -54,12 +54,26 @@ do
 				end
 			end
 			Create(br){
-				Position = UDim2.new(1,-4,1,-4);
 				Size = UDim2.new(0,8,0,8);
 			--	BackgroundColor3 = Color3.new(1,1,1);
 				BorderColor3 = Color3.new(0,0,0);
-				BorderSizePixel = 1;
 			}
+			Create(br.Top){
+				Size = UDim2.new(1, -1, 0, 1);
+				Position = UDim2.new(0, 2, 0, -1);
+			};
+			Create(br.Right){
+				Size = UDim2.new(0, 1, 1, 0);
+				Position = UDim2.new(1, 0, 0, 0);
+			};
+			Create(br.Left){
+				Size = UDim2.new(0, 1, 1, -2);
+				Position = UDim2.new(0, -1, 0, 2);
+			};
+			Create(br.Bottom){
+				Size = UDim2.new(1, 2, 0, 1);
+				Position = UDim2.new(0, -1, 1, 0);
+			};
 		end
 
 		local function setScope(object)
