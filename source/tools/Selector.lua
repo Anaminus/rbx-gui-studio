@@ -9,11 +9,11 @@ do
 	local GlobalButton = Canvas.GlobalButton
 	local CanvasFrame = Canvas.CanvasFrame
 
-	local event = CreateEventManager()
-	local TransformHandles
+	local Maid = CreateMaid()
 
 	function Tool:Select()
-		TransformHandles = Widgets.TransformHandles(Canvas)
+		local TransformHandles = Widgets.TransformHandles(Canvas,Maid)
+		Maid:GiveTask(function() TransformHandles:Destroy() end)
 
 		local activeLookup = Canvas.ActiveLookup
 
@@ -51,8 +51,8 @@ do
 		-- used to prevent actions from occurring at the same time
 		local inAction = false
 
-		event.move = GlobalButton.MouseMoved:connect(resetClick)
-		event.select = GlobalButton.MouseButton1Down:connect(function(object,active,x,y)
+		Maid.move = GlobalButton.MouseMoved:connect(resetClick)
+		Maid.select = GlobalButton.MouseButton1Down:connect(function(object,active,x,y)
 			if inAction then return end
 			inAction = true
 
@@ -60,16 +60,18 @@ do
 			-- clicked nothing
 				if checkDoubleClick() then inAction = false return end
 
-				Widgets.RubberbandSelect(Vector2.new(x,y),{
+				Maid.rubberband = Widgets.RubberbandSelect(Vector2.new(x,y),{
 					OnDrag = function()
 						clickStamp = 0
 					end;
 					OnRelease = function()
 						clickStamp = 0
+						Maid.rubberband = nil
 						inAction = false
 					end;
 					OnClick = function()
 						selectNothing()
+						Maid.rubberband = nil
 						inAction = false
 					end;
 				})
@@ -116,7 +118,7 @@ do
 					activeObjects[i] = activeLookup[object]
 				end
 
-				Widgets.DragGUI(activeObjects,Vector2.new(x,y),'Center',{
+				Maid.drag_gui = Widgets.DragGUI(activeObjects,Vector2.new(x,y),'Center',{
 					OnDrag = function(x,y,hasDragged,setObjects)
 						if not hasDragged then
 							if not Selection:Contains(object) then
@@ -139,6 +141,7 @@ do
 						elseif not Selection:Contains(object) then
 							Selection:Set{object}
 						end
+						Maid.drag_gui = nil
 						inAction = false
 					end;
 				})
@@ -147,10 +150,10 @@ do
 			end
 		end)
 
-		event.selected = Selection.ObjectSelected:connect(function(object,active)
+		Maid.selected = Selection.ObjectSelected:connect(function(object,active)
 			TransformHandles:SetParent(object)
 		end)
-		event.deselected = Selection.ObjectDeselected:connect(function(object,active)
+		Maid.deselected = Selection.ObjectDeselected:connect(function(object,active)
 			if #SelectedObjects > 0 then
 				TransformHandles:SetParent(SelectedObjects[#SelectedObjects])
 			else
@@ -210,7 +213,7 @@ do
 			}
 
 			local scaled = Settings.LayoutMode('Scale')
-			event.layout_changed = Settings.Changed:connect(function(key,value)
+			Maid.layout_changed = Settings.Changed:connect(function(key,value)
 				if key == 'LayoutMode' then
 					scaled = value('Scale')
 				end
@@ -218,6 +221,7 @@ do
 
 			local arrowIsDown = Mouse.KeyIsDown
 			local MoveID = 0
+			Maid:GiveTask(function() MoveID = MoveID + 1 end)
 			local function startMoving()
 				if inAction and MoveID == 0 then return end
 				inAction = true
@@ -261,19 +265,15 @@ do
 				inAction = false
 			end
 
-			event.arrow_up    = Mouse.KeyEvents[up   ]:connect{down=startMoving}
-			event.arrow_down  = Mouse.KeyEvents[down ]:connect{down=startMoving}
-			event.arrow_right = Mouse.KeyEvents[right]:connect{down=startMoving}
-			event.arrow_left  = Mouse.KeyEvents[left ]:connect{down=startMoving}
+			Maid.arrow_up    = Mouse.KeyEvents[up   ]:connect{down=startMoving}
+			Maid.arrow_down  = Mouse.KeyEvents[down ]:connect{down=startMoving}
+			Maid.arrow_right = Mouse.KeyEvents[right]:connect{down=startMoving}
+			Maid.arrow_left  = Mouse.KeyEvents[left ]:connect{down=startMoving}
 		end
 	end
 
 	function Tool:Deselect()
-		event:clear()
-		if TransformHandles then
-			TransformHandles:Destroy()
-			TransformHandles = nil
-		end
+		Maid:DoCleaning()
 	end
 
 	ToolManager:AddTool(Tool)

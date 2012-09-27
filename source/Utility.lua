@@ -216,32 +216,51 @@ function GetScreens(object,list)
 	return list
 end
 
---[[CreateEventManager
+--[[Maid
+Manages the cleaning of events and other things.
+
 API:
-	EventManager[key] = (event connection)    Adds an event connection to the manager.
-	EventManager:disconnect(...)              Disconnects one or more events.
-	EventManager:clear()                      Disconnects all events.
+	Maid[key] = (function)            Adds a task to perform when cleaning up.
+	Maid[key] = (event connection)    Manages an event connection. Anything that isn't a function is assumed to be this.
+
+	Maid:GiveTask(task)               Same as above, but uses an incremented number as a key.
+	Maid:Disconnect(...)              Disconnects one or more events.
+	Maid:DoCleaning()                 Disconnects all managed events and performs all clean-up tasks.
 ]]
 do
-	local EventManager_mt = {
+	local mt = {
 		__index = {
-			disconnect = function(self,...)
+			GiveTask = function(self,task)
+				local n = #self+1
+				self[n] = task
+				return n
+			end;
+			Disconnect = function(self,...)
 				for _,name in pairs{...} do
-					if self[name] then
+					t = type(self[name])
+					if t ~= 'nil' and t ~= 'function' then
 						self[name]:disconnect()
 						self[name] = nil
 					end
 				end
 			end;
-			clear = function(self)
-				for name in pairs(self) do
-					self[name]:disconnect()
-					self[name] = nil
+			DoCleaning = function(self)
+				for name,task in pairs(self) do
+					if type(task) ~= 'function' then
+						task:disconnect()
+						self[name] = nil
+					end
+				end
+				for name,task in pairs(self) do
+					if type(task) == 'function' then
+						task()
+						self[name] = nil
+					end
 				end
 			end;
 		};
 	}
-	function CreateEventManager()
-		return setmetatable({},EventManager_mt)
+	function CreateMaid()
+		return setmetatable({},mt)
 	end
 end

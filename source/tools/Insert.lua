@@ -14,9 +14,7 @@ do
 	local GlobalButton = Canvas.GlobalButton
 	local CanvasFrame = Canvas.CanvasFrame
 
-	local event = CreateEventManager()
-	local TransformHandles
-	local Dragger
+	local Maid = CreateMaid()
 
 	local function initOptions()
 		local insertTypes = {
@@ -46,8 +44,8 @@ do
 	function Tool:Select()
 		if not self.Options then initOptions() end
 
-		Dragger = Widgets.Dragger()
-		TransformHandles = Widgets.TransformHandles(Canvas)
+		local TransformHandles = Widgets.TransformHandles(Canvas)
+		Maid:GiveTask(function() TransformHandles:Destroy() end)
 		do
 			local br = TransformHandles.Frame.BottomRight
 			for i,handle in pairs(TransformHandles.Frame:GetChildren()) do
@@ -93,7 +91,7 @@ do
 			local object,active
 			local originClick = Vector2.new(x,y)
 
-			Widgets.DragGUI({},originClick,'BottomRight',{
+			Maid.drag_gui = Widgets.DragGUI({},originClick,'BottomRight',{
 				OnDrag = function(x,y,hasDragged,setObjects)
 					if hasDragged then
 						clickStamp = 0
@@ -123,12 +121,13 @@ do
 					else
 						Selection:Set{}
 					end
+					Maid.drag_gui = nil
 				end;
 			},Canvas.CanvasFrame)
 		end
 
-		event.move = GlobalButton.MouseMoved:connect(resetClick)
-		event.select = GlobalButton.MouseButton1Down:connect(function(object,active,x,y)
+		Maid.move = GlobalButton.MouseMoved:connect(resetClick)
+		Maid.select = GlobalButton.MouseButton1Down:connect(function(object,active,x,y)
 			if object == Canvas.CurrentScreen then
 				if checkDoubleClick() then return end
 				addNewObject(x,y)
@@ -171,18 +170,20 @@ do
 					elseif not Selection:Contains(object) then
 						Selection:Set{object}
 					end
+					Maid.drag_gui = nil
 				end;
 			})
+			Maid.drag_gui = finishDrag
 		end)
 
-		event.selected = Selection.ObjectSelected:connect(function(object,active)
+		Maid.selected = Selection.ObjectSelected:connect(function(object,active)
 			if #SelectedObjects > 1 then
 				TransformHandles:SetParent(nil)
 			else
 				TransformHandles:SetParent(object)
 			end
 		end)
-		event.deselected = Selection.ObjectDeselected:connect(function(object,active)
+		Maid.deselected = Selection.ObjectDeselected:connect(function(object,active)
 			if #SelectedObjects == 0 then
 				TransformHandles:SetParent(SelectedObjects[#SelectedObjects])
 			else
@@ -195,15 +196,7 @@ do
 	end
 
 	function Tool:Deselect()
-		event:clear()
-		if TransformHandles then
-			TransformHandles:Destroy()
-			TransformHandles = nil
-		end
-		if Dragger then
-			Dragger:Destroy()
-			Dragger = nil
-		end
+		Maid:DoCleaning()
 	end
 
 	ToolManager:AddTool(Tool)
