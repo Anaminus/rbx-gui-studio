@@ -64,13 +64,13 @@ do
 				Create'Frame'{ -- right
 					BackgroundColor3 = color;
 					BorderSizePixel = 0;
-					Position = UDim2.new(1,-1,0,0);
+					Position = UDim2.new(1,-2,0,0);
 					Size = UDim2.new(0,3,1,0);
 				};
 				Create'Frame'{ -- bottom
 					BackgroundColor3 = color;
 					BorderSizePixel = 0;
-					Position = UDim2.new(0,0,1,-1);
+					Position = UDim2.new(0,0,1,-2);
 					Size = UDim2.new(1,0,0,3);
 				};
 				Create'Frame'{ -- left
