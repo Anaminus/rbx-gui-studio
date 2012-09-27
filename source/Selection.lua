@@ -35,30 +35,106 @@ do
 	local color = Color3.new(1,0,0)
 	local selectTemplate = Create'Frame'{
 		Name = "Select";
-		Size = UDim2.new(1,1,1,1);
-		Position = UDim2.new(0,-1,0,-1);
+		Size = UDim2.new(1,0,1,0);
 		Transparency = 1;
 		Create'Frame'{ -- top
+			Name = "Top";
 			BackgroundColor3 = color;
 			BorderSizePixel = 0;
-			Size = UDim2.new(1,0,0,1);
+			Position = UDim2.new(0,-3,0,-3);
+			Size = UDim2.new(1,6,0,1);
 		};
 		Create'Frame'{ -- right
+			Name = "Right";
 			BackgroundColor3 = color;
 			BorderSizePixel = 0;
-			Size = UDim2.new(0,1,1,0);
-			Position = UDim2.new(1,0,0,0);
+			Position = UDim2.new(1,2,0,-2);
+			Size = UDim2.new(0,1,1,4);
 		};
 		Create'Frame'{ -- bottom
+			Name = "Bottom";
 			BackgroundColor3 = color;
 			BorderSizePixel = 0;
-			Size = UDim2.new(1,0,0,1);
-			Position = UDim2.new(0,0,1,0);
+			Position = UDim2.new(0,-3,1,2);
+			Size = UDim2.new(1,6,0,1);
 		};
 		Create'Frame'{ -- left
+			Name = "Left";
 			BackgroundColor3 = color;
 			BorderSizePixel = 0;
-			Size = UDim2.new(0,1,1,0);
+			Position = UDim2.new(0,-3,0,-3);
+			Size = UDim2.new(0,1,1,5);
+		};
+		Create'Frame'{
+			Name = "Border";
+			Transparency = 1;
+			Size = UDim2.new(1,0,1,0);
+			-- outer border
+			Create'Frame'{ -- top
+				Name = "Outer Top";
+				BackgroundColor3 = Color3.new(0,0,0);
+				BackgroundTransparency = 0.5;
+				BorderSizePixel = 0;
+				Position = UDim2.new(0,-4,0,-4);
+				Size = UDim2.new(1,8,0,1);
+			};
+			Create'Frame'{ -- right
+				Name = "Outer Right";
+				BackgroundColor3 = Color3.new(0,0,0);
+				BackgroundTransparency = 0.5;
+				BorderSizePixel = 0;
+				Position = UDim2.new(1,3,0,-3);
+				Size = UDim2.new(0,1,1,6);
+			};
+			Create'Frame'{ -- bottom
+				Name = "Outer Bottom";
+				BackgroundColor3 = Color3.new(0,0,0);
+				BackgroundTransparency = 0.5;
+				BorderSizePixel = 0;
+				Position = UDim2.new(0,-4,1,3);
+				Size = UDim2.new(1,8,0,1);
+			};
+			Create'Frame'{ -- left
+				Name = "Outer Left";
+				BackgroundColor3 = Color3.new(0,0,0);
+				BackgroundTransparency = 0.5;
+				BorderSizePixel = 0;
+				Position = UDim2.new(0,-4,0,-3);
+				Size = UDim2.new(0,1,1,6);
+			};
+			-- inner border
+			Create'Frame'{ -- top
+				Name = "Inner Top";
+				BackgroundColor3 = Color3.new(0,0,0);
+				BackgroundTransparency = 0.5;
+				BorderSizePixel = 0;
+				Position = UDim2.new(0,-2,0,-2);
+				Size = UDim2.new(1,4,0,1);
+			};
+			Create'Frame'{ -- right
+				Name = "Inner Right";
+				BackgroundColor3 = Color3.new(0,0,0);
+				BackgroundTransparency = 0.5;
+				BorderSizePixel = 0;
+				Position = UDim2.new(1,1,0,-1);
+				Size = UDim2.new(0,1,1,2);
+			};
+			Create'Frame'{ -- bottom
+				Name = "Inner Bottom";
+				BackgroundColor3 = Color3.new(0,0,0);
+				BackgroundTransparency = 0.5;
+				BorderSizePixel = 0;
+				Position = UDim2.new(0,-2,1,1);
+				Size = UDim2.new(1,4,0,1);
+			};
+			Create'Frame'{ -- left
+				Name = "Inner Left";
+				BackgroundColor3 = Color3.new(0,0,0);
+				BackgroundTransparency = 0.5;
+				BorderSizePixel = 0;
+				Position = UDim2.new(0,-2,0,-1);
+				Size = UDim2.new(0,1,1,2);
+			};
 		};
 	}
 
