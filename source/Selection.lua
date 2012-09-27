@@ -6,6 +6,7 @@ API:
 	Selection.SelectedObjects                   A list of objects that are currently selected (don't edit).
 	                                            Only contains objects in the container the Canvas is bound to.
 	Selection.SelectFrameLookup                 Gets the selection highlight frame from a selected object.
+	Selection.IsVisible                         Gets whether the selection highlight is visible.
 	ServiceStatus.Status                        whether the service is started.
 
 	Selection:Get()                             Returns a copy of Selecton.SelectedObjects.
@@ -15,6 +16,8 @@ API:
 	Selection:Remove(object)                    Removes an object from the selection.
 	Selection:Contains(object)                  Returns whether an object is selected.
 	                                            Only works with objects in the container the Canvas is bound to.
+	Selection:SetVisible(visible)               Sets whether selection highlights are visible.
+
 	Selection:Start()                           Starts the service.
 	Selection:Stop()                            Stops the service.
 
@@ -26,8 +29,10 @@ do
 	local SelectedObjects = {}
 	local SelectedObjectsSet = {}
 	local SelectFrameLookup = {}
+	local IsVisible = true
 
 	Selection = {
+		IsVisible = true;
 		SelectedObjects = SelectedObjects;
 		SelectFrameLookup = SelectFrameLookup;
 	}
@@ -65,6 +70,7 @@ do
 			Position = UDim2.new(0,-3,0,-3);
 			Size = UDim2.new(0,1,1,5);
 		};
+--[ [
 		Create'Frame'{
 			Name = "Border";
 			Transparency = 1;
@@ -136,7 +142,9 @@ do
 				Size = UDim2.new(0,1,1,2);
 			};
 		};
+--]]
 	}
+
 
 	local function layoutChanged(key,value)
 		if key == 'LayoutMode' then
@@ -168,6 +176,21 @@ do
 	layoutChanged('LayoutMode',Settings.LayoutMode)
 
 	local activeLookup = Canvas.ActiveLookup
+
+	function Selection:SetVisible(visible)
+		if visible == IsVisible then return end
+		if visible then
+			for object,frame in pairs(SelectFrameLookup) do
+				frame.Parent = activeLookup[object]
+			end
+		else
+			for _,frame in pairs(SelectFrameLookup) do
+				frame.Parent = nil
+			end
+		end
+		IsVisible = visible
+		self.IsVisible = visible
+	end
 
 	local function filter(v)
 		return v:IsA"GuiObject" and activeLookup[v]
@@ -219,7 +242,9 @@ do
 
 			local select_frame = selectTemplate:Clone()
 			select_frame.Archivable = false
-			select_frame.Parent = active
+			if IsVisible then
+				select_frame.Parent = active
+			end
 			SelectFrameLookup[object] = select_frame
 
 			SelectedObjectsSet[object] = true
