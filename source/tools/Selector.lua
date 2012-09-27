@@ -113,7 +113,9 @@ do
 				-- on drag or on up, select object
 				local dragObjects = Selection:Get()
 				local activeObjects = {}
-				table.insert(dragObjects,1,object)
+				if not Selection:Contains(object) then
+					table.insert(dragObjects,1,object)
+				end
 				for i,object in pairs(dragObjects) do
 					activeObjects[i] = activeLookup[object]
 				end
