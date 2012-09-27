@@ -11,14 +11,14 @@ API:
 	PluginActivator.Plugin            The Plugin object.
 	PluginActivator.Toolbar           The Toolbar object.
 	PluginActivator.Button            The Button object.
-	PluginActivator.Initialized       Whether the plugin has been initialized.
-	PluginActivator.Active            Whether the plugin is active.
+	PluginActivator.IsInitialized     Whether the plugin has been initialized.
+	PluginActivator.IsActive          Whether the plugin is active.
 
 	PluginActivator:Start()           Starts detecting plugin events.
 
-	PluginActivator.OnInitialize()    Called before the plugin activates for the first time.
-	PluginActivator.OnActivate()      Called when the plugin activates.
-	PluginActivator.OnDeactivate()    Called when then plugin deactivates.
+	PluginActivator.Initialized       Fired before the plugin activates for the first time.
+	PluginActivator.Activated         Fired after the plugin activates.
+	PluginActivator.Deactivated       Fired after the plugin deactivates.
 ]]
 
 do
@@ -30,37 +30,41 @@ do
 		Plugin = Plugin;
 		Toolbar = Toolbar;
 		Button = Button;
-		Initialized = false;
-		Active = false;
+		IsInitialized = false;
+		IsActive = false;
 		OnInitialize = function()end;
 		OnActivate = function()end;
 		OnDeactivate = function()end;
 	}
 
+	local eventInitialized = CreateSignal(PluginActivator,'Initialized')
+	local eventActivated = CreateSignal(PluginActivator,'Activated')
+	local eventDeactivated = CreateSignal(PluginActivator,'Deactivated')
+
 	function PluginActivator:Start()
 		Button.Click:connect(function()
-			if self.Active then
-				self.Active = false
+			if self.IsActive then
+				self.IsActive = false
 				Button:SetActive(false)
-				if self.Initialized then
-					self.OnDeactivate()
+				if self.IsInitialized then
+					eventDeactivated:Fire()
 				end
 			else
-				if not self.Initialized then
-					self.OnInitialize()
-					self.Initialized = true
+				if not self.IsInitialized then
+					eventInitialized:Fire()
+					self.IsInitialized = true
 				end
-				self.Active = true
+				self.IsActive = true
 				Plugin:Activate(true)
 				Button:SetActive(true)
-				self.OnActivate()
+				eventActivated:Fire()
 			end
 		end)
 		Plugin.Deactivation:connect(function()
-			self.Active = false
+			self.IsActive = false
 			Button:SetActive(false)
-			if self.Initialized then
-				self.OnDeactivate()
+			if self.IsInitialized then
+				eventDeactivated:Fire()
 			end
 		end)
 	end

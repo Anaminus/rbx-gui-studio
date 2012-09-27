@@ -1,4 +1,4 @@
-function PluginActivator.OnInitialize()
+PluginActivator.Initialized:connect(function()
 	UserInterface:Initialize()
 	Canvas.Started:connect(function(screen)
 		Scope:SetTop(screen)
@@ -11,18 +11,18 @@ function PluginActivator.OnInitialize()
 	Canvas.Stopped:connect(function()
 		Selection:Stop()
 	end)
-end
+end)
 
-function PluginActivator.OnActivate()
+PluginActivator.Activated:connect(function()
 	Mouse:Start()
 	UserInterface:Start()
 	ScreenManager:RunStartup()
-end
+end)
 
-function PluginActivator.OnDeactivate()
+PluginActivator.Deactivated:connect(function()
 	Canvas:Stop()
 	UserInterface:Stop()
 	Mouse:Stop()
-end
+end)
 
 PluginActivator:Start()
