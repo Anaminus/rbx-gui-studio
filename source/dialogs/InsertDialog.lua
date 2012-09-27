@@ -11,6 +11,9 @@ Arguments:
 		Because of bug #2, this should be a ScreenGui.
 		When this bug is fixed, this will be an object that contains ScreenGuis, such as CoreGui or PlayerGui.
 
+	eventCancel
+		An event that the dialog connects to. If the event fires, the dialog will automatically cancel. Optional.
+
 Returns:
 	screen
 		The new ScreenGui.
@@ -20,7 +23,7 @@ Returns:
 ]]
 do
 	local select_flag = true
-	function Dialogs.InsertDialog(parent)
+	function Dialogs.InsertDialog(parent,eventCancel)
 		local Dialog = Create'ScreenGui'{
 			Name = "Insert Dialog";
 			Create'ImageButton'{
@@ -224,6 +227,13 @@ do
 
 		local dialog = Widgets.DialogBase()
 
+		local conCancel
+		if eventCancel then
+			conCancel = eventCancel:connect(function()
+				dialog:Return(nil)
+			end)
+		end
+
 		OKButton.MouseButton1Click:connect(function()
 			if ParentInput then
 				local screen = Instance.new('ScreenGui')
@@ -252,6 +262,7 @@ do
 	--]=]
 
 		return dialog:Finish(function()
+			if conCancel then conCancel:disconnect() end
 		--	conSelection:disconnect()
 			Dialog:Destroy()
 			DialogFrame:Destroy()

@@ -9,13 +9,16 @@ Arguments:
 		Because of bug #2, this should be a ScreenGui
 		When this bug is fixed, this will be the parent of a ScreenGui
 
+	eventCancel
+		An event that the dialog connects to. If the event fires, the dialog will automatically cancel. Optional.
+
 Returns:
 	screen
 		The selected screen.
 		If the dialog is canceled, or no screen is selected, this will be nil.
 ]]
 
-function Dialogs.SelectDialog(parent)
+function Dialogs.SelectDialog(parent,eventCancel)
 	local Dialog = Create'ScreenGui'{
 		Name = "Select Dialog";
 		Create'ImageButton'{
@@ -117,6 +120,13 @@ function Dialogs.SelectDialog(parent)
 
 	local dialog = Widgets.DialogBase()
 
+	local conCancel
+	if eventCancel then
+		conCancel = eventCancel:connect(function()
+			dialog:Return(nil)
+		end)
+	end
+
 	OKButton.MouseButton1Click:connect(function()
 		if SelectedScreen then
 			dialog:Return(SelectedScreen)
@@ -138,6 +148,7 @@ function Dialogs.SelectDialog(parent)
 	DialogFrame.Parent = parent
 --]=]
 	return dialog:Finish(function()
+		if conCancel then conCancel:disconnect() end
 		SelectionList:Destroy()
 		Dialog:Destroy()
 		Shield:Destroy()
