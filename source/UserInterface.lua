@@ -76,16 +76,20 @@ do
 					end
 				end;
 			};
-		--[[
-			'----------------';
 			{
 				Name = "ToggleGrid";
-				Icon = "";
-				ToolTip = "Toggle the grid";
-				Select = function()
-
+				Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,0,4);
+				ToolTip = "Toggle visibility of the grid";
+				Select = function(self)
+					Grid:SetVisible(not Grid.Visible)
+					if Grid.Visible then
+						self.Button.BorderColor3 = Color3.new(1,0,0)
+					else
+						self.Button.BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235)
+					end
 				end;
 			};
+		--[[
 			{
 				Name = "ConfigGrid";
 				Icon = "";

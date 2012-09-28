@@ -52,6 +52,7 @@ read (dialogs/[[SelectDialog.lua]]) {'main'}
 
 read [[source/Canvas.lua]]        {'main'}
 read [[source/Scope.lua]]         {'main'}
+read [[source/Grid.lua]]          {'main'}
 read [[source/Selection.lua]]     {'main'}
 read [[source/ScreenManager.lua]] {'main'}
 
