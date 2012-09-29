@@ -273,10 +273,10 @@ do
 				inAction = false
 			end
 
-			Maid.arrow_up    = Mouse.KeyEvents[up   ]:connect{down=startMoving}
-			Maid.arrow_down  = Mouse.KeyEvents[down ]:connect{down=startMoving}
-			Maid.arrow_right = Mouse.KeyEvents[right]:connect{down=startMoving}
-			Maid.arrow_left  = Mouse.KeyEvents[left ]:connect{down=startMoving}
+			Maid.arrow_up    = Mouse.KeyDown[up   ]:connect(startMoving)
+			Maid.arrow_down  = Mouse.KeyDown[down ]:connect(startMoving)
+			Maid.arrow_right = Mouse.KeyDown[right]:connect(startMoving)
+			Maid.arrow_left  = Mouse.KeyDown[left ]:connect(startMoving)
 		end
 	end
 
