@@ -20,6 +20,7 @@ do
 				Name = "InsertScreenGui";
 				Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,0,0);
 				ToolTip = "Insert a new ScreenGui";
+				KeyBinding = "e";
 				Select = function()
 					ScreenManager:InsertDialog()
 				end;
@@ -28,6 +29,7 @@ do
 				Name = "SelectScreenGui";
 				Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,0,1);
 				ToolTip = "Set a ScreenGui to the canvas";
+				KeyBinding = "r";
 				Select = function()
 					ScreenManager:SelectDialog()
 				end;
@@ -64,6 +66,7 @@ do
 				Name = "LayoutMode";
 				Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,0,2);
 				ToolTip = "Toggle Layout Mode (currently Scale)";
+				KeyBinding = "t";
 				Select = function(self)
 					if Settings.LayoutMode('Scale') then
 						Settings.LayoutMode = Enums.LayoutMode.Offset
@@ -80,6 +83,7 @@ do
 				Name = "ToggleGrid";
 				Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,0,4);
 				ToolTip = "Toggle visibility of the grid";
+				KeyBinding = "y";
 				Select = function(self)
 					Grid:SetVisible(not Grid.Visible)
 					if Grid.Visible then
@@ -122,6 +126,11 @@ do
 		local menuSize = buttonSize + 8
 
 		local MenuFrame = Widgets.ButtonMenu(MenuButtons,Vector2.new(buttonSize,buttonSize),true)
+		for i,button in pairs(MenuButtons) do
+			if button.KeyBinding then
+				KeyBinding:Add(button.KeyBinding,function() button:Select() end)
+			end
+		end
 
 		local ToolbarFrame = ToolManager:InitializeTools()
 

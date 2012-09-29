@@ -26,6 +26,7 @@ read [[source/Utility.lua]]       {'main'}
 read [[source/Plugin.lua]]        {'main'}
 read [[source/Settings.lua]]      {'main'}
 read [[source/Mouse.lua]]         {'main'}
+read [[source/KeyBinding.lua]]    {'main'}
 
 widgets = [[source/widgets]]
 read (widgets/[[Header.lua]])              {'main'}

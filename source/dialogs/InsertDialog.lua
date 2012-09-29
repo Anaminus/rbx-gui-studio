@@ -24,6 +24,7 @@ Returns:
 do
 	local select_flag = true
 	function Dialogs.InsertDialog(parent,eventCancel)
+		KeyBinding.Enabled = false
 		local Dialog = Create'ScreenGui'{
 			Name = "Insert Dialog";
 			Create'ImageButton'{
@@ -267,6 +268,7 @@ do
 			Dialog:Destroy()
 			DialogFrame:Destroy()
 			Shield:Destroy()
+			KeyBinding.Enabled = true
 		end)
 	end
 end

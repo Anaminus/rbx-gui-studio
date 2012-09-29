@@ -3,7 +3,7 @@ do
 		Name = "InsertObject";
 		Icon = Widgets.Icon(nil,InternalSettings.IconMap.Tool,32,0,1);
 		ToolTip = "Insert new objects";
-		Shortcut = "";
+		KeyBinding = "g";
 	}
 
 	local Options = {

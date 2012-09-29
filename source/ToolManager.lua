@@ -5,7 +5,7 @@ They contain the following fields:
 	Name        The tool's name.
 	Icon        The icon to display on the tool button.
 	ToolTip     The text to display when the button is hovered over.
-	Shortcut    A shortcut key that selects the tool (unused).
+	KeyBinding  A key combination that selects the tool.
 	Select      A function called when the tool is selected.
 	Deselect    A function called when the tool is deselected.
 	Options     A GuiObject that contains options for the tools.
@@ -98,6 +98,11 @@ do
 			end)
 			if self.CurrentTool.Button then
 				self.CurrentTool.Button.BorderColor3 = Color3.new(1,0,0)
+			end
+			for i,tool in pairs(self.ToolList) do
+				if tool.KeyBinding then
+					KeyBinding:Add(tool.KeyBinding,function() self:SelectTool(tool) end)
+				end
 			end
 		end
 		return self.ToolbarFrame

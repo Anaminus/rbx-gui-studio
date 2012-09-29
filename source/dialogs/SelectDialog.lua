@@ -19,6 +19,7 @@ Returns:
 ]]
 
 function Dialogs.SelectDialog(parent,eventCancel)
+	KeyBinding.Enabled = false
 	local Dialog = Create'ScreenGui'{
 		Name = "Select Dialog";
 		Create'ImageButton'{
@@ -153,5 +154,6 @@ function Dialogs.SelectDialog(parent,eventCancel)
 		Dialog:Destroy()
 		Shield:Destroy()
 		DialogFrame:Destroy()
+		KeyBinding.Enabled = true
 	end)
 end
