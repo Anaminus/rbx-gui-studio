@@ -40,19 +40,18 @@ API:
 ]]
 do
 	local CurrentScreen
-	local CanvasFrame = Create'ImageButton'{
-		Create'TextLabel'{
-			Name = "NullScreenLabel";
-			Size = UDim2.new(1,0,1,0);
-			BackgroundTransparency = 1;
-			Text = "(no screen)";
-			FontSize = "Size48";
-			TextColor3 = Color3.new(0,0,0);
-			TextStrokeColor3 = Color3.new(1,1,1);
-			TextStrokeTransparency = 0;
-		};
-	}
-	local NullScreenLabel = CanvasFrame.NullScreenLabel
+	local CanvasFrame = Create'ImageButton'{}
+	local NullScreenLabel = Create'TextLabel'{
+		Name = "NullScreenLabel";
+		Size = UDim2.new(1,0,1,0);
+		BackgroundTransparency = 1;
+		Text = "(no screen)";
+		FontSize = "Size48";
+		TextColor3 = Color3.new(0,0,0);
+		TextStrokeColor3 = Color3.new(1,1,1);
+		TextStrokeTransparency = 0;
+		Parent = CanvasFrame;
+	};
 
 	local ActiveLookup = {} -- [CurrentScreen] = CanvasFrame
 
@@ -235,7 +234,7 @@ do
 
 			conScreenChanged = CurrentScreen.AncestryChanged:connect(screenChanged)
 
-			NullScreenLabel.Visible = false
+			NullScreenLabel.Parent = nil
 
 			local descendants = {}
 			r(CurrentScreen,descendants)
@@ -279,7 +278,7 @@ do
 			Canvas.CurrentScreen = nil
 			CanvasFrame:ClearAllChildren()
 			eventStopped:Fire(screen)
-			NullScreenLabel.Visible = true
+			NullScreenLabel.Parent = CanvasFrame
 		end;
 	};
 
