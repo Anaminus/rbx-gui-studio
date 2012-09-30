@@ -111,10 +111,9 @@ do
 		local scaled = Settings.LayoutMode('Scale')
 		conMode = Settings.Changed:connect(function(key,value)
 			if key == 'LayoutMode' then
-				-- switching the mode mid-drag probably produces undesirable behavior
-				-- so, if the layout mode changes, end the dragging operation
-				finishDrag(0,0)
-				-- scaled = value('Scale')
+				-- Switching the layout mode mid-drag is fine because the
+				-- drag offsets from the starting position/size of the object
+				scaled = value('Scale')
 			end
 		end)
 
