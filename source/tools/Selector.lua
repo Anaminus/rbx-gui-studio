@@ -51,16 +51,8 @@ do
 		-- used to prevent actions from occurring at the same time
 		local inAction = false
 
-		Maid.move = GlobalButton.MouseMoved:connect(resetClick)
-		Maid.select = GlobalButton.MouseButton1Down:connect(function(object,active,x,y)
-			if inAction then return end
-			inAction = true
-
-			if object == Canvas.CurrentScreen then
-			-- clicked nothing
-				if checkDoubleClick() then inAction = false return end
-
-				Maid.rubberband = Widgets.RubberbandSelect(Vector2.new(x,y),{
+		local function rubberband(x,y)
+			Maid.rubberband = Widgets.RubberbandSelect(Vector2.new(x,y),{
 					OnDrag = function()
 						clickStamp = 0
 					end;
@@ -75,7 +67,17 @@ do
 						inAction = false
 					end;
 				})
+		end
 
+		Maid.move = GlobalButton.MouseMoved:connect(resetClick)
+		Maid.select = GlobalButton.MouseButton1Down:connect(function(object,active,x,y)
+			if inAction then return end
+			inAction = true
+
+			if object == Canvas.CurrentScreen then
+			-- clicked nothing
+				if checkDoubleClick() then inAction = false return end
+				rubberband(x,y)
 				return
 			end
 			-- clicked object
@@ -90,7 +92,7 @@ do
 				if o == nil then
 				-- clicked object is above current scope
 					-- for now, treat it as if it were invisible
-					selectNothing()
+					rubberband(x,y)
 					inAction = false
 					return
 				end
