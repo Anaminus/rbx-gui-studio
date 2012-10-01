@@ -31,14 +31,14 @@ do
 	end
 
 	function ScreenManager:SelectDialog()
-		local screen = Dialogs.SelectDialog(UserInterface.Screen,PluginActivator.Deactivated)
+		local screen = Dialogs.SelectScreen(UserInterface.Screen,PluginActivator.Deactivated)
 		if screen then
 			self:Select(screen)
 		end
 	end
 
 	function ScreenManager:InsertDialog()
-		local screen,set_canvas = Dialogs.InsertDialog(UserInterface.Screen,PluginActivator.Deactivated)
+		local screen,set_canvas = Dialogs.InsertScreen(UserInterface.Screen,PluginActivator.Deactivated)
 		if screen and set_canvas then
 			Game:GetService("Selection"):Set{screen}
 			ScreenManager:Select(screen)

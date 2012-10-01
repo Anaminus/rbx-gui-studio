@@ -1,4 +1,4 @@
---[[Insert Dialog
+--[[Insert Screen Dialog
 Creates a new ScreenGui.
 The Name can be set by text field, and the Parent can be set by selecting it in the Explorer panel*.
 The screen can also be automatically bound to the Canvas.
@@ -23,7 +23,7 @@ Returns:
 ]]
 do
 	local select_flag = true
-	function Dialogs.InsertDialog(parent,eventCancel)
+	function Dialogs.InsertScreen(parent,eventCancel)
 		KeyBinding.Enabled = false
 		local Dialog = Create'ScreenGui'{
 			Name = "Insert Dialog";

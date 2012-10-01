@@ -1,4 +1,4 @@
---[[Select Dialog
+--[[Select Screen Dialog
 Let's the user select a ScreenGui that exists in the game*.
 
 Because of bug #1, the selection is limited to the StarterGui.
@@ -18,7 +18,7 @@ Returns:
 		If the dialog is canceled, or no screen is selected, this will be nil.
 ]]
 
-function Dialogs.SelectDialog(parent,eventCancel)
+function Dialogs.SelectScreen(parent,eventCancel)
 	KeyBinding.Enabled = false
 	local Dialog = Create'ScreenGui'{
 		Name = "Select Dialog";
