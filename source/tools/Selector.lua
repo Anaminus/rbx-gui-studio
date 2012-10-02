@@ -204,8 +204,8 @@ do
 					local prev = p.X.Scale
 					local num = evalInput(PosX.Text,prev)
 					if num then
+					--	PosX.Text = format(formatString,num)
 						currentObject.Position = UDim2.new(num,p.X.Offset,p.Y.Scale,p.Y.Offset)
-						PosX.Text = format(formatString,num)
 					else
 						PosX.Text = format(formatString,prev)
 					end
@@ -213,8 +213,8 @@ do
 					local prev = p.X.Offset
 					local num = evalInput(PosX.Text,prev)
 					if num then
+					--	PosX.Text = format(formatString,num)
 						currentObject.Position = UDim2.new(p.X.Scale,num,p.Y.Scale,p.Y.Offset)
-						PosX.Text = format(formatString,num)
 					else
 						PosX.Text = format(formatString,prev)
 					end
@@ -229,8 +229,8 @@ do
 					local prev = p.Y.Scale
 					local num = evalInput(PosY.Text,prev)
 					if num then
+					--	PosY.Text = format(formatString,num)
 						currentObject.Position = UDim2.new(p.X.Scale,p.X.Offset,num,p.Y.Offset)
-						PosY.Text = format(formatString,num)
 					else
 						PosY.Text = format(formatString,prev)
 					end
@@ -238,8 +238,8 @@ do
 					local prev = p.Y.Offset
 					local num = evalInput(PosY.Text,prev)
 					if num then
+					--	PosY.Text = format(formatString,num)
 						currentObject.Position = UDim2.new(p.X.Scale,p.X.Offset,p.Y.Scale,num)
-						PosY.Text = format(formatString,num)
 					else
 						PosY.Text = format(formatString,prev)
 					end
@@ -254,8 +254,8 @@ do
 					local prev = s.X.Scale
 					local num = evalInput(SizeX.Text,prev)
 					if num then
+					--	SizeX.Text = format(formatString,num)
 						currentObject.Size = UDim2.new(num,s.X.Offset,s.Y.Scale,s.Y.Offset)
-						SizeX.Text = format(formatString,num)
 					else
 						SizeX.Text = format(formatString,prev)
 					end
@@ -263,8 +263,8 @@ do
 					local prev = s.X.Offset
 					local num = evalInput(SizeX.Text,prev)
 					if num then
+					--	SizeX.Text = format(formatString,num)
 						currentObject.Size = UDim2.new(s.X.Scale,num,s.Y.Scale,s.Y.Offset)
-						SizeX.Text = format(formatString,num)
 					else
 						SizeX.Text = format(formatString,prev)
 					end
@@ -279,8 +279,8 @@ do
 					local prev = s.Y.Scale
 					local num = evalInput(SizeY.Text,prev)
 					if num then
+					--	SizeY.Text = format(formatString,num)
 						currentObject.Size = UDim2.new(s.X.Scale,s.X.Offset,num,s.Y.Offset)
-						SizeY.Text = format(formatString,num)
 					else
 						SizeY.Text = format(formatString,prev)
 					end
@@ -288,8 +288,8 @@ do
 					local prev = s.Y.Offset
 					local num = evalInput(SizeY.Text,prev)
 					if num then
+					--	SizeY.Text = format(formatString,num)
 						currentObject.Size = UDim2.new(s.X.Scale,s.X.Offset,s.Y.Scale,num)
-						SizeY.Text = format(formatString,num)
 					else
 						SizeY.Text = format(formatString,prev)
 					end
