@@ -347,14 +347,16 @@ do
 
 		Maid:GiveTask(SetPosZero.MouseButton1Click:connect(function()
 			if layoutMode then
-				for i = 1,#SelectedObjects do
-					local object = SelectedObjects[i]
+			--	for i = 1,#SelectedObjects do
+				if SelectedObjects[1] then
+					local object = SelectedObjects[1]
 					local p = object.Position
 					object.Position = UDim2.new(p.X.Scale,0,p.Y.Scale,0)
 				end
 			else
-				for i = 1,#SelectedObjects do
-					local object = SelectedObjects[i]
+			--	for i = 1,#SelectedObjects do
+				if SelectedObjects[1] then
+					local object = SelectedObjects[1]
 					local p = object.Position
 					object.Position = UDim2.new(0,p.X.Offset,0,p.Y.Offset)
 				end
@@ -362,14 +364,16 @@ do
 		end))
 		Maid:GiveTask(SetSizeZero.MouseButton1Click:connect(function()
 			if layoutMode then
-				for i = 1,#SelectedObjects do
-					local object = SelectedObjects[i]
+			--	for i = 1,#SelectedObjects do
+				if SelectedObjects[1] then
+					local object = SelectedObjects[1]
 					local s = object.Size
 					object.Size = UDim2.new(s.X.Scale,0,s.Y.Scale,0)
 				end
 			else
-				for i = 1,#SelectedObjects do
-					local object = SelectedObjects[i]
+			--	for i = 1,#SelectedObjects do
+				if SelectedObjects[1] then
+					local object = SelectedObjects[1]
 					local s = object.Size
 					object.Size = UDim2.new(0,s.X.Offset,0,s.Y.Offset)
 				end
