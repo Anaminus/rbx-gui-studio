@@ -26,31 +26,40 @@ do
 				BackgroundTransparency = 1;
 				Create'TextLabel'{
 					FontSize = Enum.FontSize.Size10;
-					Text = "Position";
-					Size = UDim2.new(0, 52, 1, -8);
+					Text = "X";
+					Size = UDim2.new(0, 12, 1, -8);
 					TextColor3 = Color3.new(0, 0, 0);
-					Name = "GroupLabel";
+					Name = "X Label";
 					Position = UDim2.new(0, 4, 0, 4);
 					BackgroundTransparency = 1;
 				};
 				Create'TextBox'{
 					FontSize = Enum.FontSize.Size9;
 					Text = "";
-					Size = UDim2.new(0.5, -52, 1, -16);
+					Size = UDim2.new(0.5, -40, 1, -16);
 					TextColor3 = Color3.new(0, 0, 0);
 					BorderColor3 = Color3.new(0.752941, 0.752941, 0.752941);
 					Name = "XComponent";
-					Position = UDim2.new(0, 60, 0, 8);
+					Position = UDim2.new(0, 20, 0, 8);
 					BackgroundColor3 = Color3.new(1, 1, 1);
+				};
+				Create'TextLabel'{
+					FontSize = Enum.FontSize.Size10;
+					Text = "Y";
+					Size = UDim2.new(0, 12, 1, -8);
+					TextColor3 = Color3.new(0, 0, 0);
+					Name = "Y Label";
+					Position = UDim2.new(0.5, -16, 0, 4);
+					BackgroundTransparency = 1;
 				};
 				Create'TextBox'{
 					FontSize = Enum.FontSize.Size9;
 					Text = "";
-					Size = UDim2.new(0.5, -52, 1, -16);
+					Size = UDim2.new(0.5, -40, 1, -16);
 					TextColor3 = Color3.new(0, 0, 0);
 					BorderColor3 = Color3.new(0.752941, 0.752941, 0.752941);
 					Name = "YComponent";
-					Position = UDim2.new(0.5, 12, 0, 8);
+					Position = UDim2.new(0.5, 0, 0, 8);
 					BackgroundColor3 = Color3.new(1, 1, 1);
 				};
 				Create'TextButton'{
@@ -72,36 +81,44 @@ do
 				BackgroundTransparency = 1;
 				Create'TextLabel'{
 					FontSize = Enum.FontSize.Size10;
-					Text = "Size";
-					Size = UDim2.new(0, 32, 1, -8);
+					Text = "W";
+					Size = UDim2.new(0, 12, 1, -8);
 					TextColor3 = Color3.new(0, 0, 0);
-					Name = "GroupLabel";
+					Name = "W Label";
 					Position = UDim2.new(0, 4, 0, 4);
 					BackgroundTransparency = 1;
 				};
 				Create'TextBox'{
 					FontSize = Enum.FontSize.Size9;
 					Text = "";
-					Size = UDim2.new(0.5, -42, 1, -16);
+					Size = UDim2.new(0.5, -40, 1, -16);
 					TextColor3 = Color3.new(0, 0, 0);
 					BorderColor3 = Color3.new(0.752941, 0.752941, 0.752941);
 					Name = "XComponent";
-					Position = UDim2.new(0, 40, 0, 8);
+					Position = UDim2.new(0, 20, 0, 8);
 					BackgroundColor3 = Color3.new(1, 1, 1);
+				};
+				Create'TextLabel'{
+					FontSize = Enum.FontSize.Size10;
+					Text = "H";
+					Size = UDim2.new(0, 12, 1, -8);
+					TextColor3 = Color3.new(0, 0, 0);
+					Name = "H Label";
+					Position = UDim2.new(0.5, -16, 0, 4);
+					BackgroundTransparency = 1;
 				};
 				Create'TextBox'{
 					FontSize = Enum.FontSize.Size9;
 					Text = "";
-					Size = UDim2.new(0.5, -42, 1, -16);
+					Size = UDim2.new(0.5, -40, 1, -16);
 					TextColor3 = Color3.new(0, 0, 0);
 					BorderColor3 = Color3.new(0.752941, 0.752941, 0.752941);
 					Name = "YComponent";
-					Position = UDim2.new(0.5, 2, 0, 8);
+					Position = UDim2.new(0.5, 0, 0, 8);
 					BackgroundColor3 = Color3.new(1, 1, 1);
 				};
 				Create'TextButton'{
 					FontSize = Enum.FontSize.Size18;
-					SizeConstraint = Enum.SizeConstraint.RelativeYY;
 					BackgroundColor3 = Color3.new(0.866667, 0.866667, 0.866667);
 					Name = "SetToZero Button";
 					Text = "0";
@@ -172,13 +189,14 @@ do
 		local currentObject
 
 		local PosX  = Descendant(ComponentFrame,1,2)
-		local PosY  = Descendant(ComponentFrame,1,3)
+		local PosY  = Descendant(ComponentFrame,1,4)
 		local SizeX = Descendant(ComponentFrame,2,2)
-		local SizeY = Descendant(ComponentFrame,2,3)
+		local SizeY = Descendant(ComponentFrame,2,4)
 
 		local format = string.format
 		local formatString = '%g'
 
+		ToolTipService:AddToolTip(PosX,"The X coordinate of the Position")
 		Maid:GiveTask(PosX.FocusLost:connect(function()
 			if currentObject then
 				local p = currentObject.Position
@@ -203,6 +221,7 @@ do
 				end
 			end
 		end))
+		ToolTipService:AddToolTip(PosY,"The Y coordinate of the Position")
 		Maid:GiveTask(PosY.FocusLost:connect(function()
 			if currentObject then
 				local p = currentObject.Position
@@ -227,6 +246,7 @@ do
 				end
 			end
 		end))
+		ToolTipService:AddToolTip(SizeX,"The X coordinate of the Size")
 		Maid:GiveTask(SizeX.FocusLost:connect(function()
 			if currentObject then
 				local s = currentObject.Size
@@ -251,6 +271,7 @@ do
 				end
 			end
 		end))
+		ToolTipService:AddToolTip(SizeY,"The Y coordinate of the Size")
 		Maid:GiveTask(SizeY.FocusLost:connect(function()
 			if currentObject then
 				local s = currentObject.Size
@@ -318,8 +339,8 @@ do
 			end
 		end
 
-		local SetPosZero = Descendant(ComponentFrame,1,4)
-		local SetSizeZero = Descendant(ComponentFrame,2,4)
+		local SetPosZero = Descendant(ComponentFrame,1,5)
+		local SetSizeZero = Descendant(ComponentFrame,2,5)
 
 		ToolTipService:AddToolTip(SetPosZero,"Set the opposite layout component of the Position to 0")
 		ToolTipService:AddToolTip(SetSizeZero,"Set the opposite layout component of the Size to 0")
