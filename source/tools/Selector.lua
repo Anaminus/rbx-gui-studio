@@ -5,13 +5,388 @@ do
 		ToolTip = "Select and transform objects";
 		KeyBinding = "f";
 	}
+
 	local SelectedObjects = Selection.SelectedObjects
 	local GlobalButton = Canvas.GlobalButton
 	local CanvasFrame = Canvas.CanvasFrame
 
 	local Maid = CreateMaid()
 
+	local evalInput
+
+	local function initOptions()
+		local ComponentFrame = Create'Frame'{
+			Size = UDim2.new(0, 530, 1, 0);
+			BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+			Name = "Components";
+			BackgroundColor3 = Color3.new(0.917647, 0.917647, 0.917647);
+			Create'Frame'{
+				Size = UDim2.new(0.5, 0, 1, 0);
+				Name = "Position Group";
+				BackgroundTransparency = 1;
+				Create'TextLabel'{
+					FontSize = Enum.FontSize.Size10;
+					Text = "Position";
+					Size = UDim2.new(0, 52, 1, -8);
+					TextColor3 = Color3.new(0, 0, 0);
+					Name = "GroupLabel";
+					Position = UDim2.new(0, 4, 0, 4);
+					BackgroundTransparency = 1;
+				};
+				Create'TextBox'{
+					FontSize = Enum.FontSize.Size9;
+					Text = "";
+					Size = UDim2.new(0.5, -52, 1, -16);
+					TextColor3 = Color3.new(0, 0, 0);
+					BorderColor3 = Color3.new(0.752941, 0.752941, 0.752941);
+					Name = "XComponent";
+					Position = UDim2.new(0, 60, 0, 8);
+					BackgroundColor3 = Color3.new(1, 1, 1);
+				};
+				Create'TextBox'{
+					FontSize = Enum.FontSize.Size9;
+					Text = "";
+					Size = UDim2.new(0.5, -52, 1, -16);
+					TextColor3 = Color3.new(0, 0, 0);
+					BorderColor3 = Color3.new(0.752941, 0.752941, 0.752941);
+					Name = "YComponent";
+					Position = UDim2.new(0.5, 12, 0, 8);
+					BackgroundColor3 = Color3.new(1, 1, 1);
+				};
+				Create'TextButton'{
+					FontSize = Enum.FontSize.Size18;
+					BackgroundColor3 = Color3.new(0.866667, 0.866667, 0.866667);
+					Name = "SetToZero Button";
+					Text = "0";
+					Size = UDim2.new(0, 32, 1, -8);
+					TextColor3 = Color3.new(0, 0, 0);
+					TextStrokeTransparency = 0;
+					BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+					Position = UDim2.new(1, -36, 0, 4);
+				};
+			};
+			Create'Frame'{
+				Size = UDim2.new(0.5, 0, 1, 0);
+				Name = "Size Group";
+				Position = UDim2.new(0.5, 0, 0, 0);
+				BackgroundTransparency = 1;
+				Create'TextLabel'{
+					FontSize = Enum.FontSize.Size10;
+					Text = "Size";
+					Size = UDim2.new(0, 32, 1, -8);
+					TextColor3 = Color3.new(0, 0, 0);
+					Name = "GroupLabel";
+					Position = UDim2.new(0, 4, 0, 4);
+					BackgroundTransparency = 1;
+				};
+				Create'TextBox'{
+					FontSize = Enum.FontSize.Size9;
+					Text = "";
+					Size = UDim2.new(0.5, -42, 1, -16);
+					TextColor3 = Color3.new(0, 0, 0);
+					BorderColor3 = Color3.new(0.752941, 0.752941, 0.752941);
+					Name = "XComponent";
+					Position = UDim2.new(0, 40, 0, 8);
+					BackgroundColor3 = Color3.new(1, 1, 1);
+				};
+				Create'TextBox'{
+					FontSize = Enum.FontSize.Size9;
+					Text = "";
+					Size = UDim2.new(0.5, -42, 1, -16);
+					TextColor3 = Color3.new(0, 0, 0);
+					BorderColor3 = Color3.new(0.752941, 0.752941, 0.752941);
+					Name = "YComponent";
+					Position = UDim2.new(0.5, 2, 0, 8);
+					BackgroundColor3 = Color3.new(1, 1, 1);
+				};
+				Create'TextButton'{
+					FontSize = Enum.FontSize.Size18;
+					SizeConstraint = Enum.SizeConstraint.RelativeYY;
+					BackgroundColor3 = Color3.new(0.866667, 0.866667, 0.866667);
+					Name = "SetToZero Button";
+					Text = "0";
+					Size = UDim2.new(0, 32, 1, -8);
+					TextColor3 = Color3.new(0, 0, 0);
+					TextStrokeTransparency = 0;
+					BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+					Position = UDim2.new(1, -36, 0, 4);
+				};
+			};
+			Create'Frame'{
+				BorderSizePixel = 0;
+				Size = UDim2.new(0, 1, 1, 0);
+				BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+				Position = UDim2.new(0.5, 0, 0, 0);
+			};
+		};
+
+		local math_env = {
+			abs = math.abs; acos = math.acos; asin = math.asin; atan = math.atan; atan2 = math.atan2;
+			ceil = math.ceil; cos = math.cos; cosh = math.cosh; deg = math.deg;
+			exp = math.exp; floor = math.floor; fmod = math.fmod; frexp = math.frexp;
+			huge = math.huge; ldexp = math.ldexp; log = math.log; log10 = math.log10;
+			max = math.max; min = math.min; modf = math.modf; pi = math.pi;
+			pow = math.pow; rad = math.rad; random = math.random; sin = math.sin;
+			sinh = math.sinh; sqrt = math.sqrt; tan = math.tan; tanh = math.tanh;
+		}
+
+		if _VERSION == 'Lua 5.2' then
+			function evalInput(str,prev)
+				local env = {}
+				for k,v in pairs(math_env) do
+					env[k] = v
+				end
+				env.x = prev
+				env.n = prev
+				local f = load("return "..s,nil,nil,env)
+				if f then
+					local s,o = pcall(f)
+					if s then return tonumber(o) end
+				end
+				return nil
+			end
+		else
+			function evalInput(str,prev)
+				local env = {}
+				for k,v in pairs(math_env) do
+					env[k] = v
+				end
+				env.x = prev
+				env.n = prev
+				local f = loadstring("return "..str)
+				if f then
+					setfenv(f,env)
+					local s,o = pcall(f)
+					if s then return tonumber(o) end
+				end
+				return nil
+			end
+		end
+
+		Tool.Options = ComponentFrame
+	end
+
+	local function runOptions()
+		local ComponentFrame = Tool.Options
+		local layoutMode = Settings.LayoutMode('Scale')
+		local currentObject
+
+		local PosX  = Descendant(ComponentFrame,1,2)
+		local PosY  = Descendant(ComponentFrame,1,3)
+		local SizeX = Descendant(ComponentFrame,2,2)
+		local SizeY = Descendant(ComponentFrame,2,3)
+
+		local format = string.format
+		local formatString = '%g'
+
+		Maid:GiveTask(PosX.FocusLost:connect(function()
+			if currentObject then
+				local p = currentObject.Position
+				if layoutMode then
+					local prev = p.X.Scale
+					local num = evalInput(PosX.Text,prev)
+					if num then
+						currentObject.Position = UDim2.new(num,p.X.Offset,p.Y.Scale,p.Y.Offset)
+						PosX.Text = format(formatString,num)
+					else
+						PosX.Text = format(formatString,prev)
+					end
+				else
+					local prev = p.X.Offset
+					local num = evalInput(PosX.Text,prev)
+					if num then
+						currentObject.Position = UDim2.new(p.X.Scale,num,p.Y.Scale,p.Y.Offset)
+						PosX.Text = format(formatString,num)
+					else
+						PosX.Text = format(formatString,prev)
+					end
+				end
+			end
+		end))
+		Maid:GiveTask(PosY.FocusLost:connect(function()
+			if currentObject then
+				local p = currentObject.Position
+				if layoutMode then
+					local prev = p.Y.Scale
+					local num = evalInput(PosY.Text,prev)
+					if num then
+						currentObject.Position = UDim2.new(p.X.Scale,p.X.Offset,num,p.Y.Offset)
+						PosY.Text = format(formatString,num)
+					else
+						PosY.Text = format(formatString,prev)
+					end
+				else
+					local prev = p.Y.Offset
+					local num = evalInput(PosY.Text,prev)
+					if num then
+						currentObject.Position = UDim2.new(p.X.Scale,p.X.Offset,p.Y.Scale,num)
+						PosY.Text = format(formatString,num)
+					else
+						PosY.Text = format(formatString,prev)
+					end
+				end
+			end
+		end))
+		Maid:GiveTask(SizeX.FocusLost:connect(function()
+			if currentObject then
+				local s = currentObject.Size
+				if layoutMode then
+					local prev = s.X.Scale
+					local num = evalInput(SizeX.Text,prev)
+					if num then
+						currentObject.Size = UDim2.new(num,s.X.Offset,s.Y.Scale,s.Y.Offset)
+						SizeX.Text = format(formatString,num)
+					else
+						SizeX.Text = format(formatString,prev)
+					end
+				else
+					local prev = s.X.Offset
+					local num = evalInput(SizeX.Text,prev)
+					if num then
+						currentObject.Size = UDim2.new(s.X.Scale,num,s.Y.Scale,s.Y.Offset)
+						SizeX.Text = format(formatString,num)
+					else
+						SizeX.Text = format(formatString,prev)
+					end
+				end
+			end
+		end))
+		Maid:GiveTask(SizeY.FocusLost:connect(function()
+			if currentObject then
+				local s = currentObject.Size
+				if layoutMode then
+					local prev = s.Y.Scale
+					local num = evalInput(SizeY.Text,prev)
+					if num then
+						currentObject.Size = UDim2.new(s.X.Scale,s.X.Offset,num,s.Y.Offset)
+						SizeY.Text = format(formatString,num)
+					else
+						SizeY.Text = format(formatString,prev)
+					end
+				else
+					local prev = s.Y.Offset
+					local num = evalInput(SizeY.Text,prev)
+					if num then
+						currentObject.Size = UDim2.new(s.X.Scale,s.X.Offset,s.Y.Scale,num)
+						SizeY.Text = format(formatString,num)
+					else
+						SizeY.Text = format(formatString,prev)
+					end
+				end
+			end
+		end))
+		-- yeah who cares
+
+		local function updateComponents(p)
+			if p == 'AbsolutePosition' then
+				if layoutMode then
+					PosX.Text = format(formatString,currentActive.Position.X.Scale)
+					PosY.Text = format(formatString,currentActive.Position.Y.Scale)
+				else
+					PosX.Text = currentActive.Position.X.Offset
+					PosY.Text = currentActive.Position.Y.Offset
+				end
+			elseif p == 'AbsoluteSize' then
+				if layoutMode then
+					SizeX.Text = format(formatString,currentActive.Size.X.Scale)
+					SizeY.Text = format(formatString,currentActive.Size.Y.Scale)
+				else
+					SizeX.Text = currentActive.Size.X.Offset
+					SizeY.Text = currentActive.Size.Y.Offset
+				end
+			end
+		end
+
+		local function updateObject(object,active)
+			if Maid.ComponentsChanged then
+				Maid.ComponentsChanged:disconnect()
+				Maid.ComponentsChanged = nil
+			end
+			currentObject = nil
+			currentActive = nil
+			if object then
+				currentObject = object
+				currentActive = active
+				Maid.ComponentsChanged = active.Changed:connect(updateComponents)
+				updateComponents('AbsolutePosition')
+				updateComponents('AbsoluteSize')
+			else
+				PosX.Text  = ''
+				PosY.Text  = ''
+				SizeX.Text = ''
+				SizeY.Text = ''
+			end
+		end
+
+		local SetPosZero = Descendant(ComponentFrame,1,4)
+		local SetSizeZero = Descendant(ComponentFrame,2,4)
+
+		ToolTipService:AddToolTip(SetPosZero,"Set the opposite layout component of the Position to 0")
+		ToolTipService:AddToolTip(SetSizeZero,"Set the opposite layout component of the Size to 0")
+
+		Maid:GiveTask(SetPosZero.MouseButton1Click:connect(function()
+			if layoutMode then
+				for i = 1,#SelectedObjects do
+					local object = SelectedObjects[i]
+					local p = object.Position
+					object.Position = UDim2.new(p.X.Scale,0,p.Y.Scale,0)
+				end
+			else
+				for i = 1,#SelectedObjects do
+					local object = SelectedObjects[i]
+					local p = object.Position
+					object.Position = UDim2.new(0,p.X.Offset,0,p.Y.Offset)
+				end
+			end
+		end))
+		Maid:GiveTask(SetSizeZero.MouseButton1Click:connect(function()
+			if layoutMode then
+				for i = 1,#SelectedObjects do
+					local object = SelectedObjects[i]
+					local s = object.Size
+					object.Size = UDim2.new(s.X.Scale,0,s.Y.Scale,0)
+				end
+			else
+				for i = 1,#SelectedObjects do
+					local object = SelectedObjects[i]
+					local s = object.Size
+					object.Size = UDim2.new(0,s.X.Offset,0,s.Y.Offset)
+				end
+			end
+		end))
+
+		Maid.component_layout = Settings.Changed:connect(function(key,value)
+			if key == 'LayoutMode' then
+				layoutMode = Settings.LayoutMode('Scale')
+				if currentObject then
+					updateComponents('AbsolutePosition')
+					updateComponents('AbsoluteSize')
+				end
+			end
+		end)
+
+		Maid.detect_component_selected = Selection.ObjectSelected:connect(updateObject)
+		local activeLookup = Canvas.ActiveLookup
+		Maid.detect_component_deselected = Selection.ObjectDeselected:connect(function()
+			if #SelectedObjects > 0 then
+				local object = SelectedObjects[#SelectedObjects]
+				updateObject(object,activeLookup[object])
+			else
+				updateObject()
+			end
+		end)
+		if #SelectedObjects > 0 then
+			local object = SelectedObjects[#SelectedObjects]
+			updateObject(object,activeLookup[object])
+		else
+			updateObject()
+		end
+	end
+
 	function Tool:Select()
+		if not self.Options then initOptions() end
+		runOptions()
+
 		local TransformHandles = Widgets.TransformHandles(Canvas,Maid)
 		Maid:GiveTask(function() TransformHandles:Destroy() end)
 
