@@ -50,6 +50,7 @@ do
 			local cPos,cSize = current.AbsolutePosition,current.AbsoluteSize
 
 			local color = Color3.new(1,0,0)
+			local width = 3
 			local visualFrame = Create'Frame'{
 				Name = "ScopeVisualEffect";
 				Position = UDim2.new(0,pPos.x,0,pPos.y);
@@ -58,27 +59,100 @@ do
 				Create'Frame'{ -- top
 					BackgroundColor3 = color;
 					BorderSizePixel = 0;
-					Position = UDim2.new(0,0,0,-1);
-					Size = UDim2.new(1,0,0,3);
+					Position = UDim2.new(0,-width,0,-width);
+					Size = UDim2.new(1,width*2,0,width);
 				};
 				Create'Frame'{ -- right
 					BackgroundColor3 = color;
 					BorderSizePixel = 0;
-					Position = UDim2.new(1,-2,0,0);
-					Size = UDim2.new(0,3,1,0);
+					Position = UDim2.new(1,0,0,0);
+					Size = UDim2.new(0,width,1,0);
 				};
 				Create'Frame'{ -- bottom
 					BackgroundColor3 = color;
 					BorderSizePixel = 0;
-					Position = UDim2.new(0,0,1,-2);
-					Size = UDim2.new(1,0,0,3);
+					Position = UDim2.new(0,-width,1,0);
+					Size = UDim2.new(1,width*2,0,width);
 				};
 				Create'Frame'{ -- left
 					BackgroundColor3 = color;
 					BorderSizePixel = 0;
-					Position = UDim2.new(0,-1,0,0);
-					Size = UDim2.new(0,3,1,0);
+					Position = UDim2.new(0,-width,0,0);
+					Size = UDim2.new(0,width,1,0);
 				};
+--[ [
+				Create'Frame'{
+					Name = "Border";
+					Transparency = 1;
+					Size = UDim2.new(1,0,1,0);
+					-- outer border
+					Create'Frame'{ -- top
+						Name = "Outer Top";
+						BackgroundColor3 = Color3.new(0,0,0);
+						BackgroundTransparency = 0.5;
+						BorderSizePixel = 0;
+						Position = UDim2.new(0,-width-1,0,-width-1);
+						Size = UDim2.new(1,width*2+2,0,1);
+					};
+					Create'Frame'{ -- right
+						Name = "Outer Right";
+						BackgroundColor3 = Color3.new(0,0,0);
+						BackgroundTransparency = 0.5;
+						BorderSizePixel = 0;
+						Position = UDim2.new(1,width,0,-width);
+						Size = UDim2.new(0,1,1,width*2);
+					};
+					Create'Frame'{ -- bottom
+						Name = "Outer Bottom";
+						BackgroundColor3 = Color3.new(0,0,0);
+						BackgroundTransparency = 0.5;
+						BorderSizePixel = 0;
+						Position = UDim2.new(0,-width-1,1,width);
+						Size = UDim2.new(1,width*2+2,0,1);
+					};
+					Create'Frame'{ -- left
+						Name = "Outer Left";
+						BackgroundColor3 = Color3.new(0,0,0);
+						BackgroundTransparency = 0.5;
+						BorderSizePixel = 0;
+						Position = UDim2.new(0,-width-1,0,-width);
+						Size = UDim2.new(0,1,1,width*2);
+					};
+					-- inner border
+					Create'Frame'{ -- top
+						Name = "Inner Top";
+						BackgroundColor3 = Color3.new(0,0,0);
+						BackgroundTransparency = 0.5;
+						BorderSizePixel = 0;
+						Position = UDim2.new(0,0,0,0);
+						Size = UDim2.new(1,0,0,1);
+					};
+					Create'Frame'{ -- right
+						Name = "Inner Right";
+						BackgroundColor3 = Color3.new(0,0,0);
+						BackgroundTransparency = 0.5;
+						BorderSizePixel = 0;
+						Position = UDim2.new(1,-1,0,1);
+						Size = UDim2.new(0,1,1,-2);
+					};
+					Create'Frame'{ -- bottom
+						Name = "Inner Bottom";
+						BackgroundColor3 = Color3.new(0,0,0);
+						BackgroundTransparency = 0.5;
+						BorderSizePixel = 0;
+						Position = UDim2.new(0,0,1,-1);
+						Size = UDim2.new(1,0,0,1);
+					};
+					Create'Frame'{ -- left
+						Name = "Inner Left";
+						BackgroundColor3 = Color3.new(0,0,0);
+						BackgroundTransparency = 0.5;
+						BorderSizePixel = 0;
+						Position = UDim2.new(0,0,0,1);
+						Size = UDim2.new(0,1,1,-2);
+					};
+				};
+--]]
 			}
 
 			visualFrame.Parent = GetScreen(Canvas.CanvasFrame)
