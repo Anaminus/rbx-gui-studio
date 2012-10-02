@@ -38,8 +38,8 @@ function Widgets.RubberbandSelect(originClick,callbacks)
 			if hasDragged then
 				OnDrag(x,y)
 			else
-				local width = 3
-				local color = Color3.new(1,0,0)
+				local width = 2
+				local color = Color3.new(1,1,1)
 				selectBox = Create'Frame'{
 					Name = "RubberBandSelect";
 					Transparency = 1;
