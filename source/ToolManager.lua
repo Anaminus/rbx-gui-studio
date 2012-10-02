@@ -115,11 +115,17 @@ do
 			end
 			if self.CurrentTool then
 				self.CurrentTool:Select()
+				if self.CurrentTool.Options then
+					self.CurrentTool.Options.Parent = ToolOptionsFrame
+				end
 			else
 				error("ToolManager must have at least 1 tool",2)
 			end
 		end;
 		Stop = function(self)
+			if self.CurrentTool.Options then
+				self.CurrentTool.Options.Parent = nil
+			end
 			self.CurrentTool:Deselect()
 		end;
 	}
