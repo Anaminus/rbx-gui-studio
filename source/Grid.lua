@@ -2,24 +2,24 @@
 Draws a grid in a specified object.
 
 API:
-	Grid.Offset                 Returns the UDim2 offset of the grid.
-	Grid.Size                   Returns the UDim2 size of the grid.
-	Grid.Parent                 Returns the object the grid appears under.
-	Grid.Visible                Returns whether or not the grid is visible.
-	Grid.Container              The GUI object containing the grid lines.
+	Grid.Origin                     Returns the UDim2 origin of the grid.
+	Grid.Spacing                    Returns the UDim2 spacing of the grid.
+	Grid.Parent                     Returns the object the grid appears under.
+	Grid.Visible                    Returns whether or not the grid is visible.
+	Grid.Container                  The GUI object containing the grid lines.
 
-	Grid:SetGrid(size,offset)   Sets the distance between each grid line and their offset from the starting point.
-	                            `size` and `offset` are UDim2s.
-	                            The Scale component of the UDim2 will set the size and offset of the Scale grid.
-	                            The Offset component of the UDim2 will set the size and offsetof the Offset grid.
-	Grid:SetParent(parent)      Sets the object the grid will appear in.
-	Grid:SetVisible(visible)    Sets whether the grid is visible.
+	Grid:SetGrid(spacing,origin)    Sets the distance between each grid line and their offset from the starting point.
+	                                `spacing` and `origin` are UDim2s.
+	                                The Scale component of the UDim2 will set the spacing and origin of the Scale grid.
+	                                The Offset component of the UDim2 will set the spacing and origin of the Offset grid.
+	Grid:SetParent(parent)          Sets the object the grid will appear in.
+	Grid:SetVisible(visible)        Sets whether the grid is visible.
 ]]
 
 do
 	Grid = {
-		Offset = UDim2.new(0,0,0,0);
-		Size = UDim2.new(1/16,32,1/16,32);
+		Origin = UDim2.new(0,0,0,0);
+		Spacing = UDim2.new(1/16,32,1/16,32);
 		Container = nil;
 		Parent = nil;
 		Visible = false;
@@ -31,10 +31,10 @@ do
 	local GridLinesX
 	local GridLinesY
 
-	local gSize
-	local gOffset
-	local giOffsetX
-	local giOffsetY
+	local gSpacing
+	local gOrigin
+	local giOriginX
+	local giOriginY
 
 	local conSizeChanged
 	local conScopeChanged
@@ -45,16 +45,16 @@ do
 	-- offset grid: static lines that are created and destroyed only when needed
 	local function updateOffsetLines()
 		local size = gridContainer.AbsoluteSize
-		local span = Vector2.new(math.ceil(size.x/gSize.x),math.ceil(size.y/gSize.y))
+		local span = Vector2.new(math.ceil(size.x/gSpacing.x),math.ceil(size.y/gSpacing.y))
 
 		if size.x ~= lastSize.x then
 			-- vertical lines along the X axis
 			local size = size.x
-			local gSize = gSize.x
-			local gOffset = gOffset.x
+			local gSpacing = gSpacing.x
+			local gOrigin = gOrigin.x
 			for i = 1,span.x do
 				local line = GridLinesX[i]
-				local pos = (i-giOffsetX-1)*gSize+gOffset
+				local pos = (i-giOriginX-1)*gSpacing+gOrigin
 				if not line and pos <= size then
 					line = lineTemplateX:Clone()
 					GridLinesX[i] = line
@@ -63,7 +63,7 @@ do
 				end
 			end
 			for i = span.x,#GridLinesX do
-				if (i-giOffsetX-1)*gSize+gOffset > size then
+				if (i-giOriginX-1)*gSpacing+gOrigin > size then
 					GridLinesX[i]:Destroy()
 					GridLinesX[i] = nil
 				end
@@ -72,11 +72,11 @@ do
 		if size.y ~= lastSize.y then
 			-- horizontal lines along the Y axis
 			local size = size.y
-			local gSize = gSize.y
-			local gOffset = gOffset.y
+			local gSpacing = gSpacing.y
+			local gOrigin = gOrigin.y
 			for i = 1,span.y do
 				local line = GridLinesY[i]
-				local pos = (i-giOffsetY-1)*gSize+gOffset
+				local pos = (i-giOriginY-1)*gSpacing+gOrigin
 				if not line and pos <= size then
 					line = lineTemplateY:Clone()
 					GridLinesY[i] = line
@@ -85,7 +85,7 @@ do
 				end
 			end
 			for i = span.y,#GridLinesY do
-				if (i-giOffsetY-1)*gSize+gOffset > size then
+				if (i-giOriginY-1)*gSpacing+gOrigin > size then
 					GridLinesY[i]:Destroy()
 					GridLinesY[i] = nil
 				end
@@ -96,15 +96,15 @@ do
 
 	-- scale grid: stretchy; only needs to be created once; Scale takes care of the rest
 	local function setupScaleLines()
-		for i = 1,math.ceil(1/gSize.x) do
-			local pos = (i-giOffsetX-1)*gSize.x+gOffset.x
+		for i = 1,math.ceil(1/gSpacing.x) do
+			local pos = (i-giOriginX-1)*gSpacing.x+gOrigin.x
 			line = lineTemplateX:Clone()
 			GridLinesX[i] = line
 			line.Position = UDim2.new(pos,0,0,0)
 			line.Parent = gridContainer
 		end
-		for i = 1,math.ceil(1/gSize.y) do
-			local pos = (i-giOffsetY-1)*gSize.y+gOffset.y
+		for i = 1,math.ceil(1/gSpacing.y) do
+			local pos = (i-giOriginY-1)*gSpacing.y+gOrigin.y
 			line = lineTemplateY:Clone()
 			GridLinesY[i] = line
 			line.Position = UDim2.new(0,0,pos,0)
@@ -121,18 +121,18 @@ do
 		updateOffsetLines()
 	end
 
-	-- updates the grid for when the size or offset changes
+	-- updates the grid for when the spacing or origin changes
 	local function updateGrid()
 		if conSizeChanged then conSizeChanged:disconnect() end
 		if layoutMode then
-			gSize = Vector2.new(Grid.Size.X.Scale,Grid.Size.Y.Scale)
-			gOffset = Vector2.new(Grid.Offset.X.Scale,Grid.Offset.Y.Scale)
+			gSpacing = Vector2.new(Grid.Spacing.X.Scale,Grid.Spacing.Y.Scale)
+			gOrigin = Vector2.new(Grid.Origin.X.Scale,Grid.Origin.Y.Scale)
 		else
-			gSize = Vector2.new(Grid.Size.X.Offset,Grid.Size.Y.Offset)
-			gOffset = Vector2.new(Grid.Offset.X.Offset,Grid.Offset.Y.Offset)
+			gSpacing = Vector2.new(Grid.Spacing.X.Offset,Grid.Spacing.Y.Offset)
+			gOrigin = Vector2.new(Grid.Origin.X.Offset,Grid.Origin.Y.Offset)
 		end
-		giOffsetX = math.floor(gOffset.x/gSize.x)
-		giOffsetY = math.floor(gOffset.y/gSize.y)
+		giOriginX = math.floor(gOrigin.x/gSpacing.x)
+		giOriginY = math.floor(gOrigin.y/gSpacing.y)
 		for i = 1,#GridLinesX do
 			GridLinesX[i]:Destroy()
 			GridLinesX[i] = nil
@@ -216,12 +216,12 @@ do
 		end
 	end
 
-	function Grid:SetGrid(size,offset)
-		if size then
-			self.Size = size
+	function Grid:SetGrid(spacing,origin)
+		if spacing then
+			self.Spacing = spacing
 		end
-		if offset then
-			self.Offset = offset
+		if origin then
+			self.Origin = origin
 		end
 		if gridContainer then
 			updateGrid()
