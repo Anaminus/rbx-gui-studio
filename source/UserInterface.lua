@@ -93,6 +93,20 @@ do
 					end
 				end;
 			};
+			{
+				Name = "ToggleGrid";
+				Icon = "";
+				ToolTip = "Toggle whether objects will snap to the grid";
+				KeyBinding = "u";
+				Select = function(self)
+					Settings.SnapEnabled = not Settings.SnapEnabled
+					if Settings.SnapEnabled then
+						self.Button.BorderColor3 = Color3.new(1,0,0)
+					else
+						self.Button.BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235)
+					end
+				end;
+			};
 		--[[
 			{
 				Name = "ConfigGrid";
