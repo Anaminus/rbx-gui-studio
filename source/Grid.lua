@@ -14,6 +14,9 @@ API:
 	                                The Offset component of the UDim2 will set the spacing and origin of the Offset grid.
 	Grid:SetParent(parent)          Sets the object the grid will appear in.
 	Grid:SetVisible(visible)        Sets whether the grid is visible.
+
+	Grid.Updated(layout)            Fired after the grid's Origin or Spacing updates.
+	                                `layout` is the current LayoutMode.
 ]]
 
 do
@@ -38,6 +41,8 @@ do
 
 	local conSizeChanged
 	local conScopeChanged
+
+	local eventUpdated = CreateSignal(Grid,'Updated')
 
 	local layoutMode = Settings.LayoutMode('Scale')
 
@@ -147,6 +152,7 @@ do
 		else
 			setupOffsetLines()
 		end
+		eventUpdated:Fire(Settings.LayoutMode)
 	end
 
 
