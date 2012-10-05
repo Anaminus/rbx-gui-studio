@@ -103,9 +103,37 @@ do
 
 		local function addNewObject(x,y)
 			local object,active
-			local originClick = Vector2.new(x,y)
 
-			Maid.drag_gui = Widgets.DragGUI({},originClick,'BottomRight',{
+			local originClick
+			if Settings.SnapEnabled then
+				local gridPos = Grid.Container.AbsolutePosition
+				originClick = Vector2.new(x,y) - gridPos
+
+				local gridOrigin
+				local gridSpacing
+				if Settings.LayoutMode('Scale') then
+					gridOrigin =  Grid.Container.AbsoluteSize*Vector2.new( Grid.Origin.X.Scale, Grid.Origin.Y.Scale)
+					gridSpacing = Grid.Container.AbsoluteSize*Vector2.new(Grid.Spacing.X.Scale,Grid.Spacing.Y.Scale)
+				else
+					gridOrigin =  Vector2.new( Grid.Origin.X.Offset, Grid.Origin.Y.Offset)
+					gridSpacing = Vector2.new(Grid.Spacing.X.Offset,Grid.Spacing.Y.Offset)
+				end
+				local snapCandX = math.floor((originClick.x - gridOrigin.x)/gridSpacing.x + 0.5)*gridSpacing.x + gridOrigin.x
+				local snapCandY = math.floor((originClick.y - gridOrigin.y)/gridSpacing.y + 0.5)*gridSpacing.y + gridOrigin.y
+
+				if math.abs(originClick.x - snapCandX) > Settings.SnapDistance then
+					snapCandX = originClick.x
+				end
+				if math.abs(originClick.y - snapCandY) > Settings.SnapDistance then
+					snapCandY = originClick.y
+				end
+
+				originClick = Vector2.new(snapCandX,snapCandY) + gridPos
+			else
+				originClick = Vector2.new(x,y)
+			end
+
+			Maid.drag_gui = Widgets.DragGUI({},nil,originClick,'BottomRight',{
 				OnDrag = function(x,y,hasDragged,setObjects)
 					if hasDragged then
 						clickStamp = 0
@@ -121,7 +149,7 @@ do
 							active.Position = UDim2.new(0,pos.x,0,pos.y)
 						end
 
-						setObjects{active}
+						setObjects({active},active)
 					end
 				end;
 				OnRelease = function(x,y,hasDragged)
@@ -137,7 +165,7 @@ do
 					end
 					Maid.drag_gui = nil
 				end;
-			},Canvas.CanvasFrame,true)
+			},Canvas.CanvasFrame,true,true)
 		end
 
 		Maid.move = GlobalButton.MouseMoved:connect(resetClick)
@@ -165,7 +193,7 @@ do
 			end
 
 			TransformHandles.Frame.Visible = false
-			local finishDrag = Widgets.DragGUI(active,Vector2.new(x,y),'Center',{
+			local finishDrag = Widgets.DragGUI(active,active,Vector2.new(x,y),'Center',{
 				OnDrag = function(x,y,hasDragged)
 					if not hasDragged then
 					--[[ if this object isn't selected, insert a new object instead
@@ -188,7 +216,7 @@ do
 					TransformHandles.Frame.Visible = true
 					Maid.drag_gui = nil
 				end;
-			})
+			},nil,true)
 			Maid.drag_gui = finishDrag
 		end)
 

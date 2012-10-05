@@ -523,14 +523,15 @@ do
 				end
 
 				TransformHandles.Frame.Visible = false
-				Maid.drag_gui = Widgets.DragGUI(activeObjects,Vector2.new(x,y),'Center',{
+				Maid.drag_gui = Widgets.DragGUI(activeObjects,active,Vector2.new(x,y),'Center',{
 					OnDrag = function(x,y,hasDragged,setObjects)
 						if not hasDragged then
 							if not Selection:Contains(object) then
 								Selection:Set{object}
 								dragObjects = {object}
-								activeObjects = {activeLookup[object]}
-								setObjects(activeObjects)
+								local active = activeLookup[object]
+								activeObjects = {active}
+								setObjects(activeObjects,active)
 							end
 						end
 					end;
@@ -550,7 +551,7 @@ do
 						Maid.drag_gui = nil
 						inAction = false
 					end;
-				})
+				},nil,true)
 			else
 				inAction = false
 			end

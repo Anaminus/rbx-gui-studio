@@ -33,7 +33,7 @@ function Widgets.RubberbandSelect(originClick,callbacks)
 	local OnDrag = callbacks.OnDrag or function()end
 
 	local selectBox
-	return Widgets.DragGUI({},originClick,'BottomRight',{
+	return Widgets.DragGUI({},nil,originClick,'BottomRight',{
 		OnDrag = function(x,y,hasDragged,setObjects)
 			if hasDragged then
 				OnDrag(x,y)
@@ -152,7 +152,7 @@ function Widgets.RubberbandSelect(originClick,callbacks)
 					selectBox.Position = UDim2.new(0,pos.x,0,pos.y)
 				end
 
-				setObjects{selectBox}
+				setObjects({selectBox},nil)
 			end
 		end;
 		OnRelease = function(x,y,hasDragged)
@@ -191,5 +191,5 @@ function Widgets.RubberbandSelect(originClick,callbacks)
 				if callbacks.OnClick then callbacks.OnClick(x,y) end
 			end
 		end;
-	},Canvas.CanvasFrame,true)
+	},Canvas.CanvasFrame,false,true,true)
 end
