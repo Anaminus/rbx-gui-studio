@@ -15,16 +15,29 @@ PluginActivator.Initialized:connect(function()
 	end)
 end)
 
-PluginActivator.Activated:connect(function()
-	Mouse:Start()
-	UserInterface:Start()
-	ScreenManager:RunStartup()
-end)
+do
+	local Camera = Workspace.CurrentCamera
+	local cameraCF
+	local cameraFO
+	PluginActivator.Activated:connect(function()
+		if Camera then
+			cameraCF = Camera.CoordinateFrame
+			cameraFO = Camera.Focus
+		end
+		Mouse:Start()
+		UserInterface:Start()
+		ScreenManager:RunStartup()
+	end)
 
-PluginActivator.Deactivated:connect(function()
-	Canvas:Stop()
-	UserInterface:Stop()
-	Mouse:Stop()
-end)
+	PluginActivator.Deactivated:connect(function()
+		Canvas:Stop()
+		UserInterface:Stop()
+		Mouse:Stop()
+		if Camera then
+			Camera.CoordinateFrame = cameraCF
+			Camera.Focus = cameraFO
+		end
+	end)
+end
 
 PluginActivator:Start()
