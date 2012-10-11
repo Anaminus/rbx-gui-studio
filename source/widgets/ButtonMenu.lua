@@ -25,10 +25,11 @@ Returns:
 
 ]]
 function Widgets.ButtonMenu(buttons,size,horizontal,on_click)
+	local GuiColor = InternalSettings.GuiColor
 	local ButtonMenuFrame = Create'Frame'{
 		Name = "ButtonFrame";
-		BackgroundColor3 = Color3.new(0.917647, 0.917647, 0.917647);
-		BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+		BackgroundColor3 = GuiColor.Background;
+		BorderColor3 = GuiColor.Border;
 	}
 	for i,button in pairs(buttons) do
 		if type(button) == 'string' then
@@ -39,7 +40,7 @@ function Widgets.ButtonMenu(buttons,size,horizontal,on_click)
 				Create'Frame'{
 					Name = "SeperatorDecal";
 					BorderSizePixel = 0;
-					BackgroundColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+					BackgroundColor3 = GuiColor.Border;
 					Position = vertical and UDim2.new(0,-2,0,2) or UDim2.new(0,2,0,-2);
 					Size = vertical and UDim2.new(1,4,0,1) or UDim2.new(0,1,1,4);
 				};
@@ -48,8 +49,8 @@ function Widgets.ButtonMenu(buttons,size,horizontal,on_click)
 		else
 			local ButtonFrame = Create'ImageButton'{
 				Name = button.Name .. " MenuButton";
-				BackgroundColor3 = Color3.new(0.866667, 0.866667, 0.866667);
-				BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+				BackgroundColor3 = GuiColor.Button;
+				BorderColor3 = GuiColor.ButtonBorder;
 				Size = UDim2.new(0,size.x,0,size.y);
 				(function()
 					if type(button.Icon) == 'string' then

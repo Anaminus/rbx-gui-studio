@@ -27,16 +27,17 @@ do
 		}
 
 		local buttonSize = InternalSettings.GuiButtonSize
+		local GuiColor = InternalSettings.GuiColor
 		local InsertTypeFrame = Widgets.ButtonMenu(insertTypes,Vector2.new(buttonSize,buttonSize),true,function(type)
-			Options.InsertType.Button.BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235)
+			Options.InsertType.Button.BorderColor3 = GuiColor.ButtonBorder
 			Options.InsertType = type
-			type.Button.BorderColor3 = Color3.new(1,0,0)
+			type.Button.BorderColor3 = GuiColor.ButtonSelected
 		end)
 		Create(InsertTypeFrame){
 			Name = "Insert ToolOptions";
 		}
 		Options.InsertType = insertTypes[1]
-		insertTypes[1].Button.BorderColor3 = Color3.new(1,0,0)
+		insertTypes[1].Button.BorderColor3 = GuiColor.ButtonSelected
 
 		Tool.Options = InsertTypeFrame
 	end

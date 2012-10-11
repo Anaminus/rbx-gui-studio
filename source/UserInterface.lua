@@ -15,6 +15,7 @@ do
 	UserInterface = {}
 
 	function UserInterface:Initialize()
+		local GuiColor = InternalSettings.GuiColor
 		local MenuButtons = {
 			{
 				Name = "InsertScreenGui";
@@ -87,9 +88,9 @@ do
 				Select = function(self)
 					Grid:SetVisible(not Grid.Visible)
 					if Grid.Visible then
-						self.Button.BorderColor3 = Color3.new(1,0,0)
+						self.Button.BorderColor3 = GuiColor.ButtonSelected
 					else
-						self.Button.BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235)
+						self.Button.BorderColor3 = GuiColor.ButtonBorder
 					end
 				end;
 			};
@@ -101,9 +102,9 @@ do
 				Select = function(self)
 					Settings.SnapEnabled = not Settings.SnapEnabled
 					if Settings.SnapEnabled then
-						self.Button.BorderColor3 = Color3.new(1,0,0)
+						self.Button.BorderColor3 = GuiColor.ButtonSelected
 					else
-						self.Button.BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235)
+						self.Button.BorderColor3 = GuiColor.ButtonBorder
 					end
 				end;
 			};
@@ -181,16 +182,16 @@ do
 					Name = "ToolOptions";
 					Position = UDim2.new(0, 0, 0, menuSize);
 					Size = UDim2.new(1, 0, 0, menuSize);
-					BackgroundColor3 = Color3.new(0.917647, 0.917647, 0.917647);
-					BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+					BackgroundColor3 = GuiColor.Background;
+					BorderColor3 = GuiColor.Border;
 				};
 			};
 			Create'Frame'{
 				Name = "BottomPanel";
 				Position = UDim2.new(0, 0, 1, -1);
 				Size = UDim2.new(1, 0, 0, -60);
-				BackgroundColor3 = Color3.new(0.917647, 0.917647, 0.917647);
-				BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+				BackgroundColor3 = GuiColor.Background;
+				BorderColor3 = GuiColor.Border;
 			};
 		}
 

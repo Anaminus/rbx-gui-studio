@@ -15,11 +15,12 @@ do
 	local evalInput
 
 	local function initOptions()
+		local GuiColor = InternalSettings.GuiColor
 		local ComponentFrame = Create'Frame'{
 			Size = UDim2.new(0, 530, 1, 0);
-			BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+			BorderColor3 = GuiColor.Border;
 			Name = "Components";
-			BackgroundColor3 = Color3.new(0.917647, 0.917647, 0.917647);
+			BackgroundColor3 = GuiColor.Background;
 			Create'Frame'{
 				Size = UDim2.new(0.5, 0, 1, 0);
 				Name = "Position Group";
@@ -28,7 +29,7 @@ do
 					FontSize = Enum.FontSize.Size10;
 					Text = "X";
 					Size = UDim2.new(0, 12, 1, -8);
-					TextColor3 = Color3.new(0, 0, 0);
+					TextColor3 = GuiColor.Text;
 					Name = "X Label";
 					Position = UDim2.new(0, 4, 0, 4);
 					BackgroundTransparency = 1;
@@ -37,17 +38,17 @@ do
 					FontSize = Enum.FontSize.Size9;
 					Text = "";
 					Size = UDim2.new(0.5, -40, 1, -16);
-					TextColor3 = Color3.new(0, 0, 0);
-					BorderColor3 = Color3.new(0.752941, 0.752941, 0.752941);
+					TextColor3 = GuiColor.Text;
+					BorderColor3 = GuiColor.FieldBorder;
 					Name = "XComponent";
 					Position = UDim2.new(0, 20, 0, 8);
-					BackgroundColor3 = Color3.new(1, 1, 1);
+					BackgroundColor3 = GuiColor.Field;
 				};
 				Create'TextLabel'{
 					FontSize = Enum.FontSize.Size10;
 					Text = "Y";
 					Size = UDim2.new(0, 12, 1, -8);
-					TextColor3 = Color3.new(0, 0, 0);
+					TextColor3 = GuiColor.Text;
 					Name = "Y Label";
 					Position = UDim2.new(0.5, -16, 0, 4);
 					BackgroundTransparency = 1;
@@ -56,21 +57,21 @@ do
 					FontSize = Enum.FontSize.Size9;
 					Text = "";
 					Size = UDim2.new(0.5, -40, 1, -16);
-					TextColor3 = Color3.new(0, 0, 0);
-					BorderColor3 = Color3.new(0.752941, 0.752941, 0.752941);
+					TextColor3 = GuiColor.Text;
+					BorderColor3 = GuiColor.FieldBorder;
 					Name = "YComponent";
 					Position = UDim2.new(0.5, 0, 0, 8);
-					BackgroundColor3 = Color3.new(1, 1, 1);
+					BackgroundColor3 = GuiColor.Field;
 				};
 				Create'TextButton'{
 					FontSize = Enum.FontSize.Size18;
-					BackgroundColor3 = Color3.new(0.866667, 0.866667, 0.866667);
+					BackgroundColor3 = GuiColor.Button;
 					Name = "SetToZero Button";
 					Text = "0";
 					Size = UDim2.new(0, 32, 1, -8);
-					TextColor3 = Color3.new(0, 0, 0);
+					TextColor3 = GuiColor.Text;
 					TextStrokeTransparency = 0;
-					BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+					BorderColor3 = GuiColor.ButtonBorder;
 					Position = UDim2.new(1, -36, 0, 4);
 				};
 			};
@@ -83,7 +84,7 @@ do
 					FontSize = Enum.FontSize.Size10;
 					Text = "W";
 					Size = UDim2.new(0, 12, 1, -8);
-					TextColor3 = Color3.new(0, 0, 0);
+					TextColor3 = GuiColor.Text;
 					Name = "W Label";
 					Position = UDim2.new(0, 4, 0, 4);
 					BackgroundTransparency = 1;
@@ -92,17 +93,17 @@ do
 					FontSize = Enum.FontSize.Size9;
 					Text = "";
 					Size = UDim2.new(0.5, -40, 1, -16);
-					TextColor3 = Color3.new(0, 0, 0);
-					BorderColor3 = Color3.new(0.752941, 0.752941, 0.752941);
+					TextColor3 = GuiColor.Text;
+					BorderColor3 = GuiColor.FieldBorder;
 					Name = "XComponent";
 					Position = UDim2.new(0, 20, 0, 8);
-					BackgroundColor3 = Color3.new(1, 1, 1);
+					BackgroundColor3 = GuiColor.Field;
 				};
 				Create'TextLabel'{
 					FontSize = Enum.FontSize.Size10;
 					Text = "H";
 					Size = UDim2.new(0, 12, 1, -8);
-					TextColor3 = Color3.new(0, 0, 0);
+					TextColor3 = GuiColor.Text;
 					Name = "H Label";
 					Position = UDim2.new(0.5, -16, 0, 4);
 					BackgroundTransparency = 1;
@@ -111,28 +112,28 @@ do
 					FontSize = Enum.FontSize.Size9;
 					Text = "";
 					Size = UDim2.new(0.5, -40, 1, -16);
-					TextColor3 = Color3.new(0, 0, 0);
-					BorderColor3 = Color3.new(0.752941, 0.752941, 0.752941);
+					TextColor3 = GuiColor.Text;
+					BorderColor3 = GuiColor.FieldBorder;
 					Name = "YComponent";
 					Position = UDim2.new(0.5, 0, 0, 8);
-					BackgroundColor3 = Color3.new(1, 1, 1);
+					BackgroundColor3 = GuiColor.Field;
 				};
 				Create'TextButton'{
 					FontSize = Enum.FontSize.Size18;
-					BackgroundColor3 = Color3.new(0.866667, 0.866667, 0.866667);
+					BackgroundColor3 = GuiColor.Button;
 					Name = "SetToZero Button";
 					Text = "0";
 					Size = UDim2.new(0, 32, 1, -8);
-					TextColor3 = Color3.new(0, 0, 0);
+					TextColor3 = GuiColor.Text;
 					TextStrokeTransparency = 0;
-					BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+					BorderColor3 = GuiColor.ButtonBorder;
 					Position = UDim2.new(1, -36, 0, 4);
 				};
 			};
 			Create'Frame'{
 				BorderSizePixel = 0;
 				Size = UDim2.new(0, 1, 1, 0);
-				BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+				BorderColor3 = GuiColor.Border;
 				Position = UDim2.new(0.5, 0, 0, 0);
 			};
 		};

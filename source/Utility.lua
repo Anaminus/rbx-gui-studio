@@ -4,6 +4,19 @@ function Preload(content)
 end
 
 InternalSettings = {
+	GuiColor = {
+		Background     = Color3.new(233/255, 233/255, 233/255);
+		Border         = Color3.new(149/255, 149/255, 149/255);
+		Selected       = Color3.new( 63/255, 119/255, 189/255);
+		Text           = Color3.new(  0/255,   0/255,   0/255);
+		TextDisabled   = Color3.new(128/255, 128/255, 128/255);
+		TextSelected   = Color3.new(255/255, 255/255, 255/255);
+		Button         = Color3.new(221/255, 221/255, 221/255);
+		ButtonBorder   = Color3.new(149/255, 149/255, 149/255);
+		ButtonSelected = Color3.new(255/255,   0/255,   0/255);
+		Field          = Color3.new(255/255, 255/255, 255/255);
+		FieldBorder    = Color3.new(191/255, 191/255, 191/255);
+	};
 	GuiButtonSize = 30;
 	GuiWidgetSize = 16;
 	ScaleModeColor = Color3.new(42/255,127/255,255/255);

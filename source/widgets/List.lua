@@ -1,11 +1,12 @@
 function Widgets.List(items)
+	local GuiColor = InternalSettings.GuiColor
 	local Class = Widgets.ScrollingContainer()
 
 	local labelTemplate = Create'TextLabel'{
 		Name = "ListItem AutoSizeLabel";
-		BackgroundColor3 = Color3.new(1,1,1);
+		BackgroundColor3 = GuiColor.Field;
 		BorderSizePixel = 0;
-		TextColor3 = Color3.new(0,0,0);
+		TextColor3 = GuiColor.Text;
 		TextXAlignment = "Left";
 		FontSize = "Size10";
 	}
@@ -50,13 +51,13 @@ function Widgets.List(items)
 		if items[entry] then
 			local label = Class.SelectedLabel
 			if label then
-				label.TextColor3 = Color3.new(0,0,0)
-				label.BackgroundColor3 = Color3.new(1,1,1)
+				label.TextColor3 = GuiColor.Text
+				label.BackgroundColor3 = GuiColor.Field
 			end
 
 			local label = Container.List[entry]
-			label.TextColor3 = Color3.new(1,1,1)
-			label.BackgroundColor3 = Color3.new(0.247059, 0.470588, 0.745098)
+			label.TextColor3 = GuiColor.TextSelected
+			label.BackgroundColor3 = GuiColor.Selected
 			Class.SelectedItem = items[entry]
 			Class.SelectedLabel = label
 			eventItemSelected:Fire(Class.SelectedItem)

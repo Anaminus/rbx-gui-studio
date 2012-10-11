@@ -83,21 +83,22 @@ do
 	function ToolManager:InitializeTools()
 		if not self.ToolbarFrame then
 			local buttonSize = InternalSettings.GuiButtonSize
+			local GuiColor = InternalSettings.GuiColor
 			self.ToolbarFrame = Widgets.ButtonMenu(self.ToolList,Vector2.new(buttonSize,buttonSize),false,function(tool)
 				self:SelectTool(tool)
 			end)
 			self.ToolSelected:connect(function(tool)
 				if tool.Button then
-					tool.Button.BorderColor3 = Color3.new(1,0,0)
+					tool.Button.BorderColor3 = GuiColor.ButtonSelected
 				end
 			end)
 			self.ToolDeselected:connect(function(tool)
 				if tool.Button then
-					tool.Button.BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235)
+					tool.Button.BorderColor3 = GuiColor.ButtonBorder
 				end
 			end)
 			if self.CurrentTool.Button then
-				self.CurrentTool.Button.BorderColor3 = Color3.new(1,0,0)
+				self.CurrentTool.Button.BorderColor3 = GuiColor.ButtonSelected
 			end
 			for i,tool in pairs(self.ToolList) do
 				if tool.KeyBinding then

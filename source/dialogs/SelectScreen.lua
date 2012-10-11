@@ -20,6 +20,7 @@ Returns:
 
 function Dialogs.SelectScreen(parent,eventCancel)
 	KeyBinding.Enabled = false
+	local GuiColor = InternalSettings.GuiColor
 	local Dialog = Create'ScreenGui'{
 		Name = "Select Dialog";
 		Create'ImageButton'{
@@ -44,22 +45,24 @@ function Dialogs.SelectScreen(parent,eventCancel)
 		};
 		Create'Frame'{
 			Size = UDim2.new(0, 300, 0, 250);
-			BorderColor3 = Color3.new(0.372549, 0.372549, 0.372549);
+			BorderColor3 = GuiColor.Border;
 			Name = "DialogFrame";
 			Position = UDim2.new(0.5, -150, 0.5, -125);
-			BackgroundColor3 = Color3.new(0.917647, 0.917647, 0.917647);
+			BackgroundColor3 = GuiColor.Background;
 			ZIndex = 10;
 			Create'Frame'{
 				Size = UDim2.new(1, 0, 0, 24);
-				BorderColor3 = Color3.new(0.372549, 0.372549, 0.372549);
+				BorderColor3 = GuiColor.Border;
 				Name = "TitleBar";
-				BackgroundColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+				BackgroundColor3 = Color3.new(178/255, 178/255, 178/255);
 				ZIndex = 10;
 				Create'TextLabel'{
 					FontSize = Enum.FontSize.Size12;
 					Text = "Select ScreenGui...";
 					Size = UDim2.new(1, -6, 1, -6);
 					TextColor3 = Color3.new(1, 1, 1);
+					TextStrokeTransparency = 0;
+					TextStrokeColor3 = GuiColor.Border;
 					TextXAlignment = Enum.TextXAlignment.Left;
 					Name = "Title";
 					Position = UDim2.new(0, 3, 0, 3);
@@ -69,24 +72,23 @@ function Dialogs.SelectScreen(parent,eventCancel)
 			};
 			Create'TextButton'{
 				FontSize = Enum.FontSize.Size12;
-				BackgroundColor3 = Color3.new(0.866667, 0.866667, 0.866667);
+				BackgroundColor3 = GuiColor.Button;
 				Name = "OKButton";
 				Text = "OK";
-				TextTransparency = 0.5;
 				Size = UDim2.new(0, 64, 0, 32);
-				TextColor3 = Color3.new(0, 0, 0);
-				BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+				TextColor3 = GuiColor.TextDisabled;
+				BorderColor3 = GuiColor.ButtonBorder;
 				Position = UDim2.new(1, -144, 1, -40);
 				ZIndex = 10;
 			};
 			Create'TextButton'{
 				FontSize = Enum.FontSize.Size12;
-				BackgroundColor3 = Color3.new(0.866667, 0.866667, 0.866667);
+				BackgroundColor3 = GuiColor.Button;
 				Name = "CancelButton";
 				Text = "Cancel";
 				Size = UDim2.new(0, 64, 0, 32);
-				TextColor3 = Color3.new(0, 0, 0);
-				BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+				TextColor3 = GuiColor.Text;
+				BorderColor3 = GuiColor.ButtonBorder;
 				Position = UDim2.new(1, -72, 1, -40);
 				ZIndex = 10;
 			};
@@ -99,8 +101,8 @@ function Dialogs.SelectScreen(parent,eventCancel)
 	local screens = GetScreens(Game:GetService("StarterGui")) -- bug #1
 
 	local SelectionList = Widgets.List(screens)
-	SelectionList.Boundary.BackgroundColor3 = Color3.new(1,1,1)
-	SelectionList.Boundary.BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+	SelectionList.Boundary.BackgroundColor3 = GuiColor.Field
+	SelectionList.Boundary.BorderColor3 = GuiColor.Border
 	SelectionList.GUI.Position = UDim2.new(0,8,0,32)
 	SelectionList.GUI.Size = UDim2.new(1,-16,1,-80)
 	SelectionList.GUI.Parent = Descendant(Dialog,3)
@@ -111,11 +113,11 @@ function Dialogs.SelectScreen(parent,eventCancel)
 		if screen then
 			SelectedScreen = screen
 			Selection:Set{screen}
-			OKButton.TextTransparency = 0
+			OKButton.TextColor3 = GuiColor.Text
 		else
 			SelectedScreen = nil
 			Selection:Set{}
-			OKButton.TextTransparency = 0.5
+			OKButton.TextColor3 = GuiColor.TextDisabled
 		end
 	end)
 

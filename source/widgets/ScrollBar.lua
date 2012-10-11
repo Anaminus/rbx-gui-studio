@@ -34,6 +34,7 @@ do
 	mt.__index.ScrollRight = mt.__index.ScrollDown
 
 	function Widgets.ScrollBar(horizontal)
+		local GuiColor = InternalSettings.GuiColor
 		local size = InternalSettings.GuiWidgetSize
 
 		-- create row scroll bar
@@ -46,15 +47,15 @@ do
 				Name = "ScrollDown";
 				Position = horizontal and UDim2.new(1,-size,0,0) or UDim2.new(0,0,1,-size);
 				Size = UDim2.new(0, size, 0, size);
-				BackgroundColor3 = Color3.new(0.866667, 0.866667, 0.866667);
-				BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+				BackgroundColor3 = GuiColor.Button;
+				BorderColor3 = GuiColor.Border;
 				--BorderSizePixel = 0;
 			};
 			Create'ImageButton'{
 				Name = "ScrollUp";
 				Size = UDim2.new(0, size, 0, size);
-				BackgroundColor3 = Color3.new(0.866667, 0.866667, 0.866667);
-				BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+				BackgroundColor3 = GuiColor.Button;
+				BorderColor3 = GuiColor.Border;
 				--BorderSizePixel = 0;
 			};
 			Create'ImageButton'{
@@ -63,14 +64,14 @@ do
 				Position = horizontal and UDim2.new(0,size,0,0) or UDim2.new(0,0,0,size);
 				AutoButtonColor = false;
 				BackgroundColor3 = Color3.new(0.94902, 0.94902, 0.94902);
-				BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+				BorderColor3 = GuiColor.Border;
 				--BorderSizePixel = 0;
 				Create'ImageButton'{
 					Name = "ScrollThumb";
 					AutoButtonColor = false;
 					Size = UDim2.new(0, size, 0, size);
-					BackgroundColor3 = Color3.new(0.866667, 0.866667, 0.866667);
-					BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+					BackgroundColor3 = GuiColor.Button;
+					BorderColor3 = GuiColor.Border;
 					--BorderSizePixel = 0;
 				};
 			};
@@ -79,7 +80,7 @@ do
 		local graphicTemplate = Create'Frame'{
 			Name="Graphic";
 			BorderSizePixel = 0;
-			BackgroundColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+			BackgroundColor3 = GuiColor.Border;
 		}
 		local graphicSize = math.floor(size*0.625)
 

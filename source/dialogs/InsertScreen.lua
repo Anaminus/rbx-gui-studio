@@ -25,6 +25,7 @@ do
 	local select_flag = true
 	function Dialogs.InsertScreen(parent,eventCancel)
 		KeyBinding.Enabled = false
+		local GuiColor = InternalSettings.GuiColor
 		local Dialog = Create'ScreenGui'{
 			Name = "Insert Dialog";
 			Create'ImageButton'{
@@ -49,22 +50,24 @@ do
 			};
 			Create'Frame'{
 				Size = UDim2.new(0, 300, 0, 186);
-				BorderColor3 = Color3.new(0.372549, 0.372549, 0.372549);
+				BorderColor3 = GuiColor.Border;
 				Name = "DialogFrame";
 				Position = UDim2.new(0.5, -150, 0.5, -93);
-				BackgroundColor3 = Color3.new(0.917647, 0.917647, 0.917647);
+				BackgroundColor3 = GuiColor.Background;
 				ZIndex = 10;
 				Create'Frame'{
 					Size = UDim2.new(1, 0, 0, 24);
-					BorderColor3 = Color3.new(0.372549, 0.372549, 0.372549);
+					BorderColor3 = GuiColor.Border;
 					Name = "TitleBar";
-					BackgroundColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+					BackgroundColor3 = Color3.new(178/255, 178/255, 178/255);
 					ZIndex = 10;
 					Create'TextLabel'{
 						FontSize = Enum.FontSize.Size12;
 						Text = "Insert ScreenGui...";
 						Size = UDim2.new(1, -6, 1, -6);
 						TextColor3 = Color3.new(1, 1, 1);
+						TextStrokeTransparency = 0;
+						TextStrokeColor3 = GuiColor.Border;
 						TextXAlignment = Enum.TextXAlignment.Left;
 						Name = "Title";
 						Position = UDim2.new(0, 3, 0, 3);
@@ -82,7 +85,7 @@ do
 						FontSize = Enum.FontSize.Size10;
 						Text = "Name";
 						Size = UDim2.new(0.25, -8, 1, 0);
-						TextColor3 = Color3.new(0, 0, 0);
+						TextColor3 = GuiColor.Text;
 						TextXAlignment = Enum.TextXAlignment.Right;
 						Name = "Label";
 						BackgroundTransparency = 1;
@@ -91,12 +94,12 @@ do
 					Create'TextBox'{
 						FontSize = Enum.FontSize.Size10;
 						Size = UDim2.new(0.75, 0, 1, 0);
-						TextColor3 = Color3.new(0, 0, 0);
-						BorderColor3 = Color3.new(0.752941, 0.752941, 0.752941);
+						TextColor3 = GuiColor.Text;
+						BorderColor3 = GuiColor.FieldBorder;
 						Name = "InputBox";
 						Text = "ScreenGui";
 						Position = UDim2.new(0.25, 0, 0, 0);
-						BackgroundColor3 = Color3.new(1, 1, 1);
+						BackgroundColor3 = GuiColor.Field;
 						ZIndex = 10;
 					};
 				};
@@ -110,7 +113,7 @@ do
 						FontSize = Enum.FontSize.Size10;
 						Text = "Parent";
 						Size = UDim2.new(0.25, -8, 1, 0);
-						TextColor3 = Color3.new(0, 0, 0);
+						TextColor3 = GuiColor.Text;
 						TextXAlignment = Enum.TextXAlignment.Right;
 						Name = "Label";
 						BackgroundTransparency = 1;
@@ -120,11 +123,11 @@ do
 						FontSize = Enum.FontSize.Size10;
 						Text = "Select an object...";
 						Size = UDim2.new(0.75, 0, 1, 0);
-						TextColor3 = Color3.new(0, 0, 0);
-						BorderColor3 = Color3.new(0.752941, 0.752941, 0.752941);
+						TextColor3 = GuiColor.Text;
+						BorderColor3 = GuiColor.FieldBorder;
 						Name = "SelectionLabel";
 						Position = UDim2.new(0.25, 0, 0, 0);
-						BackgroundColor3 = Color3.new(1, 1, 1);
+						BackgroundColor3 = GuiColor.Field;
 						ZIndex = 10;
 					};
 				};
@@ -136,13 +139,13 @@ do
 					ZIndex = 10;
 					Create'TextButton'{
 						FontSize = Enum.FontSize.Size18;
-						BackgroundColor3 = Color3.new(1, 1, 1);
+						BackgroundColor3 = GuiColor.Field;
 						Name = "CheckBox";
 						Text = select_flag and 'X' or '';
 						Selected = select_flag;
 						Size = UDim2.new(0, 20, 0, 20);
-						TextColor3 = Color3.new(0, 0, 0);
-						BorderColor3 = Color3.new(0.752941, 0.752941, 0.752941);
+						TextColor3 = GuiColor.Text;
+						BorderColor3 = GuiColor.FieldBorder;
 						Font = Enum.Font.ArialBold;
 						Position = UDim2.new(0, 0, 0, 2);
 						ZIndex = 10;
@@ -151,7 +154,7 @@ do
 						FontSize = Enum.FontSize.Size10;
 						Text = "Set this ScreenGui to the Canvas";
 						Size = UDim2.new(1, -28, 1, 0);
-						TextColor3 = Color3.new(0, 0, 0);
+						TextColor3 = GuiColor.Text;
 						TextXAlignment = Enum.TextXAlignment.Left;
 						Name = "Description";
 						Position = UDim2.new(0, 28, 0, 0);
@@ -161,23 +164,23 @@ do
 				};
 				Create'TextButton'{
 					FontSize = Enum.FontSize.Size12;
-					BackgroundColor3 = Color3.new(0.866667, 0.866667, 0.866667);
+					BackgroundColor3 = GuiColor.Button;
 					Name = "OKButton";
 					Text = "OK";
 					Size = UDim2.new(0, 64, 0, 32);
-					TextColor3 = Color3.new(0, 0, 0);
-					BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+					TextColor3 = GuiColor.Text;
+					BorderColor3 = GuiColor.ButtonBorder;
 					Position = UDim2.new(1, -144, 1, -40);
 					ZIndex = 10;
 				};
 				Create'TextButton'{
 					FontSize = Enum.FontSize.Size12;
-					BackgroundColor3 = Color3.new(0.866667, 0.866667, 0.866667);
+					BackgroundColor3 = GuiColor.Button;
 					Name = "CancelButton";
 					Text = "Cancel";
 					Size = UDim2.new(0, 64, 0, 32);
-					TextColor3 = Color3.new(0, 0, 0);
-					BorderColor3 = Color3.new(0.588235, 0.588235, 0.588235);
+					TextColor3 = GuiColor.Text;
+					BorderColor3 = GuiColor.ButtonBorder;
 					Position = UDim2.new(1, -72, 1, -40);
 					ZIndex = 10;
 				};
@@ -201,11 +204,11 @@ do
 			if ParentInput then
 				ParentInputLabel.BorderColor3 = border_color
 				ParentInputLabel.Text = ParentInput.Name
-				OKButton.Transparency = 0
+				OKButton.TextColor3 = GuiColor.Text
 			else
-				ParentInputLabel.BorderColor3 = Color3.new(1,0,0)
+				ParentInputLabel.BorderColor3 = ButtonSelected
 				ParentInputLabel.Text = "Select an object..."
-				OKButton.Transparency = 0.5
+				OKButton.TextColor3 = GuiColor.TextDisabled
 			end
 		end
 		local conSelection = Selection.SelectionChanged:connect(getParent)
@@ -214,7 +217,7 @@ do
 		-- because of a roblox bug, the canvas depends on StarterGui to operate properly
 		ParentInput = Game:GetService("StarterGui")
 		ParentInputLabel.Text = "StarterGui"
-		ParentInputLabel.TextTransparency = 0.5
+		ParentInputLabel.TextColor3 = GuiColor.TextDisabled
 	--]=]
 
 		SetCanvasInput.MouseButton1Click:connect(function()
