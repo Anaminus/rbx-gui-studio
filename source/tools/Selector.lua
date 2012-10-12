@@ -12,8 +12,6 @@ do
 
 	local Maid = CreateMaid()
 
-	local evalInput
-
 	local function initOptions()
 		local GuiColor = InternalSettings.GuiColor
 		local ComponentFrame = Create'Frame'{
@@ -138,49 +136,6 @@ do
 			};
 		};
 
-		local math_env = {
-			abs = math.abs; acos = math.acos; asin = math.asin; atan = math.atan; atan2 = math.atan2;
-			ceil = math.ceil; cos = math.cos; cosh = math.cosh; deg = math.deg;
-			exp = math.exp; floor = math.floor; fmod = math.fmod; frexp = math.frexp;
-			huge = math.huge; ldexp = math.ldexp; log = math.log; log10 = math.log10;
-			max = math.max; min = math.min; modf = math.modf; pi = math.pi;
-			pow = math.pow; rad = math.rad; random = math.random; sin = math.sin;
-			sinh = math.sinh; sqrt = math.sqrt; tan = math.tan; tanh = math.tanh;
-		}
-
-		if _VERSION == 'Lua 5.2' then
-			function evalInput(str,prev)
-				local env = {}
-				for k,v in pairs(math_env) do
-					env[k] = v
-				end
-				env.x = prev
-				env.n = prev
-				local f = load("return "..s,nil,nil,env)
-				if f then
-					local s,o = pcall(f)
-					if s then return tonumber(o) end
-				end
-				return nil
-			end
-		else
-			function evalInput(str,prev)
-				local env = {}
-				for k,v in pairs(math_env) do
-					env[k] = v
-				end
-				env.x = prev
-				env.n = prev
-				local f = loadstring("return "..str)
-				if f then
-					setfenv(f,env)
-					local s,o = pcall(f)
-					if s then return tonumber(o) end
-				end
-				return nil
-			end
-		end
-
 		Tool.Options = ComponentFrame
 	end
 
@@ -194,111 +149,76 @@ do
 		local SizeX = Descendant(ComponentFrame,2,2)
 		local SizeY = Descendant(ComponentFrame,2,4)
 
+		do
+			--[[
+
+			Here, we're going to have the selected object update when a
+			TextBox is edited by the user. Instead of defining the
+			functionality for each TextBox individually, we're going to map
+			each TextBox to its related components, and use a generic function
+			that handles every TextBox. This will make the code shorter and
+			easier to maintain. It's slower, but that's fine since FocusLost
+			only fires when the user edits the text, which doesn't happen
+			often enough to make a difference.
+
+			]]
+			-- a map of each TextBox to which components it edits
+			local getComponent = {
+				-- third entry is the location of the Scale component in the arguments to UDim2.new()
+				[PosX] = {'Position','X',1};
+				[PosY] = {'Position','Y',3};
+				[SizeX] = {'Size','X',1};
+				[SizeY] = {'Size','Y',3};
+			}
+
+			local function getEnabled(textBox)
+				if currentObject then
+					local c = getComponent[textBox]
+					local p = currentObject[c[1]][c[2]]
+					if layoutMode then
+						return true,p.Scale
+					else
+						return true,p.Offset
+					end
+				else
+					return false,''
+				end
+			end
+
+			local function updateValue(textBox,value)
+				local c = getComponent[textBox]
+				local p = currentObject[c[1]]
+				local comp = {p.X.Scale,p.X.Offset,p.Y.Scale,p.Y.Offset}
+				-- if layoutMode is Offset, add 1 to the location
+				comp[c[3] + (layoutMode and 0 or 1)] = value
+				currentObject[c[1]] = UDim2.new(unpack(comp))
+				-- setting the property already updates the TextBox's text
+				return true
+			end
+
+			-- PosX
+			ToolTipService:AddToolTip(PosX,"The X coordinate of the Position")
+			local _,con = Widgets.NumberTextBox(getEnabled,updateValue,PosX)
+			Maid:GiveTask(con)
+
+			-- PosY
+			ToolTipService:AddToolTip(PosY,"The Y coordinate of the Position")
+			local _,con = Widgets.NumberTextBox(getEnabled,updateValue,PosY)
+			Maid:GiveTask(con)
+
+			-- SizeX
+			ToolTipService:AddToolTip(SizeX,"The X coordinate of the Size")
+			local _,con = Widgets.NumberTextBox(getEnabled,updateValue,SizeX)
+			Maid:GiveTask(con)
+
+			-- SizeY
+			ToolTipService:AddToolTip(SizeX,"The X coordinate of the Size")
+			local _,con = Widgets.NumberTextBox(getEnabled,updateValue,SizeY)
+			Maid:GiveTask(con)
+		end
+
 		local format = string.format
 		local formatString = '%g'
-
-		ToolTipService:AddToolTip(PosX,"The X coordinate of the Position")
-		Maid:GiveTask(PosX.FocusLost:connect(function()
-			if currentObject then
-				local p = currentObject.Position
-				if layoutMode then
-					local prev = p.X.Scale
-					local num = evalInput(PosX.Text,prev)
-					if num then
-					--	PosX.Text = format(formatString,num)
-						currentObject.Position = UDim2.new(num,p.X.Offset,p.Y.Scale,p.Y.Offset)
-					else
-						PosX.Text = format(formatString,prev)
-					end
-				else
-					local prev = p.X.Offset
-					local num = evalInput(PosX.Text,prev)
-					if num then
-					--	PosX.Text = format(formatString,num)
-						currentObject.Position = UDim2.new(p.X.Scale,num,p.Y.Scale,p.Y.Offset)
-					else
-						PosX.Text = format(formatString,prev)
-					end
-				end
-			end
-		end))
-		ToolTipService:AddToolTip(PosY,"The Y coordinate of the Position")
-		Maid:GiveTask(PosY.FocusLost:connect(function()
-			if currentObject then
-				local p = currentObject.Position
-				if layoutMode then
-					local prev = p.Y.Scale
-					local num = evalInput(PosY.Text,prev)
-					if num then
-					--	PosY.Text = format(formatString,num)
-						currentObject.Position = UDim2.new(p.X.Scale,p.X.Offset,num,p.Y.Offset)
-					else
-						PosY.Text = format(formatString,prev)
-					end
-				else
-					local prev = p.Y.Offset
-					local num = evalInput(PosY.Text,prev)
-					if num then
-					--	PosY.Text = format(formatString,num)
-						currentObject.Position = UDim2.new(p.X.Scale,p.X.Offset,p.Y.Scale,num)
-					else
-						PosY.Text = format(formatString,prev)
-					end
-				end
-			end
-		end))
-		ToolTipService:AddToolTip(SizeX,"The X coordinate of the Size")
-		Maid:GiveTask(SizeX.FocusLost:connect(function()
-			if currentObject then
-				local s = currentObject.Size
-				if layoutMode then
-					local prev = s.X.Scale
-					local num = evalInput(SizeX.Text,prev)
-					if num then
-					--	SizeX.Text = format(formatString,num)
-						currentObject.Size = UDim2.new(num,s.X.Offset,s.Y.Scale,s.Y.Offset)
-					else
-						SizeX.Text = format(formatString,prev)
-					end
-				else
-					local prev = s.X.Offset
-					local num = evalInput(SizeX.Text,prev)
-					if num then
-					--	SizeX.Text = format(formatString,num)
-						currentObject.Size = UDim2.new(s.X.Scale,num,s.Y.Scale,s.Y.Offset)
-					else
-						SizeX.Text = format(formatString,prev)
-					end
-				end
-			end
-		end))
-		ToolTipService:AddToolTip(SizeY,"The Y coordinate of the Size")
-		Maid:GiveTask(SizeY.FocusLost:connect(function()
-			if currentObject then
-				local s = currentObject.Size
-				if layoutMode then
-					local prev = s.Y.Scale
-					local num = evalInput(SizeY.Text,prev)
-					if num then
-					--	SizeY.Text = format(formatString,num)
-						currentObject.Size = UDim2.new(s.X.Scale,s.X.Offset,num,s.Y.Offset)
-					else
-						SizeY.Text = format(formatString,prev)
-					end
-				else
-					local prev = s.Y.Offset
-					local num = evalInput(SizeY.Text,prev)
-					if num then
-					--	SizeY.Text = format(formatString,num)
-						currentObject.Size = UDim2.new(s.X.Scale,s.X.Offset,s.Y.Scale,num)
-					else
-						SizeY.Text = format(formatString,prev)
-					end
-				end
-			end
-		end))
-		-- yeah who cares
-
 		local function updateComponents(p)
 			if p == 'AbsolutePosition' then
 				if layoutMode then
