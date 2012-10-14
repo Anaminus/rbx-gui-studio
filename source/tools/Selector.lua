@@ -144,10 +144,10 @@ do
 		local layoutMode = Settings.LayoutMode('Scale')
 		local currentObject
 
-		local PosX  = Descendant(ComponentFrame,1,2)
-		local PosY  = Descendant(ComponentFrame,1,4)
-		local SizeX = Descendant(ComponentFrame,2,2)
-		local SizeY = Descendant(ComponentFrame,2,4)
+		local PosX  = DescendantByOrder(ComponentFrame,1,2)
+		local PosY  = DescendantByOrder(ComponentFrame,1,4)
+		local SizeX = DescendantByOrder(ComponentFrame,2,2)
+		local SizeY = DescendantByOrder(ComponentFrame,2,4)
 
 		do
 			--[[
@@ -260,8 +260,8 @@ do
 			end
 		end
 
-		local SetPosZero = Descendant(ComponentFrame,1,5)
-		local SetSizeZero = Descendant(ComponentFrame,2,5)
+		local SetPosZero = DescendantByOrder(ComponentFrame,1,5)
+		local SetSizeZero = DescendantByOrder(ComponentFrame,2,5)
 
 		ToolTipService:AddToolTip(SetPosZero,"Set the opposite layout component of the Position to 0")
 		ToolTipService:AddToolTip(SetSizeZero,"Set the opposite layout component of the Size to 0")

@@ -95,8 +95,8 @@ function Dialogs.SelectScreen(parent,eventCancel)
 		};
 	};
 
-	local OKButton = Descendant(Dialog,3,2)
-	local CancelButton = Descendant(Dialog,3,3)
+	local OKButton = DescendantByOrder(Dialog,3,2)
+	local CancelButton = DescendantByOrder(Dialog,3,3)
 
 	local screens = GetScreens(Game:GetService("StarterGui")) -- bug #1
 
@@ -105,7 +105,7 @@ function Dialogs.SelectScreen(parent,eventCancel)
 	SelectionList.Boundary.BorderColor3 = GuiColor.Border
 	SelectionList.GUI.Position = UDim2.new(0,8,0,32)
 	SelectionList.GUI.Size = UDim2.new(1,-16,1,-80)
-	SelectionList.GUI.Parent = Descendant(Dialog,3)
+	SelectionList.GUI.Parent = DescendantByOrder(Dialog,3)
 
 	local SelectedScreen
 	local Selection = Game:GetService("Selection")
@@ -144,8 +144,8 @@ function Dialogs.SelectScreen(parent,eventCancel)
 	Dialog.Parent = Game:GetService("CoreGui")
 --[=[]]
 	-- roblox bug: drawing order of ScreenGuis behaves erratically
-	local DialogFrame = Descendant(Dialog,3)
-	local Shield = Descendant(Dialog,1)
+	local DialogFrame = DescendantByOrder(Dialog,3)
+	local Shield = DescendantByOrder(Dialog,1)
 
 	Shield.Parent = parent
 	DialogFrame.Parent = parent

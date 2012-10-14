@@ -49,7 +49,7 @@ local function Create(ty)
 end
 
 --Gets a descendant of an object by child order
-function Descendant(object,...)
+function DescendantByOrder(object,...)
 	local children = object:GetChildren()
 	for i,v in pairs{...} do
 		object = children[v]

@@ -187,12 +187,12 @@ do
 			};
 		};
 
-		local NameInput = Descendant(Dialog,3,2,2)
-		local ParentInputLabel = Descendant(Dialog,3,3,2)
-		local SetCanvasInput = Descendant(Dialog,3,4,1)
+		local NameInput = DescendantByOrder(Dialog,3,2,2)
+		local ParentInputLabel = DescendantByOrder(Dialog,3,3,2)
+		local SetCanvasInput = DescendantByOrder(Dialog,3,4,1)
 
-		local OKButton = Descendant(Dialog,3,5)
-		local CancelButton = Descendant(Dialog,3,6)
+		local OKButton = DescendantByOrder(Dialog,3,5)
+		local CancelButton = DescendantByOrder(Dialog,3,6)
 
 		local ParentInput
 
@@ -258,8 +258,8 @@ do
 		Dialog.Parent = Game:GetService("CoreGui")
 	--[=[]]
 		-- roblox bug: drawing order of ScreenGuis behaves erratically
-		local DialogFrame = Descendant(Dialog,3)
-		local Shield = Descendant(Dialog,1)
+		local DialogFrame = DescendantByOrder(Dialog,3)
+		local Shield = DescendantByOrder(Dialog,1)
 
 		Shield.Parent = parent
 		DialogFrame.Parent = parent
