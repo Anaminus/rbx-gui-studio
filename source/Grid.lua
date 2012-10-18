@@ -4,6 +4,8 @@ Draws a grid in a specified object.
 API:
 	Grid.Origin                     Returns the UDim2 origin of the grid.
 	Grid.Spacing                    Returns the UDim2 spacing of the grid.
+	Grid.ScaleLineColor             Returns the Color4 value of the lines of the Scale grid.
+	Grid.OffsetLineColor            Returns the Color4 value of the lines of the Offset grid.
 	Grid.Parent                     Returns the object the grid appears under.
 	Grid.Visible                    Returns whether or not the grid is visible.
 	Grid.Container                  The GUI object containing the grid lines.
@@ -12,17 +14,22 @@ API:
 	                                `spacing` and `origin` are UDim2s.
 	                                The Scale component of the UDim2 will set the spacing and origin of the Scale grid.
 	                                The Offset component of the UDim2 will set the spacing and origin of the Offset grid.
+	Grid:SetColor(scale,offset)     Sets the color of the grid lines.
+	                                Both arguments are Color4 values, and are optional.
 	Grid:SetParent(parent)          Sets the object the grid will appear in.
 	Grid:SetVisible(visible)        Sets whether the grid is visible.
 
 	Grid.Updated(layout)            Fired after the grid's Origin or Spacing updates.
 	                                `layout` is the current LayoutMode.
+	Grid.VisibilitySet(visible)     Fired after the grid's visibility is set.
 ]]
 
 do
 	Grid = {
 		Origin = UDim2.new(0,0,0,0);
 		Spacing = UDim2.new(1/16,32,1/16,32);
+		ScaleLineColor = Color4.new(0,0,0,0.75);
+		OffsetLineColor = Color4.new(0,0,0,0.75);
 		Container = nil;
 		Parent = nil;
 		Visible = false;
@@ -43,6 +50,7 @@ do
 	local conScopeChanged
 
 	local eventUpdated = CreateSignal(Grid,'Updated')
+	local eventVisibilitySet = CreateSignal(Grid,'VisibilitySet')
 
 	local layoutMode = Settings.LayoutMode('Scale')
 
@@ -155,19 +163,24 @@ do
 		eventUpdated:Fire(Settings.LayoutMode)
 	end
 
+	local function updateTemplateColor()
+		local color
+		if layoutMode then
+			color = Grid.ScaleLineColor
+		else
+			color = Grid.OffsetLineColor
+		end
+		lineTemplateX.BackgroundColor3 = color.color3
+		lineTemplateX.Transparency     = color.a
+		lineTemplateY.BackgroundColor3 = color.color3
+		lineTemplateY.Transparency     = color.a
+	end
+
 
 	Settings.Changed:connect(function(key,value)
 		if key == 'LayoutMode' and gridContainer then
 			layoutMode = value('Scale')
---[[
-			if layoutMode then
-				lineTemplateX.BackgroundColor3 = InternalSettings.ScaleModeColor
-				lineTemplateY.BackgroundColor3 = InternalSettings.ScaleModeColor
-			else
-				lineTemplateX.BackgroundColor3 = InternalSettings.OffsetModeColor
-				lineTemplateY.BackgroundColor3 = InternalSettings.OffsetModeColor
-			end
---]]
+			updateTemplateColor()
 			updateGrid()
 		end
 	end)
@@ -176,8 +189,8 @@ do
 		lineTemplateX = Create'Frame'{
 			Name = "GridLine Vertical";
 			BorderSizePixel = 0;
-			BackgroundColor3 = Color3.new(0,0,0);
-			Transparency = 0.75;
+			BackgroundColor3 = layoutMode and Grid.ScaleLineColor.color3 or Grid.OffsetLineColor.color3;
+			Transparency = layoutMode and Grid.ScaleLineColor.a or Grid.OffsetLineColor.a;
 			ZIndex = 9;
 			Size = UDim2.new(0,1,1,0);
 		}
@@ -220,17 +233,39 @@ do
 				gridContainer.Parent = nil
 			end
 		end
+		eventVisibilitySet:Fire(visible)
 	end
 
-	function Grid:SetGrid(spacing,origin)
-		if spacing then
-			self.Spacing = spacing
-		end
+	function Grid:SetGrid(origin,spacing)
 		if origin then
 			self.Origin = origin
 		end
+		if spacing then
+			self.Spacing = spacing
+		end
 		if gridContainer then
 			updateGrid()
+		end
+	end
+
+	function Grid:SetColor(scale,offset)
+		if scale then
+			self.ScaleLineColor = scale
+		end
+		if offset then
+			self.OffsetLineColor = offset
+		end
+		updateTemplateColor()
+		local color = layoutMode and scale or offset
+		for i = 1,#GridLinesX do
+			local line = GridLinesX[i]
+			line.BackgroundColor3 = color.color3
+			line.Transparency     = color.a
+		end
+		for i = 1,#GridLinesY do
+			local line = GridLinesY[i]
+			line.BackgroundColor3 = color.color3
+			line.Transparency     = color.a
 		end
 	end
 
