@@ -277,3 +277,26 @@ do
 		return setmetatable({},mt)
 	end
 end
+
+do
+	Color4 = {
+		new = function(r,g,b,a)
+			return {r=r,g=g,b=b,a=a,color3=Color3.new(r,g,b)}
+		end;
+		background = function(object,color4)
+			object.BackgroundColor3 = color4.color3
+			object.BackgroundTransparency = color4.a
+		end;
+		border = function(object,color4)
+			object.BorderColor3 = color4.color3
+		end;
+		text = function(object,color4)
+			object.TextColor3 = color4.color3
+			object.TextTransparency = color4.a
+		end;
+		textstroke = function(object,color4)
+			object.TextStrokeColor3 = color4.color3
+			object.TextStrokeTransparency = color4.a
+		end;
+	}
+end
