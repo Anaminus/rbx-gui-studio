@@ -36,7 +36,7 @@ Settings.LayoutMode = Enums.LayoutMode(1)
 
 -- Snapping
 Settings.SnapEnabled = false
-Settings.SnapDistance = 8
+Settings.SnapTolerance = 8
 Settings.SnapFromCorners = true
 Settings.SnapFromEdges = true
 Settings.SnapFromCenter = true
