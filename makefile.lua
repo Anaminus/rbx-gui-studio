@@ -39,6 +39,7 @@ read (widgets/[[StackingFrame.lua]])       {'main'}
 read (widgets/[[StaticStackingFrame.lua]]) {'main'}
 read (widgets/[[ScrollBar.lua]])           {'main'}
 read (widgets/[[ScrollingContainer.lua]])  {'main'}
+read (widgets/[[TabContainer.lua]])        {'main'}
 read (widgets/[[ButtonMenu.lua]])          {'main'}
 read (widgets/[[List.lua]])                {'main'}
 read (widgets/[[DialogBase.lua]])          {'main'}
