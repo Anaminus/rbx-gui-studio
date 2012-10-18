@@ -71,13 +71,22 @@ do
 				Select = function(self)
 					if Settings.LayoutMode('Scale') then
 						Settings.LayoutMode = Enums.LayoutMode.Offset
-						Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,0,3)
-						ToolTipService:AddToolTip(self.Button,"Toggle Layout Mode (currently Offset)")
 					else
 						Settings.LayoutMode = Enums.LayoutMode.Scale
-						Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,0,2)
-						ToolTipService:AddToolTip(self.Button,"Toggle Layout Mode (currently Scale)")
 					end
+				end;
+				Setup = function(self)
+					Settings.Changed:connect(function(key,value)
+						if key == 'LayoutMode' then
+							if value('Scale') then
+								Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,0,2)
+								ToolTipService:AddToolTip(self.Button,"Toggle Layout Mode (currently Scale)")
+							else
+								Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,0,3)
+								ToolTipService:AddToolTip(self.Button,"Toggle Layout Mode (currently Offset)")
+							end
+						end
+					end)
 				end;
 			};
 			{
@@ -87,25 +96,35 @@ do
 				KeyBinding = "y";
 				Select = function(self)
 					Grid:SetVisible(not Grid.Visible)
-					if Grid.Visible then
-						self.Button.BorderColor3 = GuiColor.ButtonSelected
-					else
-						self.Button.BorderColor3 = GuiColor.ButtonBorder
-					end
+				end;
+				Setup = function(self)
+					Grid.VisibilitySet:connect(function(visible)
+						if visible then
+							self.Button.BorderColor3 = GuiColor.ButtonSelected
+						else
+							self.Button.BorderColor3 = GuiColor.ButtonBorder
+						end
+					end)
 				end;
 			};
 			{
-				Name = "ToggleGrid";
+				Name = "ToggleSnapping";
 				Icon = "";
 				ToolTip = "Toggle whether objects will snap to the grid";
 				KeyBinding = "u";
 				Select = function(self)
 					Settings.SnapEnabled = not Settings.SnapEnabled
-					if Settings.SnapEnabled then
-						self.Button.BorderColor3 = GuiColor.ButtonSelected
-					else
-						self.Button.BorderColor3 = GuiColor.ButtonBorder
-					end
+				end;
+				Setup = function(self)
+					Settings.Changed:connect(function(key,value)
+						if key == 'SnapEnabled' then
+							if value then
+								self.Button.BorderColor3 = GuiColor.ButtonSelected
+							else
+								self.Button.BorderColor3 = GuiColor.ButtonBorder
+							end
+						end
+					end)
 				end;
 			};
 		--[[
@@ -144,6 +163,9 @@ do
 		for i,button in pairs(MenuButtons) do
 			if button.KeyBinding then
 				KeyBinding:Add(button.KeyBinding,function() button:Select() end)
+			end
+			if button.Setup then
+				button:Setup()
 			end
 		end
 
