@@ -212,7 +212,7 @@ do
 			Maid:GiveTask(con)
 
 			-- SizeY
-			ToolTipService:AddToolTip(SizeX,"The X coordinate of the Size")
+			ToolTipService:AddToolTip(SizeY,"The X coordinate of the Size")
 			local _,con = Widgets.NumberTextBox(getEnabled,updateValue,SizeY)
 			Maid:GiveTask(con)
 		end
