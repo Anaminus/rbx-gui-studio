@@ -149,7 +149,7 @@ do
 		-- These values are used every time a drag occurs, so they are calculated only when they need to be.
 		local layoutScaled = Settings.LayoutMode('Scale')
 		local snapEnabled = Settings.SnapEnabled and not no_snap
-		local snapDist = Settings.SnapDistance
+		local snapTolerance = Settings.SnapTolerance
 		local gridOrigin
 		local gridSpacing
 		local gridPos
@@ -238,8 +238,8 @@ do
 				if key == 'SnapEnabled' then
 					snapEnabled = value and not no_snap
 					updateOriginClick()
-				elseif key == 'SnapDistance' then
-					snapDist = value
+				elseif key == 'SnapTolerance' then
+					snapTolerance = value
 				end
 			end
 			Maid:GiveTask(Settings.Changed:connect(updateSnap))
@@ -390,10 +390,10 @@ do
 				end
 
 				-- if the drag point is too far away from the snap candidate, don't snap
-				if math.abs(dragPos.x - snapCandX) > snapDist then
+				if math.abs(dragPos.x - snapCandX) > snapTolerance then
 					snapCandX = dragPos.x
 				end
-				if math.abs(dragPos.y - snapCandY) > snapDist then
+				if math.abs(dragPos.y - snapCandY) > snapTolerance then
 					snapCandY = dragPos.y
 				end
 

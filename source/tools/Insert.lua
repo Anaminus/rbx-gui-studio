@@ -122,10 +122,10 @@ do
 				local snapCandX = math.floor((originClick.x - gridOrigin.x)/gridSpacing.x + 0.5)*gridSpacing.x + gridOrigin.x
 				local snapCandY = math.floor((originClick.y - gridOrigin.y)/gridSpacing.y + 0.5)*gridSpacing.y + gridOrigin.y
 
-				if math.abs(originClick.x - snapCandX) > Settings.SnapDistance then
+				if math.abs(originClick.x - snapCandX) > Settings.SnapTolerance then
 					snapCandX = originClick.x
 				end
-				if math.abs(originClick.y - snapCandY) > Settings.SnapDistance then
+				if math.abs(originClick.y - snapCandY) > Settings.SnapTolerance then
 					snapCandY = originClick.y
 				end
 
