@@ -127,15 +127,15 @@ do
 					end)
 				end;
 			};
-		--[[
 			{
 				Name = "ConfigGrid";
 				Icon = "";
 				ToolTip = "Configure the grid";
 				Select = function()
-
+					Grid:ConfigDialog()
 				end;
 			};
+		--[[
 			'----------------';
 			{
 				Name = "ToggleBackground";

@@ -269,6 +269,21 @@ do
 		end
 	end
 
+	function Grid:ConfigDialog()
+		local origin,
+		spacing,
+		scale_color,
+		offset_color,
+		snap_enabled,
+		snap_tolerance = Dialogs.ConfigGrid(UserInterface.Screen,PluginActivator.Deactivated)
+		if origin ~= nil then
+			self:SetColor(scale_color,offset_color)
+			self:SetGrid(origin,spacing)
+			Settings.SnapTolerance = snap_tolerance
+			Settings.SnapEnabled = snap_enabled
+		end
+	end
+
 	AddServiceStatus{Grid;
 		Start = function()
 			conScopeChanged = Scope.ScopeChanged:connect(function(scope)
