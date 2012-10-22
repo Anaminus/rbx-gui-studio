@@ -89,6 +89,7 @@ do
 					end)
 				end;
 			};
+			'----------------';
 			{
 				Name = "ToggleGrid";
 				Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,0,4);
@@ -109,7 +110,7 @@ do
 			};
 			{
 				Name = "ToggleSnapping";
-				Icon = "";
+				Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,1,0);
 				ToolTip = "Toggle whether objects will snap to the grid";
 				KeyBinding = "u";
 				Select = function(self)
@@ -129,7 +130,7 @@ do
 			};
 			{
 				Name = "ConfigGrid";
-				Icon = "";
+				Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,1,1);
 				ToolTip = "Configure the grid";
 				Select = function()
 					Grid:ConfigDialog()

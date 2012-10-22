@@ -22,7 +22,7 @@ InternalSettings = {
 	ScaleModeColor = Color3.new(42/255,127/255,255/255);
 	OffsetModeColor = Color3.new(255/255,127/255,42/255);
 	IconMap = {
-		Menu   = Preload"http://www.roblox.com/asset/?id=93526019";
+		Menu   = Preload"http://www.roblox.com/asset/?id=95760448";
 		Tool   = Preload"http://www.roblox.com/asset/?id=93526037";
 		Insert = Preload"http://www.roblox.com/asset/?id=93526058";
 	};
