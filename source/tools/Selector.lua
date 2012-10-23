@@ -165,10 +165,10 @@ do
 			-- a map of each TextBox to which components it edits
 			local getComponent = {
 				-- third entry is the location of the Scale component in the arguments to UDim2.new()
-				[PosX] = {'Position','X',1};
-				[PosY] = {'Position','Y',3};
-				[SizeX] = {'Size','X',1};
-				[SizeY] = {'Size','Y',3};
+				[PosX]  = {'Position', 'X', 1, "The X coordinate of the Position"};
+				[PosY]  = {'Position', 'Y', 3, "The Y coordinate of the Position"};
+				[SizeX] = {    'Size', 'X', 1,     "The X coordinate of the Size"};
+				[SizeY] = {    'Size', 'Y', 3,     "The X coordinate of the Size"};
 			}
 
 			local function getEnabled(textBox)
@@ -196,25 +196,11 @@ do
 				return true
 			end
 
-			-- PosX
-			ToolTipService:AddToolTip(PosX,"The X coordinate of the Position")
-			local _,con = Widgets.NumberTextBox(getEnabled,updateValue,PosX)
-			Maid:GiveTask(con)
-
-			-- PosY
-			ToolTipService:AddToolTip(PosY,"The Y coordinate of the Position")
-			local _,con = Widgets.NumberTextBox(getEnabled,updateValue,PosY)
-			Maid:GiveTask(con)
-
-			-- SizeX
-			ToolTipService:AddToolTip(SizeX,"The X coordinate of the Size")
-			local _,con = Widgets.NumberTextBox(getEnabled,updateValue,SizeX)
-			Maid:GiveTask(con)
-
-			-- SizeY
-			ToolTipService:AddToolTip(SizeY,"The X coordinate of the Size")
-			local _,con = Widgets.NumberTextBox(getEnabled,updateValue,SizeY)
-			Maid:GiveTask(con)
+			for textBox,data in pairs(getComponent) do
+				ToolTipService:AddToolTip(textBox,data[4])
+				local _,con = Widgets.NumberTextBox(getEnabled,updateValue,textBox)
+				Maid:GiveTask(con)
+			end
 		end
 
 		local format = string.format
