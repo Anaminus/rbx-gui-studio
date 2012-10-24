@@ -171,35 +171,36 @@ do
 				[SizeY] = {    'Size', 'Y', 3,     "The X coordinate of the Size"};
 			}
 
-			local function getEnabled(textBox)
+			local function textMask(textBox,text)
 				if currentObject then
 					local c = getComponent[textBox]
-					local p = currentObject[c[1]][c[2]]
-					if layoutMode then
-						return true,p.Scale
+					local p = currentObject[c[1]]
+					local l = layoutMode and 'Scale' or 'Offset'
+					local prev = p[c[2]][l]
+					local value = EvaluateInput(text,{
+						n = prev;
+						x = currentObject.Position.X[l];
+						y = currentObject.Position.Y[l];
+						w = currentObject.Size.X[l];
+						h = currentObject.Size.Y[l];
+					})
+					if value then
+						local comp = {p.X.Scale,p.X.Offset,p.Y.Scale,p.Y.Offset}
+						-- if layoutMode is Offset, add 1 to the location
+						comp[c[3] + (layoutMode and 0 or 1)] = value
+						currentObject[c[1]] = UDim2.new(unpack(comp))
+						-- setting the property already updates the TextBox's text
 					else
-						return true,p.Offset
+						return string.format('%g',prev)
 					end
 				else
-					return false,''
+					return ''
 				end
-			end
-
-			local function updateValue(textBox,value)
-				local c = getComponent[textBox]
-				local p = currentObject[c[1]]
-				local comp = {p.X.Scale,p.X.Offset,p.Y.Scale,p.Y.Offset}
-				-- if layoutMode is Offset, add 1 to the location
-				comp[c[3] + (layoutMode and 0 or 1)] = value
-				currentObject[c[1]] = UDim2.new(unpack(comp))
-				-- setting the property already updates the TextBox's text
-				return true
 			end
 
 			for textBox,data in pairs(getComponent) do
 				ToolTipService:AddToolTip(textBox,data[4])
-				local _,con = Widgets.NumberTextBox(getEnabled,updateValue,textBox)
-				Maid:GiveTask(con)
+				Maid:GiveTask(Widgets.MaskedTextBox(textBox,textMask))
 			end
 		end
 

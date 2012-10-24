@@ -300,3 +300,72 @@ do
 		end;
 	}
 end
+
+--[[EvaluateInput
+Converts a string to a number by evaluating the string as a Lua, allowing mathematical expressions to be used.
+All members of the math library can be used (i.e. "sqrt(2)").
+The variables "x" and "n" are also defined, whose values may be previous input.
+
+Arguments:
+	expression
+		The string to be evaluated.
+
+	predefinedValues
+		A table of values to be added to the environment of the expression. Optional.
+
+Returns:
+	evaluatedNumber
+		The number evaluated from the expression.
+		This value will be nil if the expression had bad syntax or the output could not be converted to a number.
+
+]]
+do
+	local mathEnvironment = {
+		abs = math.abs; acos = math.acos; asin = math.asin; atan = math.atan; atan2 = math.atan2;
+		ceil = math.ceil; cos = math.cos; cosh = math.cosh; deg = math.deg;
+		exp = math.exp; floor = math.floor; fmod = math.fmod; frexp = math.frexp;
+		huge = math.huge; ldexp = math.ldexp; log = math.log; log10 = math.log10;
+		max = math.max; min = math.min; modf = math.modf; pi = math.pi;
+		pow = math.pow; rad = math.rad; random = math.random; sin = math.sin;
+		sinh = math.sinh; sqrt = math.sqrt; tan = math.tan; tanh = math.tanh;
+	}
+
+	if _VERSION == 'Lua 5.2' then
+		function EvaluateInput(str,values)
+			local env = {}
+			for k,v in pairs(mathEnvironment) do
+				env[k] = v
+			end
+			if values then
+				for k,v in pairs(values) do
+					env[k] = v
+				end
+			end
+			local f = load("return "..s,nil,nil,env)
+			if f then
+				local s,o = pcall(f)
+				if s then return tonumber(o) end
+			end
+			return nil
+		end
+	else
+		function EvaluateInput(str,values)
+			local env = {}
+			for k,v in pairs(mathEnvironment) do
+				env[k] = v
+			end
+			if values then
+				for k,v in pairs(values) do
+					env[k] = v
+				end
+			end
+			local f = loadstring("return "..str)
+			if f then
+				setfenv(f,env)
+				local s,o = pcall(f)
+				if s then return tonumber(o) end
+			end
+			return nil
+		end
+	end
+end

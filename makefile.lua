@@ -32,7 +32,7 @@ widgets = [[source/widgets]]
 read (widgets/[[Header.lua]])              {'main'}
 read (widgets/[[ToolTipService.lua]])      {'main'}
 read (widgets/[[AutoSizeLabel.lua]])       {'main'}
-read (widgets/[[NumberTextBox.lua]])       {'main'}
+read (widgets/[[MaskedTextBox.lua]])       {'main'}
 read (widgets/[[Graphics.lua]])            {'main'}
 read (widgets/[[Icon.lua]])                {'main'}
 read (widgets/[[StackingFrame.lua]])       {'main'}

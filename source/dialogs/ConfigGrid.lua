@@ -372,33 +372,40 @@ do
 
 		do	-- map TextBoxes to grid components
 			local inputComponents = {
-				[OriginXScale  ] = { 'Origin', 'X',  'Scale', 1,   "Grid.Origin.Scale.X"};
-				[OriginXOffset ] = { 'Origin', 'X', 'Offset', 2,  "Grid.Origin.Offset.X"};
-				[OriginYScale  ] = { 'Origin', 'Y',  'Scale', 3,   "Grid.Origin.Scale.Y"};
-				[OriginYOffset ] = { 'Origin', 'Y', 'Offset', 4,  "Grid.Origin.Offset.Y"};
+				[ OriginXScale ] = { 'Origin', 'X',  'Scale', 1,   "Grid.Origin.Scale.X"};
+				[ OriginXOffset] = { 'Origin', 'X', 'Offset', 2,  "Grid.Origin.Offset.X"};
+				[ OriginYScale ] = { 'Origin', 'Y',  'Scale', 3,   "Grid.Origin.Scale.Y"};
+				[ OriginYOffset] = { 'Origin', 'Y', 'Offset', 4,  "Grid.Origin.Offset.Y"};
 				[SpacingXScale ] = {'Spacing', 'X',  'Scale', 1,  "Grid.Spacing.Scale.X"};
 				[SpacingXOffset] = {'Spacing', 'X', 'Offset', 2, "Grid.Spacing.Offset.X"};
 				[SpacingYScale ] = {'Spacing', 'Y',  'Scale', 3,  "Grid.Spacing.Scale.Y"};
 				[SpacingYOffset] = {'Spacing', 'Y', 'Offset', 4, "Grid.Spacing.Offset.Y"};
 			}
-			local function getEnabled(textBox)
-				local c = inputComponents[textBox]
-				return true,gridProperties[c[1]][c[2]][c[3]]
-			end
 
-			local function updateValue(textBox,value)
+			local function textMask(textBox,text)
 				local c = inputComponents[textBox]
-				local p = gridProperties[c[1]]
-				local comp = {p.X.Scale,p.X.Offset,p.Y.Scale,p.Y.Offset}
-				comp[c[4]] = value
-				gridProperties[c[1]] = UDim2.new(unpack(comp))
+				local prev = gridProperties[c[1]][c[2]][c[3]]
+				local value = EvaluateInput(text,{n = prev})
+				if value then
+					if c[3] == 'Offset' then
+						value = math.floor(value)
+					end
+					if value > 0 or c[1] == 'Origin' then
+						local p = gridProperties[c[1]]
+						local comp = {p.X.Scale,p.X.Offset,p.Y.Scale,p.Y.Offset}
+						comp[c[4]] = value
+						gridProperties[c[1]] = UDim2.new(unpack(comp))
+						return string.format('%g',value)
+					end
+				end
+				return string.format('%g',prev)
 			end
 
 			for textBox,c in pairs(inputComponents) do
 				textBox.Text = gridProperties[c[1]][c[2]][c[3]]
 				ToolTipService:AddToolTip(textBox,c[5])
 				clearToolTips[#clearToolTips+1] = textBox
-				Widgets.NumberTextBox(getEnabled,updateValue,textBox)
+				Widgets.MaskedTextBox(textBox,textMask)
 			end
 		end
 
@@ -466,15 +473,18 @@ do
 		ToolTipService:AddToolTip(SnapTolerance,"Sets the maximum distance a snapping point must be from a grid line to snap to it, in pixels.")
 		clearToolTips[#clearToolTips+1] = SnapTolerance
 		SnapTolerance.Text = gridProperties.SnapTolerance
-		Widgets.NumberTextBox(
-			function()
-				return true,gridProperties.SnapTolerance
-			end,
-			function(textBox,value)
+		Widgets.MaskedTextBox(SnapTolerance,function(textBox,text)
+			local prev = gridProperties.SnapTolerance
+			local value = EvaluateInput(text,{n=prev})
+			if value then
+				value = math.floor(value)
+				value = value < 0 and 0 or value
 				gridProperties.SnapTolerance = value
-			end,
-			SnapTolerance
-		)
+				return value
+			else
+				return prev
+			end
+		end)
 
 	--	local ScaleLineColor  = DescendantByOrder(ScaleTab, 1,4,2)
 	--	local OffsetLineColor = DescendantByOrder(OffsetTab,1,4,2)
