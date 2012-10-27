@@ -402,7 +402,7 @@ do
 			end
 
 			for textBox,c in pairs(inputComponents) do
-				textBox.Text = gridProperties[c[1]][c[2]][c[3]]
+				textBox.Text = string.format('%g',gridProperties[c[1]][c[2]][c[3]])
 				ToolTipService:AddToolTip(textBox,c[5])
 				clearToolTips[#clearToolTips+1] = textBox
 				Widgets.MaskedTextBox(textBox,textMask)
