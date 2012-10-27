@@ -73,17 +73,54 @@ do
 	static.
 
 	]]
-	local ModifierLookup = {       -- Position           Size                Snap Adjust
-		[DragModifier.TopLeft]     = {Vector2.new(1, 1), Vector2.new(-1,-1), Vector2.new(0  , 0  )};
-		[DragModifier.Top]         = {Vector2.new(0, 1), Vector2.new( 0,-1), Vector2.new(0.5, 0  )};
-		[DragModifier.TopRight]    = {Vector2.new(0, 1), Vector2.new( 1,-1), Vector2.new(1  , 0  )};
-		[DragModifier.Right]       = {Vector2.new(0, 0), Vector2.new( 1, 0), Vector2.new(1  , 0.5)};
+	local ModifierLookup = {	   -- Position           Size                Snap Adjust
+		[DragModifier.TopLeft    ] = {Vector2.new(1, 1), Vector2.new(-1,-1), Vector2.new(0  , 0  )};
+		[DragModifier.Top        ] = {Vector2.new(0, 1), Vector2.new( 0,-1), Vector2.new(0.5, 0  )};
+		[DragModifier.TopRight   ] = {Vector2.new(0, 1), Vector2.new( 1,-1), Vector2.new(1  , 0  )};
+		[DragModifier.Right      ] = {Vector2.new(0, 0), Vector2.new( 1, 0), Vector2.new(1  , 0.5)};
 		[DragModifier.BottomRight] = {Vector2.new(0, 0), Vector2.new( 1, 1), Vector2.new(1  , 1  )};
-		[DragModifier.Bottom]      = {Vector2.new(0, 0), Vector2.new( 0, 1), Vector2.new(0.5, 1  )};
-		[DragModifier.BottomLeft]  = {Vector2.new(1, 0), Vector2.new(-1, 1), Vector2.new(0  , 1  )};
-		[DragModifier.Left]        = {Vector2.new(1, 0), Vector2.new(-1, 0), Vector2.new(0  , 0.5)};
-		[DragModifier.Center]      = {Vector2.new(1, 1), Vector2.new( 0, 0), Vector2.new(0.5, 0.5)};
+		[DragModifier.Bottom     ] = {Vector2.new(0, 0), Vector2.new( 0, 1), Vector2.new(0.5, 1  )};
+		[DragModifier.BottomLeft ] = {Vector2.new(1, 0), Vector2.new(-1, 1), Vector2.new(0  , 1  )};
+		[DragModifier.Left       ] = {Vector2.new(1, 0), Vector2.new(-1, 0), Vector2.new(0  , 0.5)};
+		[DragModifier.Center     ] = {Vector2.new(1, 1), Vector2.new( 0, 0), Vector2.new(0.5, 0.5)};
 	}
+
+	local NegCorrection do
+		--[[
+
+			If a coordinate of the AbsoluteSize of an object is negative, then
+			the object wont resize as expected. That's why we map the given
+			drag modifier to a corrected modifier, depending on which
+			coordinates are negative.
+
+			For example, if both coordinates are negative, and the given
+			modifier is TopLeft, it would map to BottomRight, because that's
+			the opposite corner on both axes.
+
+		]]
+
+		local TopLeft     = DragModifier.TopLeft
+		local Top         = DragModifier.Top
+		local TopRight    = DragModifier.TopRight
+		local Right       = DragModifier.Right
+		local BottomRight = DragModifier.BottomRight
+		local Bottom      = DragModifier.Bottom
+		local BottomLeft  = DragModifier.BottomLeft
+		local Left        = DragModifier.Left
+		local Center      = DragModifier.Center
+
+		NegCorrection = {	-- AbsoluteSize: X>=0; Y>=0            X>=0; Y<0                      X<0; Y>=0             X<0; Y<0
+			[ TopLeft     ]={[true]={[true]= TopLeft     ,[false]= BottomLeft  },[false]={[true]= TopRight    ,[false]= BottomRight }};
+			[ Top         ]={[true]={[true]= Top         ,[false]= Bottom      },[false]={[true]= Top         ,[false]= Bottom      }};
+			[ TopRight    ]={[true]={[true]= TopRight    ,[false]= BottomRight },[false]={[true]= TopLeft     ,[false]= BottomLeft  }};
+			[ Right       ]={[true]={[true]= Right       ,[false]= Right       },[false]={[true]= Left        ,[false]= Left        }};
+			[ BottomRight ]={[true]={[true]= BottomRight ,[false]= TopRight    },[false]={[true]= BottomLeft  ,[false]= TopLeft     }};
+			[ Bottom      ]={[true]={[true]= Bottom      ,[false]= Top         },[false]={[true]= Bottom      ,[false]= Top         }};
+			[ BottomLeft  ]={[true]={[true]= BottomLeft  ,[false]= TopLeft     },[false]={[true]= BottomRight ,[false]= TopRight    }};
+			[ Left        ]={[true]={[true]= Left        ,[false]= Left        },[false]={[true]= Right       ,[false]= Right       }};
+			[ Center      ]={[true]={[true]= Center      ,[false]= Center      },[false]={[true]= Center      ,[false]= Center      }};
+		}
+	end
 
 	local CenterSnapPoints = {
 		{
@@ -106,20 +143,15 @@ do
 		};
 	}
 
-	function Widgets.DragGUI(objectList,originObject,mouseClick,dragModifier,callbacks,dragParent,snap_anchor,no_hide,no_snap)
+	function Widgets.DragGUI(objectList,originObject,mouseClick,dragMod,callbacks,dragParent,snap_anchor,no_hide,no_snap)
 		if type(objectList) ~= 'table' then
 			objectList = {objectList}
 		end
 
-		dragModifier = dragModifier == nil and DragModifier(1) or DragModifier(dragModifier)
-		if dragModifier == nil then
+		dragMod = dragMod == nil and DragModifier(1) or DragModifier(dragMod)
+		if dragMod == nil then
 			error("DragGUI: bad argument #4, unable to cast value to DragModifier",2)
 		end
-
-		local modifier = ModifierLookup[dragModifier]
-		local modPos = modifier[1]
-		local modSize = modifier[2]
-		local modSnap = modifier[3]
 
 		callbacks = callbacks or {}
 
@@ -146,6 +178,11 @@ do
 		local originObjectPos
 		local originObjectSize
 
+		local dragModifier = dragMod
+		local modPos
+		local modSize
+		local modSnap
+
 		-- These values are used every time a drag occurs, so they are calculated only when they need to be.
 		local layoutScaled = Settings.LayoutMode('Scale')
 		local snapEnabled = Settings.SnapEnabled and not no_snap
@@ -171,6 +208,33 @@ do
 				Size = UDim2.new(0,8,0,8);
 			}
 			Maid:GiveTask(function() snapAnchorFrame:Destroy() end)
+		end
+
+		local snapAnchor = Vector2.new(0,0)
+		local function updateSnapAnchorFrame(cx,cy)
+			--[[
+
+			The position of the visual indicator must be adjusted depending on
+			which coordinates of the absolute size are negative, because GUIs
+			are drawn based on their apparent size (how they look), and not
+			their actual size.
+
+			]]
+			if snapAnchorFrame then
+				if cx then
+					if cy then
+						snapAnchorFrame.Position = UDim2.new(snapAnchor.x,-4,snapAnchor.y,-4)
+					else
+						snapAnchorFrame.Position = UDim2.new(snapAnchor.x,-4,1-snapAnchor.y,-4)
+					end
+				else
+					if cy then
+						snapAnchorFrame.Position = UDim2.new(1-snapAnchor.x,-4,snapAnchor.y,-4)
+					else
+						snapAnchorFrame.Position = UDim2.new(1-snapAnchor.x,-4,1-snapAnchor.y,-4)
+					end
+				end
+			end
 		end
 
 		local function updateOriginClick()
@@ -224,7 +288,10 @@ do
 			end
 			if snapAnchorFrame then
 				if anchor then
-					snapAnchorFrame.Position = UDim2.new(anchor.x,-4,anchor.y,-4)
+				-- implies originObject ~= nil
+					local abs = originObject.AbsoluteSize
+					snapAnchor = anchor
+					updateSnapAnchorFrame(abs.x >= 0,abs.y >= 0)
 					snapAnchorFrame.Parent = originObject
 				else
 					snapAnchorFrame.Parent = nil
@@ -307,6 +374,18 @@ do
 				originSize[i] = object.Size
 			end
 
+			if originObject then
+				local abs = originObject.AbsoluteSize
+				dragModifier = NegCorrection[dragMod][abs.x >= 0][abs.y >= 0]
+			else
+				dragModifier = dragMod
+			end
+
+			local modifier = ModifierLookup[dragModifier]
+			modPos = modifier[1]
+			modSize = modifier[2]
+			modSnap = modifier[3]
+
 			updateOriginClick()
 		end
 
@@ -336,6 +415,8 @@ do
 
 		local OnDrag = callbacks.OnDrag
 		Maid:GiveTask(Dragger.MouseButton1Up:connect(finishDrag))
+		local negAbsX
+		local negAbsY
 		Maid:GiveTask(Dragger.MouseMoved:connect(function(x,y)
 		--[[ amount in pixels before a click is considered a drag
 			if not hasDragged and (originClick - Vector2.new(x,y)).magnitude <= Settings.ClickDragThreshold then
@@ -428,6 +509,18 @@ do
 
 					local size = Vector2.new(oSize.X.Offset,oSize.Y.Offset) + mouseDelta*modSize
 					object.Size = UDim2.new(oSize.X.Scale,size.x,oSize.Y.Scale,size.y)
+				end
+			end
+
+			if snapAnchorFrame and originObject then
+			-- updates the snapAnchorFrame when the abs size is dragged from positive to negative, and vice-versa
+				local abs = originObject.AbsoluteSize
+				local x = abs.x >= 0
+				local y = abs.y >= 0
+				if x ~= negAbsX or y ~= negAbsY then
+					negAbsX = x
+					negAbsY = y
+					updateSnapAnchorFrame(x,y)
 				end
 			end
 		end))
