@@ -25,7 +25,7 @@ read [[METADATA]]                 {'main'}
 read [[source/Utility.lua]]       {'main'}
 read [[source/Plugin.lua]]        {'main'}
 read [[source/Settings.lua]]      {'main'}
-read [[source/Mouse.lua]]         {'main'}
+read [[source/Keyboard.lua]]      {'main'}
 read [[source/KeyBinding.lua]]    {'main'}
 
 widgets = [[source/widgets]]
