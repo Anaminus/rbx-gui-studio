@@ -19,10 +19,13 @@ do
 	local Camera = Workspace.CurrentCamera
 	local cameraCF
 	local cameraFO
+	local cameraType
 	PluginActivator.Activated:connect(function()
 		if Camera then
 			cameraCF = Camera.CoordinateFrame
 			cameraFO = Camera.Focus
+			cameraType = Camera.CameraType
+			Camera.CameraType = 'Scriptable'
 		end
 		Mouse:Start()
 		UserInterface:Start()
@@ -34,6 +37,7 @@ do
 		UserInterface:Stop()
 		Mouse:Stop()
 		if Camera then
+			Camera.CameraType = cameraType
 			Camera.CoordinateFrame = cameraCF
 			Camera.Focus = cameraFO
 		end
