@@ -3,7 +3,7 @@ do
 		Name = "Selector";
 		Icon = Widgets.Icon(nil,InternalSettings.IconMap.Tool,32,0,0);
 		ToolTip = "Select and transform objects";
-		KeyBinding = "f";
+		KeyBinding = "s";
 	}
 
 	local SelectedObjects = Selection.SelectedObjects

@@ -21,7 +21,7 @@ do
 				Name = "InsertScreenGui";
 				Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,0,0);
 				ToolTip = "Insert a new ScreenGui";
-				KeyBinding = "e";
+				KeyBinding = "shift+ctrl+i";
 				Select = function()
 					ScreenManager:InsertDialog()
 				end;
@@ -30,7 +30,7 @@ do
 				Name = "SelectScreenGui";
 				Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,0,1);
 				ToolTip = "Set a ScreenGui to the canvas";
-				KeyBinding = "r";
+				KeyBinding = "shift+ctrl+s";
 				Select = function()
 					ScreenManager:SelectDialog()
 				end;
@@ -67,7 +67,7 @@ do
 				Name = "LayoutMode";
 				Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,0,2);
 				ToolTip = "Toggle Layout Mode (currently Scale)";
-				KeyBinding = "t";
+				KeyBinding = "alt+l";
 				Select = function(self)
 					if Settings.LayoutMode('Scale') then
 						Settings.LayoutMode = Enums.LayoutMode.Offset
@@ -94,7 +94,7 @@ do
 				Name = "ToggleGrid";
 				Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,0,4);
 				ToolTip = "Toggle visibility of the grid";
-				KeyBinding = "y";
+				KeyBinding = "alt+g";
 				Select = function(self)
 					Grid:SetVisible(not Grid.Visible)
 				end;
@@ -112,7 +112,7 @@ do
 				Name = "ToggleSnapping";
 				Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,1,0);
 				ToolTip = "Toggle whether objects will snap to the grid";
-				KeyBinding = "u";
+				KeyBinding = "alt+s";
 				Select = function(self)
 					Settings.SnapEnabled = not Settings.SnapEnabled
 				end;
@@ -131,6 +131,7 @@ do
 			{
 				Name = "ConfigGrid";
 				Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,1,1);
+				KeyBinding = "shift+ctrl+g";
 				ToolTip = "Configure the grid";
 				Select = function()
 					Grid:ConfigDialog()
