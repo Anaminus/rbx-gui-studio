@@ -27,7 +27,7 @@ do
 			cameraType = Camera.CameraType
 			Camera.CameraType = 'Scriptable'
 		end
-		Mouse:Start()
+		Keyboard:Start()
 		UserInterface:Start()
 		ScreenManager:RunStartup()
 	end)
@@ -35,7 +35,7 @@ do
 	PluginActivator.Deactivated:connect(function()
 		Canvas:Stop()
 		UserInterface:Stop()
-		Mouse:Stop()
+		Keyboard:Stop()
 		if Camera then
 			Camera.CameraType = cameraType
 			Camera.CoordinateFrame = cameraCF

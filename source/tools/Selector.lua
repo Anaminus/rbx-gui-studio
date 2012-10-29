@@ -351,7 +351,7 @@ do
 		end
 
 		local function selectNothing()
-			if not Mouse.CtrlIsDown then
+			if not Keyboard.CtrlIsDown then
 				Selection:Set{}
 			end
 		end
@@ -394,7 +394,7 @@ do
 
 			local can_drag = true
 			-- click to select
-			if not Mouse.ShiftIsDown then
+			if not Keyboard.ShiftIsDown then
 				-- act upon the clicked object's container
 				local o = Scope:GetContainer(object)
 				if o == nil then
@@ -407,7 +407,7 @@ do
 				object = o
 				active = activeLookup[o]
 			end
-			if Mouse.CtrlIsDown then
+			if Keyboard.CtrlIsDown then
 			-- multi-select
 				can_drag = false
 				if Selection:Contains(object) then
@@ -480,9 +480,9 @@ do
 		end
 
 		do
-			local Mouse = Mouse
+			local Keyboard = Keyboard
 			local function moveSelection(dir,scaled)
-				if Mouse.CtrlIsDown then
+				if Keyboard.CtrlIsDown then
 					if scaled then
 						for i,object in pairs(SelectedObjects) do
 							local active = activeLookup[object]
@@ -534,7 +534,7 @@ do
 				end
 			end)
 
-			local arrowIsDown = Mouse.KeyIsDown
+			local arrowIsDown = Keyboard.KeyIsDown
 			local MoveID = 0
 			Maid:GiveTask(function() MoveID = MoveID + 1 end)
 			local function startMoving()
@@ -584,10 +584,10 @@ do
 				inAction = false
 			end
 
-			Maid.arrow_up    = Mouse.KeyDown[up   ]:connect(startMoving)
-			Maid.arrow_down  = Mouse.KeyDown[down ]:connect(startMoving)
-			Maid.arrow_right = Mouse.KeyDown[right]:connect(startMoving)
-			Maid.arrow_left  = Mouse.KeyDown[left ]:connect(startMoving)
+			Maid.arrow_up    = Keyboard.KeyDown[up   ]:connect(startMoving)
+			Maid.arrow_down  = Keyboard.KeyDown[down ]:connect(startMoving)
+			Maid.arrow_right = Keyboard.KeyDown[right]:connect(startMoving)
+			Maid.arrow_left  = Keyboard.KeyDown[left ]:connect(startMoving)
 		end
 	end
 

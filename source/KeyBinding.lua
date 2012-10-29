@@ -44,10 +44,10 @@ do
 		if Commands[combo] then
 			error("KeyBinding:Add: `"..combo.."` already has a binding",2)
 		end
-		Commands[combo] = Mouse.KeyDown[base]:connect(function(mouse)
+		Commands[combo] = Keyboard.KeyDown[base]:connect(function(keyboard)
 			if self.Enabled then
 				for mod,down in pairs(mods) do
-					if mouse[mod] ~= down then
+					if keyboard[mod] ~= down then
 						return
 					end
 				end

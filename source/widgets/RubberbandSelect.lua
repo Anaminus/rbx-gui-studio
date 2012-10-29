@@ -181,7 +181,7 @@ function Widgets.RubberbandSelect(originClick,callbacks)
 							end
 						end
 					end
-					if Mouse.CtrlIsDown then
+					if Keyboard.CtrlIsDown then
 						Selection:Add(selectionList)
 					else
 						Selection:Set(selectionList)

@@ -1,21 +1,19 @@
---[[Mouse
-"extends" the PluginMouse to add some extra features.
+--[[Keyboard
+Allows keystrokes to be detected and whatnot.
 
 API:
-	Has the same members as the PluginMouse.
-
-	Mouse.ShiftIsDown   Returns whether the Shift modifier key is down.
-	Mouse.CtrlIsDown    Returns whether thr Ctrl modifier key is down.
-	Mouse.AltIsDown     Returns whether the Alt modifier key is down.
-	Mouse.KeyIsDown     A table containg keys that are currently down (use Mouse.KeyIsDown[key]).
-	Mouse.KeyDown       Allows listeners to be connected to specific keys when they are pressed.
-	                    The Mouse is passed to the listener.
-	                        conn = Mouse.KeyDown[key]:connect( listener )
-	                        conn:disconnect()
-	Mouse.KeyUp         Allows listeners to be connected to specific keys when they are depressed.
-	                    The Mouse is passed to the listener.
-	                        conn = Mouse.KeyUp[key]:connect( listener )
-	                        conn:disconnect()
+	Keyboard.ShiftIsDown   Returns whether the Shift modifier key is down.
+	Keyboard.CtrlIsDown    Returns whether thr Ctrl modifier key is down.
+	Keyboard.AltIsDown     Returns whether the Alt modifier key is down.
+	Keyboard.KeyIsDown     A table containg keys that are currently down (use Keyboard.KeyIsDown[key]).
+	Keyboard.KeyDown       Allows listeners to be connected to specific keys when they are pressed.
+	                       The Keyboard is passed to the listener.
+	                           conn = Keyboard.KeyDown[key]:connect( listener )
+	                           conn:disconnect()
+	Keyboard.KeyUp         Allows listeners to be connected to specific keys when they are depressed.
+	                       The Keyboard is passed to the listener.
+	                           conn = Keyboard.KeyUp[key]:connect( listener )
+	                           conn:disconnect()
 ]]
 
 do
@@ -35,7 +33,7 @@ do
 	local KeyDown = {}
 	local KeyUp = {}
 
-	Mouse = {
+	Keyboard = {
 		CtrlIsDown = false;
 		ShiftIsDown = false;
 		AltIsDown = false;
@@ -77,13 +75,13 @@ do
 		KeyIsDown[key] = true
 
 		local mod_key = MOD_KEYS[key]
-		if mod_key then Mouse[mod_key] = true end
+		if mod_key then Keyboard[mod_key] = true end
 
 		if Enabled then
 			local listeners = KeyDown[key]
 			if listeners then
 				for i,listener in pairs(listeners) do
-					listener(Mouse)
+					listener(Keyboard)
 				end
 			end
 		end
@@ -93,19 +91,19 @@ do
 		KeyIsDown[key] = nil
 
 		local mod_key = MOD_KEYS[key]
-		if mod_key then Mouse[mod_key] = false end
+		if mod_key then Keyboard[mod_key] = false end
 
 		if Enabled then
 			local listeners = KeyUp[key]
 			if listeners then
 				for i,listener in pairs(listeners) do
-					listener(Mouse)
+					listener(Keyboard)
 				end
 			end
 		end
 	end)
 
-	AddServiceStatus{Mouse;
+	AddServiceStatus{Keyboard;
 		Start = function(self)
 			Enabled = true
 		end;
@@ -113,10 +111,4 @@ do
 			Enabled = false
 		end;
 	}
-
-	 setmetatable(Mouse,{
-		-- "inherit" from PluginMouse
-		__index = PluginMouse;
-		__newindex = PluginMouse;
-	})
 end

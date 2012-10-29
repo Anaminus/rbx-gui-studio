@@ -180,7 +180,7 @@ do
 			if checkDoubleClick(object) then return end
 
 			-- click to select
-			if not Mouse.ShiftIsDown then
+			if not Keyboard.ShiftIsDown then
 				-- act upon the clicked object's container
 				local o = Scope:GetContainer(object)
 				if o == nil then
