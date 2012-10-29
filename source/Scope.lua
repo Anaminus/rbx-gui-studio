@@ -45,7 +45,7 @@ do
 	local function visualScopeChange(previous,current)
 		previous = Canvas.ActiveLookup[previous]
 		current = Canvas.ActiveLookup[current]
-		if previous and current then
+		if previous and current and previous ~= current then
 			local pPos,pSize = previous.AbsolutePosition,previous.AbsoluteSize
 			local cPos,cSize = current.AbsolutePosition,current.AbsoluteSize
 
