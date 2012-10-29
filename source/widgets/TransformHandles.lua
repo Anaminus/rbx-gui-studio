@@ -260,11 +260,20 @@ function Widgets.TransformHandles(Canvas)
 		handle.MouseButton1Down:connect(function(x,y)
 			if Handles.Parent then
 				Frame.Visible = false
-				finishDrag = Widgets.DragGUI(Active,Active,Vector2.new(x,y),name,{
+				local objectList = Selection:Get()
+				local activeList = {}
+				local activeLookup = Canvas.ActiveLookup
+				for i,object in pairs(objectList) do
+					activeList[i] = activeLookup[object]
+				end
+				finishDrag = Widgets.DragGUI(activeList,Active,Vector2.new(x,y),name,{
 					OnRelease = function()
 						ResetButtonColor(handle)
-						BoundObject.Position = Active.Position
-						BoundObject.Size = Active.Size
+						for i,active in pairs(activeList) do
+							local object = objectList[i]
+							object.Position = active.Position
+							object.Size = active.Size
+						end
 						Frame.Visible = true
 						finishDrag = nil
 					end;
