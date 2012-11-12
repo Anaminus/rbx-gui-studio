@@ -201,7 +201,7 @@ do
 
 	-- remove all instances of a value from a list
 	local function removeValue(list,value)
-		local i,n = 0,#list
+		local i,n = 1,#list
 		while i <= n do
 			if list[i] == value then
 				table.remove(list,i)
