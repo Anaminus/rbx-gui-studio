@@ -200,7 +200,7 @@ do
 				Create(ToolbarFrame){
 					Name = "Toolbar ButtonMenu";
 					Position = UDim2.new(0, 0, 0, menuSize*2);
-					Size = UDim2.new(0, menuSize, 1, -menuSize);
+					Size = UDim2.new(0, menuSize, 1, -menuSize*2);
 				};
 				Create(ToolManager.ToolOptionsFrame){
 					Name = "ToolOptions";
@@ -209,13 +209,17 @@ do
 					BackgroundColor3 = GuiColor.Background;
 					BorderColor3 = GuiColor.Border;
 				};
-			};
-			Create'Frame'{
-				Name = "BottomPanel";
-				Position = UDim2.new(0, 0, 1, -1);
-				Size = UDim2.new(1, 0, 0, -60);
-				BackgroundColor3 = GuiColor.Background;
-				BorderColor3 = GuiColor.Border;
+				Create'Frame'{
+					Name = "BottomPanel";
+					Position = UDim2.new(0, 0, 1, -1);
+					Size = UDim2.new(1, 0, 0, 60);
+					BackgroundColor3 = GuiColor.Background;
+					BorderColor3 = GuiColor.Border;
+					Create(Status.StatusFrame){
+						Position = UDim2.new(0,60,0,0);
+						Size = UDim2.new(0.5,-60,1,0);
+					};
+				};
 			};
 		}
 
