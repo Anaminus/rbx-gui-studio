@@ -2,31 +2,41 @@
 Allows keystrokes to be detected and whatnot.
 
 API:
-	Keyboard.ShiftIsDown   Returns whether the Shift modifier key is down.
-	Keyboard.CtrlIsDown    Returns whether thr Ctrl modifier key is down.
-	Keyboard.AltIsDown     Returns whether the Alt modifier key is down.
-	Keyboard.KeyIsDown     A table containg keys that are currently down (use Keyboard.KeyIsDown[key]).
-	Keyboard.KeyDown       Allows listeners to be connected to specific keys when they are pressed.
-	                       The Keyboard is passed to the listener.
-	                           conn = Keyboard.KeyDown[key]:connect( listener )
-	                           conn:disconnect()
-	Keyboard.KeyUp         Allows listeners to be connected to specific keys when they are depressed.
-	                       The Keyboard is passed to the listener.
-	                           conn = Keyboard.KeyUp[key]:connect( listener )
-	                           conn:disconnect()
+	Keyboard.ShiftIsDown    Returns whether the Shift modifier key is down.
+	Keyboard.CtrlIsDown     Returns whether thr Ctrl modifier key is down.
+	Keyboard.AltIsDown      Returns whether the Alt modifier key is down.
+	Keyboard.KeyIsDown      A table containg keys that are currently down (use Keyboard.KeyIsDown[key]).
+	                        "shift", "ctrl", and "alt" represent their respective modifier keys.
+	Keyboard.KeyDown        Allows listeners to be connected to specific keys when they are pressed.
+	                        The Keyboard is passed to the listener.
+	                            conn = Keyboard.KeyDown[key]:connect( listener )
+	                            conn:disconnect()
+	                        "shift", "ctrl", and "alt" as the `key` will represent modifier keys.
+	Keyboard.KeyUp          Allows listeners to be connected to specific keys when they are depressed.
+	                        The Keyboard is passed to the listener.
+	                            conn = Keyboard.KeyUp[key]:connect( listener )
+	                            conn:disconnect()
+	                        "shift", "ctrl", and "alt" as the `key` will represent modifier keys.
 ]]
 
 do
 	local PluginMouse = PluginActivator.Plugin:GetMouse()
 	local Enabled = false
 
+	local convertMod = {
+		[string.char(47)] = 'shift';
+		[string.char(48)] = 'shift';
+		[string.char(49)] = 'ctrl';
+		[string.char(50)] = 'ctrl';
+		[string.char(51)] = 'alt';
+		[string.char(52)] = 'alt';
+	}
+
+	-- TODO?: Remove these in favor of KeyIsDown[modifer]
 	local MOD_KEYS = {
-		[string.char(47)] = 'ShiftIsDown';
-		[string.char(48)] = 'ShiftIsDown';
-		[string.char(49)] = 'CtrlIsDown';
-		[string.char(50)] = 'CtrlIsDown';
-		[string.char(51)] = 'AltIsDown';
-		[string.char(52)] = 'AltIsDown';
+		['shift'] = 'ShiftIsDown';
+		['ctrl'] = 'CtrlIsDown';
+		['alt'] = 'AltIsDown';
 	}
 
 	local KeyIsDown = {}
@@ -72,6 +82,7 @@ do
 	end
 
 	PluginMouse.KeyDown:connect(function(key)
+		key = convertMod[key] or key
 		KeyIsDown[key] = true
 
 		local mod_key = MOD_KEYS[key]
@@ -88,6 +99,7 @@ do
 	end)
 
 	PluginMouse.KeyUp:connect(function(key)
+		key = convertMod[key] or key
 		KeyIsDown[key] = nil
 
 		local mod_key = MOD_KEYS[key]
