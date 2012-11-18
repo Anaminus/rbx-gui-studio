@@ -216,8 +216,8 @@ do
 					BackgroundColor3 = GuiColor.Background;
 					BorderColor3 = GuiColor.Border;
 					Create(Status.StatusFrame){
-						Position = UDim2.new(0,60,0,0);
-						Size = UDim2.new(0.5,-60,1,0);
+						Position = UDim2.new(0,60,0,4);
+						Size = UDim2.new(0.5,-60,1,-8);
 					};
 				};
 			};
