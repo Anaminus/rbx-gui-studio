@@ -59,7 +59,7 @@ do
 					Size = UDim2.new(1, 0, 0, 24);
 					BorderColor3 = GuiColor.Border;
 					Name = "TitleBar";
-					BackgroundColor3 = Color3.new(178/255, 178/255, 178/255);
+					BackgroundColor3 = GuiColor.TitleBackground;
 					ZIndex = 10;
 					Create'TextLabel'{
 						FontSize = Enum.FontSize.Size12;
