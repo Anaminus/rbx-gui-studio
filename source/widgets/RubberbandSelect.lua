@@ -38,6 +38,10 @@ function Widgets.RubberbandSelect(originClick,callbacks)
 			if hasDragged then
 				OnDrag(x,y)
 			else
+				Status:Add('RubberbandSelect',{
+					"Drag around objects to select them. Hold Ctrl to add to the selection.";
+				}){true}
+
 				local width = 2
 				local color = Color3.new(1,1,1)
 				selectBox = Create'Frame'{
@@ -190,6 +194,7 @@ function Widgets.RubberbandSelect(originClick,callbacks)
 			else
 				if callbacks.OnClick then callbacks.OnClick(x,y) end
 			end
+			Status:Remove('RubberbandSelect')
 		end;
 	},Canvas.CanvasFrame,false,true,true)
 end

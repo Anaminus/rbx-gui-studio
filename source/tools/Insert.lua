@@ -45,6 +45,11 @@ do
 	function Tool:Select()
 		if not self.Options then initOptions() end
 
+
+		Status:Add('InsertTool',{
+			"Click and drag to insert an object. Click an object to select it. Double-click to change scope.";
+		}){true}
+
 		local TransformHandles = Widgets.TransformHandles(Canvas)
 		Maid:GiveTask(function() TransformHandles:Destroy() end)
 		do
@@ -241,6 +246,7 @@ do
 	end
 
 	function Tool:Deselect()
+		Status:Remove('InsertTool')
 		Maid:DoCleaning()
 	end
 

@@ -320,6 +320,27 @@ do
 		if not self.Options then initOptions() end
 		runOptions()
 
+		-- used to prevent actions from occurring at the same time
+		local inAction = false
+
+		local toolStatus = Status:Add('SelectorTool',{
+			[1] = "Click, Ctrl+Click, or drag around objects to select them.";
+			[8] = "Click unselected object to add to selection. Click selected object to remove from selection.";
+			[16] = "Double-click to change scope.";
+			[24] = "Hold Shift to ignore scope.";
+			[32] = "Arrow keys for precise movement.";
+			[33] = "Arrow keys for precise resizing.";
+			[34] = "Hold Ctrl for precise resizing.";
+		})
+		toolStatus{[1]=true; [16]=true; [24]=true}
+
+		Maid:GiveTask(Keyboard.KeyDown['ctrl']:connect(function()
+			toolStatus{[1]=false; [8]=true; [32]=false; [33]=true}
+		end))
+		Maid:GiveTask(Keyboard.KeyUp['ctrl']:connect(function()
+			toolStatus{[1]=true; [8]=false; [32]=true; [33]=false}
+		end))
+
 		local TransformHandles = Widgets.TransformHandles(Canvas,Maid)
 		Maid:GiveTask(function() TransformHandles:Destroy() end)
 
@@ -355,9 +376,6 @@ do
 				Selection:Set{}
 			end
 		end
-
-		-- used to prevent actions from occurring at the same time
-		local inAction = false
 
 		local function rubberband(x,y)
 			Maid.rubberband = Widgets.RubberbandSelect(Vector2.new(x,y),{
@@ -431,6 +449,7 @@ do
 				end
 
 				TransformHandles.Frame.Visible = false
+				Status:Add('SelectorDragging')
 				Maid.drag_gui = Widgets.DragGUI(activeObjects,active,Vector2.new(x,y),'Center',{
 					OnDrag = function(x,y,hasDragged,setObjects)
 						if not hasDragged then
@@ -455,6 +474,7 @@ do
 						elseif not Selection:Contains(object) then
 							Selection:Set{object}
 						end
+						Status:Remove('SelectorDragging')
 						TransformHandles.Frame.Visible = true
 						Maid.drag_gui = nil
 						inAction = false
@@ -539,9 +559,12 @@ do
 			Maid:GiveTask(function() MoveID = MoveID + 1 end)
 			local function startMoving()
 				if inAction and MoveID == 0 then return end
+
 				TransformHandles.Frame.Visible = false
 				Selection:SetVisible(false)
 				inAction = true
+
+				Status:Add('SelectorArrows',{"Precise movement. Hold Ctrl for precise resizing."}){true}
 
 				local cid = MoveID + 1
 				MoveID = cid
@@ -578,6 +601,9 @@ do
 						break
 					end
 				end
+
+				Status:Remove('SelectorArrows')
+
 				MoveID = 0
 				TransformHandles.Frame.Visible = true
 				Selection:SetVisible(true)
@@ -592,6 +618,7 @@ do
 	end
 
 	function Tool:Deselect()
+		Status:Remove('SelectorTool')
 		Maid:DoCleaning()
 	end
 
