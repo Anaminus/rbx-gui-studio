@@ -28,6 +28,7 @@ read [[source/Settings.lua]]      {'main'}
 read [[source/Keyboard.lua]]      {'main'}
 read [[source/KeyBinding.lua]]    {'main'}
 read [[source/Status.lua]]        {'main'}
+read [[source/Exporter.lua]]      {'main'}
 
 widgets = [[source/widgets]]
 read (widgets/[[Header.lua]])              {'main'}
