@@ -257,4 +257,18 @@ do
 		end
 		return data
 	end
+
+	function Exporter:ExportDialog()
+		local exportString = Dialogs.ExportScreen(UserInterface.Screen,PluginActivator.Deactivated)
+		if exportString then
+			local exportScript = Create'Script'{
+				Name = "Screen GUI Export Data";
+				Disabled = true;
+				Archivable = false;
+				Source = exportString;
+			}
+			exportScript.Parent = Workspace
+			Selection:Set{exportScript}
+		end
+	end
 end

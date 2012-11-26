@@ -60,6 +60,7 @@ read (dialogs/[[Header.lua]])       {'main'}
 read (dialogs/[[InsertScreen.lua]]) {'main'}
 read (dialogs/[[SelectScreen.lua]]) {'main'}
 read (dialogs/[[ConfigGrid.lua]])   {'main'}
+read (dialogs/[[ExportScreen.lua]]) {'main'}
 
 read [[source/Canvas.lua]]        {'main'}
 read [[source/Scope.lua]]         {'main'}

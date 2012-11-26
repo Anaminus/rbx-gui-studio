@@ -137,6 +137,15 @@ do
 					Grid:ConfigDialog()
 				end;
 			};
+			{
+				Name = "ExportScreen";
+				Icon = "";--Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,1,1);
+				KeyBinding = "shift+ctrl+e";
+				ToolTip = "Export the scurrent Screen.";
+				Select = function()
+					Exporter:ExportDialog()
+				end;
+			};
 		--[[
 			'----------------';
 			{
