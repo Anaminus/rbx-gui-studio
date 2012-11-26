@@ -28,7 +28,12 @@ read [[source/Settings.lua]]      {'main'}
 read [[source/Keyboard.lua]]      {'main'}
 read [[source/KeyBinding.lua]]    {'main'}
 read [[source/Status.lua]]        {'main'}
-read [[source/Exporter.lua]]      {'main'}
+
+export = [[source/export]]
+read (export/[[Exporter.lua]])          {'main'}
+read (export/[[RobloxLua.lua]])         {'main'}
+read (export/[[LuaCreateInstance.lua]]) {'main'}
+read (export/[[RobloxXML.lua]])         {'main'}
 
 widgets = [[source/widgets]]
 read (widgets/[[Header.lua]])              {'main'}
