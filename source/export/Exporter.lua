@@ -2,6 +2,9 @@
 Serializes an Instance into a string, in a given format.
 
 API:
+	Exporter.FormatList
+		A list of available format names.
+
 	Exporter.DataTypeFormat
 		A table of string/table pairs, exposing the type formatters for each export format.
 		Each key is the name of an export format.
@@ -82,6 +85,7 @@ API:
 do
 	Exporter = {
 		DefaultCache = {};
+		FormatList = {};
 		DataTypeFormat = {};
 		FormatMethod = {};
 		FormatOptions = {};
@@ -245,6 +249,7 @@ do
 	end
 
 	function Exporter:AddFormat(name,method,types,options)
+		self.FormatList[#self.FormatList+1] = name
 		self.FormatMethod[name] = method
 		self.DataTypeFormat[name] = types
 		self.FormatOptions[name] = options
