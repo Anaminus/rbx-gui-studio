@@ -49,6 +49,7 @@ read (widgets/[[ScrollingContainer.lua]])  {'main'}
 read (widgets/[[TabContainer.lua]])        {'main'}
 read (widgets/[[ButtonMenu.lua]])          {'main'}
 read (widgets/[[List.lua]])                {'main'}
+read (widgets/[[DropDown.lua]])            {'main'}
 read (widgets/[[DialogBase.lua]])          {'main'}
 read (widgets/[[Dragger.lua]])             {'main'}
 read (widgets/[[DragGUI.lua]])             {'main'}
