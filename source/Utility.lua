@@ -205,6 +205,29 @@ function CreateSignal(instance,name)
 	return Invoker
 end
 
+local SetZIndex,SetZIndexOnChanged do
+	local ZIndexLock = {}
+	function SetZIndex(object,z)
+		if not ZIndexLock[object] then
+			ZIndexLock[object] = true
+			object.ZIndex = z
+			local children = object:GetChildren()
+			for i = 1,#children do
+				SetZIndex(children[i],z)
+			end
+			ZIndexLock[object] = nil
+		end
+	end
+
+	function SetZIndexOnChanged(object)
+		return object.Changed:connect(function(p)
+			if p == "ZIndex" then
+				SetZIndex(object,object.ZIndex)
+			end
+		end)
+	end
+end
+
 -- returns the ascendant ScreenGui of an object
 local function GetScreen(screen)
 	if screen == nil then return nil end
