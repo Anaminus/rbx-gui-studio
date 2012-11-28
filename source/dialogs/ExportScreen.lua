@@ -65,13 +65,12 @@ do
 					FontSize = Enum.FontSize.Size10;
 					TextColor3 = GuiColor.Text;
 				};
-				Create'ImageButton'{
-					Name = "Format DropDown";
+				Create'Frame'{
+					Name = "Format DropDownContainer";
+					BackgroundTransparency = 1;
 					ZIndex = 10;
 					Position = UDim2.new(0,64,0,32);
-					Size = UDim2.new(0.5,-72,0,24);
-					BorderColor3 = GuiColor.FieldBorder;
-					BackgroundColor3 = GuiColor.Field;
+					Size = UDim2.new(0,140,0,24);
 				};
 				Create'TextLabel'{
 					Name = "Options Label";
@@ -149,20 +148,37 @@ do
 			};
 		};
 
-		local FormatInput = DescendantByOrder(Dialog,3,3)
-		local OptionsInput =DescendantByOrder(Dialog,3,5)
-		local PreviewFrame =DescendantByOrder(Dialog,3,7,1)
+		local FormatInput  = DescendantByOrder(Dialog,3,3)
+		local OptionsInput = DescendantByOrder(Dialog,3,5)
+		local PreviewFrame = DescendantByOrder(Dialog,3,7,1)
 
 		local OKButton = DescendantByOrder(Dialog,3,8)
 		local CancelButton = DescendantByOrder(Dialog,3,9)
 
-		local formatName = 'RobloxLua'
+		local formatName = Exporter.FormatList[1]
 		local formatOptions = {
+			IgnoreDefault = true;
 			Indent = true;
 			ExcludeFunction = true;
 		}
 
-		PreviewFrame.Text = Exporter:Export(Canvas.CurrentScreen,formatName,formatOptions,512)
+		local function updatePreview()
+			PreviewFrame.Text = Exporter:Export(Canvas.CurrentScreen,formatName,formatOptions,512)
+		end
+
+		updatePreview()
+
+		local FormatDropDown = Widgets.DropDown(Exporter.FormatList,1)
+		Create(FormatDropDown.GUI){
+			Position = UDim2.new(0,0,0,0);
+			Size = UDim2.new(1,0,1,0);
+			ZIndex = 10;
+			Parent = FormatInput;
+		}
+		FormatDropDown.SelectionChanged:connect(function(format)
+			formatName = format
+			updatePreview()
+		end)
 
 		local dialog = Widgets.DialogBase()
 
@@ -196,6 +212,7 @@ do
 		return dialog:Finish(function()
 			if conCancel then conCancel:disconnect() end
 		--	conSelection:disconnect()
+			FormatDropDown:Destroy()
 			Dialog:Destroy()
 			DialogFrame:Destroy()
 			Shield:Destroy()
