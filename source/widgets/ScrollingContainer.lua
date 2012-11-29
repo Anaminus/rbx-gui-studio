@@ -20,6 +20,7 @@ do
 	}
 
 	function Widgets.ScrollingContainer()
+		local GuiColor = InternalSettings.GuiColor
 		local scroll_width = InternalSettings.GuiWidgetSize
 
 		local ParentFrame = Create'Frame'{
@@ -30,8 +31,8 @@ do
 
 		local Boundary = Create'Frame'{
 			Name = "Boundary";
-			BackgroundColor3 = Color3.new(0,0,0);
-			BorderColor3 = Color3.new(1,1,1);
+			BackgroundColor3 = GuiColor.Field;
+			BorderColor3 = GuiColor.FieldBorder;
 			ClipsDescendants = true;
 			Parent = ParentFrame;
 		}
