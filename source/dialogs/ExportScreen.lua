@@ -220,15 +220,17 @@ do
 		end)
 
 		local FormatDropDown do
-			local index = 1
 			local list = Exporter.FormatList
+			local index = 1
+			local desc = Exporter.FormatDescription
+			local tooltips = {}
 			for i=1,#list do
 				if list[i] == formatName then
 					index = i
-					break
 				end
+				tooltips[i] = desc[list[i]] or false
 			end
-			FormatDropDown = Widgets.DropDown(list,index)
+			FormatDropDown = Widgets.DropDown(list,index,tooltips)
 		end
 		Create(FormatDropDown.GUI){
 			Position = UDim2.new(0,0,0,0);
