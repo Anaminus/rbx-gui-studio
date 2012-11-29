@@ -49,8 +49,8 @@ function Widgets.DropDown(list,default,dropDownText)
 		Create(dropDownText or 'TextLabel'){
 			Name = "Label";
 			BackgroundTransparency = 1;
-			Position = UDim2.new(0,2,0,2);
-			Size = UDim2.new(1,-26,1,-4);
+			Position = UDim2.new(0,4,0,4);
+			Size = UDim2.new(1,-30,1,-8);
 			FontSize = Enum.FontSize.Size10;
 			TextColor3 = GuiColor.Text;
 			TextXAlignment = 'Left';
@@ -73,7 +73,7 @@ function Widgets.DropDown(list,default,dropDownText)
 	do
 		local arrow = Widgets.ArrowGraphic(11,'Down',false,Create'Frame'{
 			BorderSizePixel = 0;
-			BackgroundColor3 = GuiColor.Text;
+			BackgroundColor3 = GuiColor.Border;
 		})
 		arrow.Position = UDim2.new(0.5,-5,0.5,-5)
 		arrow.Parent = dropDownButton
@@ -147,7 +147,7 @@ function Widgets.DropDown(list,default,dropDownText)
 		end
 		SetZIndex(dropDownList,dropDownFrame.ZIndex)
 		Widgets.StaticStackingFrame(dropDownList,{
-			Border = 2;
+			Border = 4;
 		})
 
 		local listIndex
