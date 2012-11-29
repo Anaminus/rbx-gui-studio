@@ -2,6 +2,15 @@
 
 ]]
 do
+	local formatNamePersist = Exporter.FormatList[1]
+	local formatOptionsPersist = {}
+	for format,data in pairs(Exporter.FormatOptions) do
+		local options = {}
+		for k,v in pairs(data) do
+			options[k] = v[2]
+		end
+		formatOptionsPersist[format] = options
+	end
 	function Dialogs.ExportScreen(parent,eventCancel)
 		KeyBinding.Enabled = false
 		local GuiColor = InternalSettings.GuiColor
@@ -70,7 +79,7 @@ do
 					BackgroundTransparency = 1;
 					ZIndex = 10;
 					Position = UDim2.new(0,64,0,32);
-					Size = UDim2.new(0,140,0,24);
+					Size = UDim2.new(0,148,0,24);
 				};
 				Create'TextLabel'{
 					Name = "Options Label";
@@ -145,6 +154,18 @@ do
 					FontSize = Enum.FontSize.Size10;
 					TextColor3 = GuiColor.Text;
 				};
+				Create'TextLabel'{
+					Name = "Message";
+					ZIndex = 10;
+					BackgroundTransparency = 1;
+					Visible = false;
+					Position = UDim2.new(0,8,1,-40);
+					Size = UDim2.new(1,-160,0,32);
+					Text = "Exporting...";
+					TextXAlignment = Enum.TextXAlignment.Right;
+					FontSize = Enum.FontSize.Size10;
+					TextColor3 = GuiColor.Text;
+				};
 			};
 		};
 
@@ -154,21 +175,61 @@ do
 
 		local OKButton = DescendantByOrder(Dialog,3,8)
 		local CancelButton = DescendantByOrder(Dialog,3,9)
+		local ExportMessage = DescendantByOrder(Dialog,3,10)
 
-		local formatName = Exporter.FormatList[1]
-		local formatOptions = {
-			IgnoreDefault = true;
-			Indent = true;
-			ExcludeFunction = true;
-		}
+		local formatName = formatNamePersist
+		local formatOptions = formatOptionsPersist[formatName]
 
-		local function updatePreview()
-			PreviewFrame.Text = Exporter:Export(Canvas.CurrentScreen,formatName,formatOptions,512)
+		local OptionsList do
+			local tt = {}
+			for k,v in pairs(Exporter.FormatOptions[formatName]) do
+				tt[k] = v[3]
+			end
+			OptionsList = Widgets.PairsList(formatOptions,tt)
+			OptionsList.GUI.Size = UDim2.new(1,0,1,0)
+			OptionsList.GUI.Parent = OptionsInput
 		end
 
-		updatePreview()
+		local function updatePreview()
+			local preview = Exporter:Export(Canvas.CurrentScreen,formatName,formatOptions,512)
+			if #preview >= 512 then
+				preview = preview:sub(1,509) .. '...'
+			end
+			PreviewFrame.Text = preview
+		end
 
-		local FormatDropDown = Widgets.DropDown(Exporter.FormatList,1)
+		local function updateFormat()
+			formatOptions = formatOptionsPersist[formatName]
+			OptionsList.Pairs = formatOptions
+
+			local tt = {}
+			for k,v in pairs(Exporter.FormatOptions[formatName]) do
+				tt[k] = v[3]
+			end
+			OptionsList.ToolTipLookup = tt
+
+			OptionsList:Update()
+			OptionsList:Sort()
+			updatePreview()
+		end
+
+		updateFormat()
+
+		OptionsList.PairChanged:connect(function()
+			updatePreview()
+		end)
+
+		local FormatDropDown do
+			local index = 1
+			local list = Exporter.FormatList
+			for i=1,#list do
+				if list[i] == formatName then
+					index = i
+					break
+				end
+			end
+			FormatDropDown = Widgets.DropDown(list,index)
+		end
 		Create(FormatDropDown.GUI){
 			Position = UDim2.new(0,0,0,0);
 			Size = UDim2.new(1,0,1,0);
@@ -177,24 +238,38 @@ do
 		}
 		FormatDropDown.SelectionChanged:connect(function(format)
 			formatName = format
-			updatePreview()
+			formatNamePersist = format
+			updateFormat()
 		end)
 
 		local dialog = Widgets.DialogBase()
 
+		local exporting = false
+
 		local conCancel
 		if eventCancel then
 			conCancel = eventCancel:connect(function()
+				if exporting then return end
+				exporting = true
 				dialog:Return(nil)
 			end)
 		end
 
 		OKButton.MouseButton1Click:connect(function()
+			if exporting then return end
+			exporting = true
+			OKButton.TextColor3 = GuiColor.TextDisabled
+			CancelButton.TextColor3 = GuiColor.TextDisabled
+			ExportMessage.Visible = true
 			local exportString = Exporter:Export(Canvas.CurrentScreen,formatName,formatOptions)
+			ExportMessage.Text = "Exported!"
 			dialog:Return(exportString)
 		end)
 
 		CancelButton.MouseButton1Click:connect(function()
+			-- TODO: have cancel button halt thead
+			if exporting then return end
+			exporting = true
 			dialog:Return(nil)
 		end)
 
