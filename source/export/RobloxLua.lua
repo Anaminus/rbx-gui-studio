@@ -119,6 +119,13 @@ do
 		local objName = options.VariableName or "object"
 		local objectVars = {}
 
+		-- tries to sanitize a string into a valid variable name
+		local function toVarName(name)
+			-- remove all non-alphanumeric characters; remove leading digits
+			name = name:gsub("[^%w_]",""):gsub("^%d+","")
+			return #name > 0 and name
+		end
+
 		local limit = lengthLimit or math.huge
 		-- maybe wait
 		-- wait only if the export time for the current frame is greater than 1/30 seconds
@@ -138,7 +145,8 @@ do
 		local function r(object,parentVar)
 			local className = object.ClassName
 			if InstanceAPI[className] then
-				local objVar = options.UseName and object.Name or objName
+				-- if the Name can't be converted into a variable name, use the default
+				local objVar = options.UseName and toVarName(object.Name) or objName
 				if objectVars[objVar] then
 					local n = objectVars[objVar] + 1
 					objectVars[objVar] = n
