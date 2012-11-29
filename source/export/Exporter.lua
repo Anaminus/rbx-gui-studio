@@ -14,6 +14,18 @@ API:
 		A table of string/function pairs, containing the functions for exporting to a specific format.
 		Each key is the format name, and each function is the method for exporting to that format.
 
+	Exporter.FormatOptions
+		A table of string/table pairs, containing the options for each format.
+		Each key is the format name. Each value contains the options for the format, as string/table pairs:
+			Each key is the option name, and each table contains the following entries:
+				[1]: The value type of the option.
+				[2]: The default value of the option.
+				[3]: A brief description of the option.
+
+	Exporter.FormatDescription
+		A table of string/string pairs, containing brief descriptions for each format.
+		Each key is a format name, and each value is a description for that format.
+
 	Exporter.DefaultCache
 		A table where Instances may be cached, which are used for determining the default value of a property.
 
@@ -89,6 +101,7 @@ do
 		DataTypeFormat = {};
 		FormatMethod = {};
 		FormatOptions = {};
+		FormatDescription = {};
 	}
 
 	 do -- InstanceAPI
@@ -248,11 +261,12 @@ do
 		Exporter.InstanceAPI = InstanceAPI
 	end
 
-	function Exporter:AddFormat(name,method,types,options)
+	function Exporter:AddFormat(name,method,types,options,description)
 		self.FormatList[#self.FormatList+1] = name
 		self.FormatMethod[name] = method
 		self.DataTypeFormat[name] = types
 		self.FormatOptions[name] = options
+		self.FormatDescription[name] = description
 	end
 
 	function Exporter:Export(object,format,options,limit)
