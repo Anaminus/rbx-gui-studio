@@ -15,6 +15,7 @@ Options:
 
 do
 	local formatName = 'LuaCreateInstance'
+	local formatDescription = "Objects are defined using Stravant's Create function."
 
 	local dataTypeFormat = Exporter.DataTypeFormat.RobloxLua
 
@@ -117,5 +118,5 @@ end
 		   FunctionName = {'string', "Create", "The name of the Create function."};
 	};
 
-	Exporter:AddFormat(formatName,formatMethod,dataTypeFormat,formatOptions)
+	Exporter:AddFormat(formatName,formatMethod,dataTypeFormat,formatOptions,formatDescription)
 end

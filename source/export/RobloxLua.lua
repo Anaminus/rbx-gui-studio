@@ -30,6 +30,7 @@ Options:
 
 do
 	local formatName = 'RobloxLua'
+	local formatDescription = "Objects are defined using Roblox Lua."
 
 	local dataTypeFormat do
 		local format = string.format
@@ -195,5 +196,5 @@ do
 		 VariableName = {'string', "object", "The base name of each variable"};
 	}
 
-	Exporter:AddFormat(formatName,formatMethod,dataTypeFormat,formatOptions)
+	Exporter:AddFormat(formatName,formatMethod,dataTypeFormat,formatOptions,formatDescription)
 end

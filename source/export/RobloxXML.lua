@@ -12,6 +12,7 @@ Options:
 
 do
 	local formatName = 'RobloxXML'
+	local formatDescription = "The same XML format Roblox uses to save places and models."
 
 	local dataTypeFormat do
 		local format = string.format
@@ -229,5 +230,5 @@ do
 		UseArchivable = {'bool', false, "If true, the Archivable property of objects will be written."};
 	};
 
-	Exporter:AddFormat(formatName,formatMethod,dataTypeFormat,formatOptions)
+	Exporter:AddFormat(formatName,formatMethod,dataTypeFormat,formatOptions,formatDescription)
 end
