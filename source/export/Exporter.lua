@@ -264,16 +264,18 @@ do
 	end
 
 	function Exporter:ExportDialog()
-		local exportString = Dialogs.ExportScreen(UserInterface.Screen,PluginActivator.Deactivated)
-		if exportString then
-			local exportScript = Create'Script'{
-				Name = "Screen GUI Export Data";
-				Disabled = true;
-				Archivable = false;
-				Source = exportString;
-			}
-			exportScript.Parent = Workspace
-			Selection:Set{exportScript}
+		if Canvas.Status('Started') then
+			local exportString = Dialogs.ExportScreen(UserInterface.Screen,Canvas.Stopping)
+			if exportString then
+				local exportScript = Create'Script'{
+					Name = "ExportData";
+					Disabled = true;
+					Archivable = false;
+					Source = exportString;
+				}
+				exportScript.Parent = Workspace
+				Selection:Set{exportScript}
+			end
 		end
 	end
 end
