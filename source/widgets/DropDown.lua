@@ -6,6 +6,8 @@ DropDown Class:
 		The GUI instance associated with this object.
 	List
 		Gets or sets the list that the drop-down widget displays.
+	ToolTips
+		Gets or sets a list of tooltips that are displayed for each list item.
 	Selection
 		The value of the current selection.
 	SelectionIndex
@@ -38,7 +40,7 @@ Returns:
 		A new DropDown widget.
 ]]
 
-function Widgets.DropDown(list,default,dropDownText)
+function Widgets.DropDown(list,default,tooltips,dropDownText)
 	local GuiColor = InternalSettings.GuiColor
 	local dropDownFrame = Create'ImageButton'{
 		Name = "DropDown";
@@ -95,6 +97,7 @@ function Widgets.DropDown(list,default,dropDownText)
 	local Class = {
 		GUI = dropDownFrame;
 		List = list;
+		ToolTips = tooltips;
 		SelectionIndex = default;
 		Selection = list[default];
 	}
@@ -128,10 +131,12 @@ function Widgets.DropDown(list,default,dropDownText)
 		updateListPosition('AbsolutePosition')
 
 		local valueList = self.List
+		local tooltipList = self.ToolTips
 		for i = 1,#valueList do
 			local item = Create'TextLabel'{
 				Name = "ListItem";
 				BorderSizePixel = 0;
+				Active = true;
 				BackgroundColor3 = GuiColor.Field;
 				Text = tostring(valueList[i]);
 				FontSize = 'Size10';
@@ -144,6 +149,11 @@ function Widgets.DropDown(list,default,dropDownText)
 			auto.Padding = 2
 			auto:Update()
 			itemFrameList[i] = auto
+
+			-- affected by mouseover priority bugs
+		--	if tooltipList then
+		--		ToolTipService:AddToolTip(item,tooltipList[i])
+		--	end
 		end
 		SetZIndex(dropDownList,dropDownFrame.ZIndex)
 		Widgets.StaticStackingFrame(dropDownList,{
@@ -192,6 +202,7 @@ function Widgets.DropDown(list,default,dropDownText)
 	function Class:HideDropDown()
 		if dropDownDragger then
 			for i=1,#itemFrameList do
+			--	ToolTipService:RemoveToolTip(itemFrameList[i].GUI)
 				itemFrameList[i]:Destroy()
 				itemFrameList[i] = nil
 			end
