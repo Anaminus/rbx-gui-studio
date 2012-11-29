@@ -144,7 +144,7 @@ do
 		}
 	end
 
-	local function formatMethod(object,options,typeFormat)
+	local function formatMethod(object,options,typeFormat,lengthLimit)
 		local InstanceAPI = Exporter.InstanceAPI
 		local defaultCache = Exporter.DefaultCache
 		local output =
@@ -153,15 +153,21 @@ do
 	<External>nil</External>
 ]]
 
-		local limit = limit or math.huge
-		local function check_limit()
-			if #output > limit then
-				output = output:sub(1,limit)
-				return true
+		local limit = lengthLimit or math.huge
+		-- maybe wait
+		-- wait only if the export time for the current frame is greater than 1/30 seconds
+		local mwait
+		if lengthLimit then
+			function mwait()end
+		else
+			local start = tick()
+			function mwait()
+				if tick()-start > 1/30 then
+					start = tick()
+					wait()
+				end
 			end
-			return false
 		end
-		if check_limit() then return output end
 
 		local rep = string.rep
 		local tab = 1
@@ -174,6 +180,7 @@ do
 				local ttt = tt .. '\t'
 				output = output .. t .. "<Item class=\""..className.."\" referent=\"RBX"..ref.."\">\n"
 				output = output .. tt .. "<Properties>\n"
+				if #output > limit then return end
 				local set = InstanceAPI[className][1]
 
 				local defaultInstance = defaultCache[className]
@@ -192,23 +199,29 @@ do
 							output = output .. ttt .. "<" .. type .. " name=\"" .. name .. "\">"
 							output = output .. (typeFormat[type] or typeFormat[1])(value,ttt)
 							output = output .. "</" .. type .. ">\n"
-							if check_limit() then return end
+							if #output > limit then return end
 						end
 					end
 				end
 				output = output .. tt .. "</Properties>\n"
+				if #output > limit then return end
 				tab = tab + 1
 				for i,child in pairs(object:GetChildren()) do
 					ref = ref + 1
 					r(child)
-					if check_limit() then return end
 				end
 				tab = tab - 1
 				output = output .. t .. "</Item>\n"
+				if #output > limit then return end
+				mwait()
 			end
 		end
 		r(object)
-		return output .. [[</roblox>]]
+		output = output .. [[</roblox>]]
+		if lengthLimit then
+			output = output:sub(1,lengthLimit)
+		end
+		return output
 	end
 
 	local formatOptions = {

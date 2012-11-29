@@ -18,7 +18,7 @@ do
 
 	local dataTypeFormat = Exporter.DataTypeFormat.RobloxLua
 
-	local function formatMethod(object,options,typeFormat)
+	local function formatMethod(object,options,typeFormat,lengthLimit)
 		local InstanceAPI = Exporter.InstanceAPI
 		local defaultCache = Exporter.DefaultCache
 		local funcName = (options.FunctionName or "Create")
@@ -37,17 +37,23 @@ do
 	end
 end
 
-]])) .. "GUI = "
+]]))
 
-		local limit = limit or math.huge
-		local function check_limit()
-			if #output > limit then
-				output = output:sub(1,limit)
-				return true
+		local limit = lengthLimit or math.huge
+		-- maybe wait
+		-- wait only if the export time for the current frame is greater than 1/30 seconds
+		local mwait
+		if lengthLimit then
+			function mwait()end
+		else
+			local start = tick()
+			function mwait()
+				if tick()-start > 1/20 then
+					start = tick()
+					wait()
+				end
 			end
-			return false
 		end
-		if check_limit() then return output end
 
 		local rep = string.rep
 		local tab = 0
@@ -56,6 +62,7 @@ end
 			if InstanceAPI[className] then
 				local t = rep('\t',tab)
 				output = output .. t .. funcName .. "'" .. className .. "'{\n"
+				if #output > limit then return end
 				local set = InstanceAPI[className][1]
 				local list = InstanceAPI[className][2]
 				local empty = true
@@ -70,14 +77,14 @@ end
 						if value ~= defaultInstance[name] then
 							empty = false
 							output = output .. t .. '\t' .. name .. " = " .. (typeFormat[set[name]] or typeFormat[1])(value) .. ";\n"
-							if check_limit() then return end
+							if #output > limit then return end
 						end
 					end
 				else
 					for i,name in pairs(InstanceAPI[className][2]) do
 						empty = false
 						output = output .. t .. '\t' .. name .. " = " .. (typeFormat[set[name]] or typeFormat[1])(object[name]) .. ";\n"
-						if check_limit() then return end
+						if #output > limit then return end
 					end
 				end
 				tab = tab + 1
@@ -85,7 +92,6 @@ end
 					if r(child) then
 						empty = false
 					end
-					if check_limit() then return end
 				end
 				tab = tab - 1
 				if empty then
@@ -93,10 +99,15 @@ end
 				else
 					output = output .. t .. "};\n"
 				end
+				if #output > limit then return end
+				mwait()
 				return true
 			end
 		end
 		r(object)
+		if lengthLimit then
+			output = output:sub(1,lengthLimit)
+		end
 		return output
 	end
 
