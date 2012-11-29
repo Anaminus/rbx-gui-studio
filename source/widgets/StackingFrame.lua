@@ -49,13 +49,13 @@ do
 					index = #list
 				elseif type(index) ~= "number" then
 					for i,v in pairs(self.List) do
-						if v == value then
+						if v == index then
 							index = i
 							break
 						end
 					end
 				end
-				if index then
+				if type(index) == "number" then
 					index = math.floor(index)
 					index = index < 1 and 1 or index > #list and #list or index
 					local object = table.remove(list,index)
