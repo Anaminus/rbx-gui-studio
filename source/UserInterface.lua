@@ -35,6 +35,15 @@ do
 					ScreenManager:SelectDialog()
 				end;
 			};
+			{
+				Name = "ExportScreen";
+				Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,0,6);
+				KeyBinding = "shift+ctrl+e";
+				ToolTip = "Export the current Screen.";
+				Select = function()
+					Exporter:ExportDialog()
+				end;
+			};
 	--[[
 			'----------------';
 			{
@@ -135,15 +144,6 @@ do
 				ToolTip = "Configure the grid";
 				Select = function()
 					Grid:ConfigDialog()
-				end;
-			};
-			{
-				Name = "ExportScreen";
-				Icon = "";--Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,1,1);
-				KeyBinding = "shift+ctrl+e";
-				ToolTip = "Export the scurrent Screen.";
-				Select = function()
-					Exporter:ExportDialog()
 				end;
 			};
 		--[[
