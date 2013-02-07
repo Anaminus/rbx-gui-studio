@@ -332,13 +332,15 @@ do
 			[33] = "Arrow keys for precise resizing.";
 			[34] = "Hold Ctrl for precise resizing.";
 		})
-		toolStatus{[1]=true; [16]=true; [24]=true}
+		toolStatus:Show(1,16,24)
 
 		Maid:GiveTask(Keyboard.KeyDown['ctrl']:connect(function()
-			toolStatus{[1]=false; [8]=true; [32]=false; [33]=true}
+			toolStatus:Hide(1,32)
+			toolStatus:Show(8,33)
 		end))
 		Maid:GiveTask(Keyboard.KeyUp['ctrl']:connect(function()
-			toolStatus{[1]=true; [8]=false; [32]=true; [33]=false}
+			toolStatus:Hide(8,33)
+			toolStatus:Show(1,32)
 		end))
 
 		local TransformHandles = Widgets.TransformHandles(Canvas,Maid)
@@ -564,7 +566,7 @@ do
 				Selection:SetVisible(false)
 				inAction = true
 
-				Status:Add('SelectorArrows',{"Precise movement. Hold Ctrl for precise resizing."}){true}
+				Status:Add('SelectorArrows',{"Precise movement. Hold Ctrl for precise resizing."}):Show(1)
 
 				local cid = MoveID + 1
 				MoveID = cid

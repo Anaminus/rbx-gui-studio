@@ -244,6 +244,10 @@ function Widgets.TransformHandles(Canvas)
 		Frame.Parent = Active
 	end
 
+	local statusRef = 'TransformHandles'
+	local status = {"Resize selected objects."}
+	local statusMessage
+
 	function Handles:Destroy()
 		if finishDrag then finishDrag() end
 		conMode:disconnect()
@@ -252,17 +256,15 @@ function Widgets.TransformHandles(Canvas)
 			self[k] = nil
 		end
 		Frame:Destroy()
-		Status:Remove("TransformHandles")
+		Status:Remove(statusRef)
 		Active = nil
 	end
 
-	local status = {"Resize selected objects."}
-	local statusMessage
 
 	for i,handle in pairs(Frame:GetChildren()) do
 		local name = handle.Name
 		handle.MouseButton1Down:connect(function(x,y)
-			statusMessage[1] = false
+			statusMessage:Hide(1)
 			if Handles.Parent then
 				Frame.Visible = false
 				local objectList = Selection:Get()
@@ -281,17 +283,17 @@ function Widgets.TransformHandles(Canvas)
 						end
 						Frame.Visible = true
 						finishDrag = nil
-						Status:Remove("TransformHandles")
+						Status:Remove(statusRef)
 					end;
 				},nil,true)
 			end
 		end)
 		handle.MouseEnter:connect(function()
-			statusMessage = Status:Add("TransformHandles",status)
-			statusMessage[1] = true
+			statusMessage = Status:Add(statusRef,status)
+			statusMessage:Show(1)
 		end)
 		handle.MouseLeave:connect(function()
-			Status:Remove("TransformHandles")
+			Status:Remove(statusRef)
 		end)
 	end
 

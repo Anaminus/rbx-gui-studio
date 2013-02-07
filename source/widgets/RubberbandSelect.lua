@@ -40,7 +40,7 @@ function Widgets.RubberbandSelect(originClick,callbacks)
 			else
 				Status:Add('RubberbandSelect',{
 					"Drag around objects to select them. Hold Ctrl to add to the selection.";
-				}){true}
+				}):Show(1)
 
 				local width = 2
 				local color = Color3.new(1,1,1)
