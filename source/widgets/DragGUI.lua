@@ -437,48 +437,8 @@ do
 
 			local dragPos
 			if snapEnabled then
-				--[[
-
-				In global coordinates, the grid will have some arbitrary
-				position, so the drag position, which is currently in global
-				coordinates, needs to be converted to the grid's coordinates
-				before snapping.
-
-				The mouseOffset is added so the object moves in relation to
-				the original mouse click.
-
-				]]
-
-				dragPos = Vector2.new(x,y) - gridPos + mouseOffset
-
-				local snapCandX
-				local snapCandY
-				if layoutScaled then
-					--[[
-
-					Since the grid spacing and origin are in scaled
-					coordinates, they need to be converted to global
-					coordinates.
-
-					]]
-					local g_spacing = gridSize*gridSpacing
-					local g_origin = gridSize*gridOrigin
-					snapCandX = math.floor((dragPos.x - g_origin.x)/g_spacing.x + 0.5)*g_spacing.x + g_origin.x
-					snapCandY = math.floor((dragPos.y - g_origin.y)/g_spacing.y + 0.5)*g_spacing.y + g_origin.y
-				else
-					snapCandX = math.floor((dragPos.x - gridOrigin.x)/gridSpacing.x + 0.5)*gridSpacing.x + gridOrigin.x
-					snapCandY = math.floor((dragPos.y - gridOrigin.y)/gridSpacing.y + 0.5)*gridSpacing.y + gridOrigin.y
-				end
-
-				-- if the drag point is too far away from the snap candidate, don't snap
-				if math.abs(dragPos.x - snapCandX) > snapTolerance then
-					snapCandX = dragPos.x
-				end
-				if math.abs(dragPos.y - snapCandY) > snapTolerance then
-					snapCandY = dragPos.y
-				end
-
-				dragPos = Vector2.new(snapCandX,snapCandY) + gridPos
+				-- The mouseOffset is added so the object moves in relation to the original mouse click.
+				dragPos = SnapService:Snap(Vector2.new(x,y) + mouseOffset)
 			else
 				dragPos = Vector2.new(x,y)
 			end

@@ -134,7 +134,7 @@ do
 		updateOffsetLines()
 	end
 
-	-- updates the grid for when the spacing or origin changes
+	-- updates the grid when the spacing or origin changes
 	local function updateGrid()
 		if conSizeChanged then conSizeChanged:disconnect() end
 		if layoutMode then
@@ -297,4 +297,70 @@ do
 			Grid:SetParent(nil)
 		end;
 	}
+	initializeGrid()
+
+---- GRID SNAPPING
+
+	-- gridOffset is a combination of gridPos (the grid container's position)
+	-- and gridOrigin (the grid's position).
+	local gridSpacing,gridOffset do
+		-- We want the snapper function to be speedy fast, so we'll update
+		-- these variables only when they change.
+		local gridContainer = Grid.Container
+		local gridSize
+		local function updateGridPos(p)
+			if p == 'AbsolutePosition' then
+				gridPos = gridContainer.AbsolutePosition
+				if layoutMode then
+					gridOffset = gridPos + gridSize*gOrigin
+				else
+					gridOffset = gridPos + gOrigin
+				end
+			elseif p == 'AbsoluteSize' then
+				gridSize = gridContainer.AbsoluteSize
+				if layoutMode then
+					gridSpacing = gridSize*gSpacing
+					gridOffset = gridPos + gridSize*gOrigin
+				end
+				-- gridSize isn't used with offset mode, so it doesn't need to
+				-- be updated here.
+			end
+		end
+		gridContainer.Changed:connect(updateGridPos)
+		gridPos = gridContainer.AbsolutePosition
+		gridSize = gridContainer.AbsoluteSize
+
+		Grid.Updated:connect(function()
+			if layoutMode then
+				-- Since the grid spacing and origin are in scaled
+				-- coordinates, they need to be converted to global
+				-- coordinates by multiplying by the gridSize.
+				gridSpacing = gridSize*gSpacing
+				gridOffset = gridPos + gridSize*gOrigin
+			else
+				gridSpacing = gSpacing
+				gridOffset = gridPos + gOrigin
+			end
+		end)
+	end
+
+	local floor = math.floor
+	local abs = math.abs
+	SnapService:AddSnapper('Grid',function(point)
+		-- In global coordinates, the grid container will have some arbitrary
+		-- position. So, the point, which is currently in global coordinates,
+		-- needs to be converted to the grid container's coordinates before
+		-- snapping. This is done by subtracting gridPos (the container's
+		-- position).
+
+		-- Then, the point needs to be converted to the actual grid's
+		-- coordinates, which is done by subtracting (gridOrigin).
+
+		-- gridPos and gridOrigin are combined into gridOffset beforehand, so
+		-- that it doesn't have to be done here.
+
+		return
+			floor((point.x - gridOffset.x)/gridSpacing.x + 0.5)*gridSpacing.x + gridOffset.x,
+			floor((point.y - gridOffset.y)/gridSpacing.y + 0.5)*gridSpacing.y + gridOffset.y
+	end)
 end

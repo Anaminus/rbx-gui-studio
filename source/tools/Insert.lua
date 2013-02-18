@@ -111,29 +111,7 @@ do
 
 			local originClick
 			if Settings.SnapEnabled then
-				local gridPos = Grid.Container.AbsolutePosition
-				originClick = Vector2.new(x,y) - gridPos
-
-				local gridOrigin
-				local gridSpacing
-				if Settings.LayoutMode('Scale') then
-					gridOrigin =  Grid.Container.AbsoluteSize*Vector2.new( Grid.Origin.X.Scale, Grid.Origin.Y.Scale)
-					gridSpacing = Grid.Container.AbsoluteSize*Vector2.new(Grid.Spacing.X.Scale,Grid.Spacing.Y.Scale)
-				else
-					gridOrigin =  Vector2.new( Grid.Origin.X.Offset, Grid.Origin.Y.Offset)
-					gridSpacing = Vector2.new(Grid.Spacing.X.Offset,Grid.Spacing.Y.Offset)
-				end
-				local snapCandX = math.floor((originClick.x - gridOrigin.x)/gridSpacing.x + 0.5)*gridSpacing.x + gridOrigin.x
-				local snapCandY = math.floor((originClick.y - gridOrigin.y)/gridSpacing.y + 0.5)*gridSpacing.y + gridOrigin.y
-
-				if math.abs(originClick.x - snapCandX) > Settings.SnapTolerance then
-					snapCandX = originClick.x
-				end
-				if math.abs(originClick.y - snapCandY) > Settings.SnapTolerance then
-					snapCandY = originClick.y
-				end
-
-				originClick = Vector2.new(snapCandX,snapCandY) + gridPos
+				originClick = SnapService:Snap(Vector2.new(x,y))
 			else
 				originClick = Vector2.new(x,y)
 			end
