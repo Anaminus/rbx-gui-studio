@@ -264,7 +264,7 @@ function Widgets.TransformHandles(Canvas)
 	for i,handle in pairs(Frame:GetChildren()) do
 		local name = handle.Name
 		handle.MouseButton1Down:connect(function(x,y)
-			statusMessage:Hide(1)
+			if statusMessage then statusMessage:Hide(1) end
 			if Handles.Parent then
 				Frame.Visible = false
 				local objectList = Selection:Get()
