@@ -10,6 +10,7 @@ API:
 	Canvas.CurrentScreen            The current ScreenGui the Canvas is bound to
 	Canvas.CanvasFrame              The GuiObject instance representing the Canvas
 	Canvas.ActiveLookup             Save-to-active lookup table
+	Canvas.SaveLookup               Active-to-save lookup table
 	Canvas.GlobalButton             A representation of every button in the canvas
 	ServiceStatus.Status            Whether the service is started or not
 
@@ -54,11 +55,13 @@ do
 	};
 
 	local ActiveLookup = {} -- [CurrentScreen] = CanvasFrame
+	local SaveLookup = {} -- [CanvasFrame] = CurrentScreen
 
 	Canvas = {
 		CurrentScreen      = CurrentScreen;
 		CanvasFrame        = CanvasFrame;
 		ActiveLookup       = ActiveLookup;
+		SaveLookup         = SaveLookup;
 		Replicate          = true;
 	}
 	local Canvas = Canvas
@@ -146,6 +149,7 @@ do
 					button.Parent = activeObject
 					connectButton(saveObject,activeObject,button)
 				ActiveLookup[saveObject] = activeObject
+				SaveLookup[activeObject] = saveObject
 				activeObject.Parent = activeParent
 				return activeObject
 			end
@@ -193,6 +197,7 @@ do
 		end
 		if activeObject then
 			ActiveLookup[saveObject] = nil
+			SaveLookup[activeObject] = nil
 			activeObject.Parent = nil
 		end
 	end
@@ -240,6 +245,7 @@ do
 			r(CurrentScreen,descendants)
 
 			ActiveLookup[CurrentScreen] = CanvasFrame
+			SaveLookup[CanvasFrame] = CurrentScreen
 			local button = buttonTemplate:Clone()
 				button.Archivable = false
 				button.Parent = CanvasFrame
@@ -268,6 +274,7 @@ do
 			end
 			for save,active in pairs(ActiveLookup) do
 				ActiveLookup[save] = nil
+				SaveLookup[active] = nil
 				if active ~= CanvasFrame then
 					active:Destroy()
 				end
