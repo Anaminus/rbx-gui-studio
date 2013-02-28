@@ -327,10 +327,10 @@ do
 			end
 		end
 		gridContainer.Changed:connect(updateGridPos)
-		gridPos = gridContainer.AbsolutePosition
-		gridSize = gridContainer.AbsoluteSize
+		updateGridPos('AbsolutePosition')
+		updateGridPos('AbsoluteSize')
 
-		Grid.Updated:connect(function()
+		local function updateGrid()
 			if layoutMode then
 				-- Since the grid spacing and origin are in scaled
 				-- coordinates, they need to be converted to global
@@ -341,11 +341,13 @@ do
 				gridSpacing = gSpacing
 				gridOffset = gridPos + gOrigin
 			end
-		end)
+		end
+
+		Grid.Updated:connect(updateGrid)
+		updateGrid()
 	end
 
 	local floor = math.floor
-	local abs = math.abs
 	SnapService:AddSnapper('Grid',function(point)
 		-- In global coordinates, the grid container will have some arbitrary
 		-- position. So, the point, which is currently in global coordinates,
