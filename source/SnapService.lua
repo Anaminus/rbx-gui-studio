@@ -157,7 +157,7 @@ do
 
 	SnapService:AddInitializer('LayoutSiblings',function(active)
 		local object = Canvas.SaveLookup[active]
-		if not object then return false end
+		if not object then return end
 
 		local activeLookup = Canvas.ActiveLookup
 
@@ -182,8 +182,10 @@ do
 	-- own nearest-edge solver, which is similar to the nearest-point solver,
 	-- but works per edge, instead of per snapper.
 	SnapService:AddSnapper('LayoutEdges',function(point,data)
-		local object = data.LayoutSiblings[1]
-		local siblings = data.LayoutSiblings[2]
+		data = data.LayoutSiblings
+		if not data then return end
+		local object = data[1]
+		local siblings = data[2]
 
 		local finalX
 		local finalY
