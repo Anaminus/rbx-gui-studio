@@ -111,7 +111,9 @@ do
 
 			local originClick
 			if Settings.SnapEnabled then
+				SnapService:ReadyData()
 				originClick = SnapService:Snap(Vector2.new(x,y))
+				SnapService:ClearData()
 			else
 				originClick = Vector2.new(x,y)
 			end
