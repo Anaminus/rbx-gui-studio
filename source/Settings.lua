@@ -33,10 +33,3 @@ end
 -- LayoutMode settings
 CreateEnum'LayoutMode'{'Scale','Offset'}
 Settings.LayoutMode = Enums.LayoutMode(1)
-
--- Snapping
-Settings.SnapEnabled = false
-Settings.SnapTolerance = 8
-Settings.SnapFromCorners = true
-Settings.SnapFromEdges = true
-Settings.SnapFromCenter = true
