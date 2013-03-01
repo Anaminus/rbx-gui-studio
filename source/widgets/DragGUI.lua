@@ -60,6 +60,10 @@ Returns:
 ]]
 
 do
+	Settings.SnapFromCorners = true
+	Settings.SnapFromEdges = true
+	Settings.SnapFromCenter = true
+
 	local DragModifier = CreateEnum'DragModifier'{'TopLeft','Top','TopRight','Right','BottomRight','Bottom','BottomLeft','Left','Center'}
 	--[[
 
@@ -183,21 +187,13 @@ do
 		local modSize
 		local modSnap
 
-		-- These values are used every time a drag occurs, so they are calculated only when they need to be.
+		-- These values are used every time a drag occurs, so they are
+		-- calculated only when they need to be.
 		local layoutScaled = Settings.LayoutMode('Scale')
 		local snapEnabled = Settings.SnapEnabled and not no_snap
-		local snapTolerance = Settings.SnapTolerance
-		local gridOrigin
-		local gridSpacing
-		local gridPos
-		local gridSize
 
-		--[[
-
-		When snapping, because the originClick isnt always at the exact
-		position where the mouse clicked, a visual indicator is displayed.
-
-		]]
+		-- When snapping, because the originClick isnt always at the exact
+		-- position where the mouse clicked, a visual indicator is displayed.
 		local snapAnchorFrame
 		if snap_anchor then
 			snapAnchorFrame = Create'Frame'{
@@ -300,42 +296,6 @@ do
 			mouseOffset = originClick - mouseClick
 		end
 
-		do
-			local function updateSnap(key,value)
-				if key == 'SnapEnabled' then
-					snapEnabled = value and not no_snap
-					updateOriginClick()
-				elseif key == 'SnapTolerance' then
-					snapTolerance = value
-				end
-			end
-			Maid:GiveTask(Settings.Changed:connect(updateSnap))
-
-			local function updateGrid(layout)
-				if layout('Scale') then
-					gridOrigin = Vector2.new(Grid.Origin.X.Scale,Grid.Origin.Y.Scale)
-					gridSpacing = Vector2.new(Grid.Spacing.X.Scale,Grid.Spacing.Y.Scale)
-				else
-					gridOrigin = Vector2.new(Grid.Origin.X.Offset,Grid.Origin.Y.Offset)
-					gridSpacing = Vector2.new(Grid.Spacing.X.Offset,Grid.Spacing.Y.Offset)
-				end
-			end
-			Maid:GiveTask(Grid.Updated:connect(updateGrid))
-			updateGrid(Settings.LayoutMode)
-
-			local gridContainer = Grid.Container
-			local function updateGridPos(p)
-				if p == 'AbsolutePosition' then
-					gridPos = gridContainer.AbsolutePosition
-				elseif p == 'AbsoluteSize' then
-					gridSize = gridContainer.AbsoluteSize
-				end
-			end
-			Maid:GiveTask(gridContainer.Changed:connect(updateGridPos))
-			gridPos = gridContainer.AbsolutePosition
-			gridSize = gridContainer.AbsoluteSize
-		end
-
 		Maid:GiveTask(Settings.Changed:connect(function(key,value)
 			if key == 'LayoutMode' then
 				--[[
@@ -352,6 +312,9 @@ do
 
 				]]
 				layoutScaled = value('Scale')
+			elseif key == 'SnapEnabled' then
+				snapEnabled = value and not no_snap
+				updateOriginClick()
 			end
 		end))
 
@@ -387,6 +350,10 @@ do
 			modSnap = modifier[3]
 
 			updateOriginClick()
+
+			if snapEnabled then
+				SnapService:ReadyData(originObject)
+			end
 		end
 
 		setObjects(objectList,originObject)
@@ -395,22 +362,26 @@ do
 		local conDrag,conUp,conMode
 		local hasDragged = false
 
-		--[[
+		-- finishDrag is returned by the DragGUI, allowing the operation to be
+		-- finished remotely. Useful if the plugin deactivates unexpectedly.
 
-		finishDrag is returned by the DragGUI, allowing the operation to be
-		finished remotely. Useful if the plugin deactivates unexpectedly.
-
-		]]
 		local dragFinished = false
 		local function finishDrag(x,y)
 			if dragFinished then return end
 			dragFinished = true
 			Maid:DoCleaning()
 			Dragger:Destroy()
+			if snapEnabled then
+				SnapService:ClearData()
+			end
 			Selection:SetVisible(true)
 			if callbacks.OnRelease then
 				callbacks.OnRelease(x,y,hasDragged)
 			end
+		end
+
+		if snapEnabled then
+			SnapService:ReadyData(originObject)
 		end
 
 		local OnDrag = callbacks.OnDrag
