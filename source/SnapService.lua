@@ -43,12 +43,18 @@ SnapService:ReadyData (...)
 	Readies data from all enabled initializers.
 	Arguments passed to this function are passed to each initializer.
 
+SnapService:GetEnabled ( ref )
+	Returns whether a snapper is enabled.
+
 SnapService:SetEnabled ( ref, enabled )
 	Sets whether a snapper is enabled.
 
 SnapService:Snap ( interestPoint )
 	Snaps a point by running it through each snapper function.
 	Returns the snapped point.
+
+SnapService.StateChanged ( ref, enabled )
+	Fired after a snapper is enabled or disabled.
 
 ]]
 
@@ -71,6 +77,8 @@ local SnapService do
 		end
 	end)
 
+	local eventStateChanged = CreateSignal(SnapService,'StateChanged')
+
 	function SnapService:AddInitializer(ref,init)
 		snapperInit[ref] = init
 	end
@@ -81,9 +89,20 @@ local SnapService do
 		snapperEnabled[snapper] = true
 	end
 
-	function SnapService:SetEnabled(ref,enabled)
+	function SnapService:GetEnabled(ref)
 		if snapperLookup[ref] then
-			snapperEnabled[snapperLookup[ref]] = not not enabled
+			return snapperEnabled[snapperLookup[ref]]
+		else
+			error("`"..tostring(ref).."` does not reference an existing snapper",2)
+		end
+	end
+
+	function SnapService:SetEnabled(ref,enabled)
+		local snapper = snapperLookup[ref]
+		if snapper then
+			enabled = not not enabled
+			snapperEnabled[snapper] = enabled
+			eventStateChanged:Fire(ref,enabled)
 		else
 			error("`"..tostring(ref).."` does not reference an existing snapper",2)
 		end
