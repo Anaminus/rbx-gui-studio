@@ -277,6 +277,7 @@ do
 
 	SnapService:AddSnapper('LayoutParent',function(point,data)
 		local parent = data.LayoutParent
+		if not parent then return end
 		local finalX
 		local finalY
 
