@@ -61,6 +61,13 @@ function Widgets.ButtonMenu(buttons,size,horizontal,on_click)
 							Size = UDim2.new(1,-6,1,-6);
 							Image = button.Icon;
 						}
+					elseif button.Icon == nil then
+						return Create'Frame'{
+							Name = "MenuButtonIcon";
+							BackgroundTransparency = 1;
+							Position = UDim2.new(0,3,0,3);
+							Size = UDim2.new(1,-6,1,-6);
+						}
 					else
 						return Create(button.Icon){
 							Name = "MenuButtonIcon";
@@ -88,7 +95,7 @@ function Widgets.ButtonMenu(buttons,size,horizontal,on_click)
 
 	Widgets.StaticStackingFrame(ButtonMenuFrame,{
 		Border = 4;
-		Padding = 2;
+		Padding = 3;
 		Horizontal = horizontal;
 	})
 
