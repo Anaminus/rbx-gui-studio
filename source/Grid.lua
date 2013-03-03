@@ -301,6 +301,8 @@ do
 
 ---- GRID SNAPPING
 
+	Settings.SnapToGrid = true
+
 	-- gridOffset is a combination of gridPos (the grid container's position)
 	-- and gridOrigin (the grid's position).
 	local gridSpacing,gridOffset do
@@ -364,5 +366,11 @@ do
 		return
 			floor((point.x - gridOffset.x)/gridSpacing.x + 0.5)*gridSpacing.x + gridOffset.x,
 			floor((point.y - gridOffset.y)/gridSpacing.y + 0.5)*gridSpacing.y + gridOffset.y
+	end)
+
+	Settings.Changed:connect(function(key,value)
+		if key == 'SnapToGrid' then
+			SnapService:SetEnabled('Grid',value)
+		end
 	end)
 end

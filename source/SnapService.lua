@@ -158,6 +158,10 @@ end
 -- LAYOUT SNAPPING
 do
 	Settings.SnapPadding = 8
+	Settings.SnapToEdges = true
+	Settings.SnapToCenter = false
+	Settings.SnapToParent = true
+	Settings.SnapToPadding = false
 
 	local snapPadding = Settings.SnapPadding
 	Settings.Changed:connect(function(key,value)
@@ -370,5 +374,20 @@ do
 		check(phigh.x - snapPadding, phigh.y - snapPadding)
 
 		return finalX,finalY
+	end)
+
+	Settings.Changed:connect(function(key,value)
+		if key == 'SnapToEdges' then
+			SnapService:SetEnabled('LayoutEdges',value)
+			SnapService:SetEnabled('LayoutEdgesPadding',value and Settings.SnapToPadding)
+		elseif key == 'SnapToParent' then
+			SnapService:SetEnabled('LayoutParent',value)
+			SnapService:SetEnabled('LayoutParentPadding',value and Settings.SnapToPadding)
+		elseif key == 'SnapToPadding' then
+			SnapService:SetEnabled('LayoutEdgesPadding',value and Settings.SnapToEdges)
+			SnapService:SetEnabled('LayoutParentPadding',value and Settings.SnapToParent)
+		elseif key == 'SnapToCenter' then
+			SnapService:SetEnabled('LayoutCenter',value)
+		end
 	end)
 end
