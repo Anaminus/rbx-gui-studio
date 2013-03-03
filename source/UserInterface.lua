@@ -172,14 +172,6 @@ do
 			}
 
 			MenuFrame = Widgets.ButtonMenu(MenuButtons,Vector2.new(buttonSize,buttonSize),true)
-			for i,button in pairs(MenuButtons) do
-				if button.KeyBinding then
-					KeyBinding:Add(button.KeyBinding,function() button:Select() end)
-				end
-				if button.Setup then
-					button:Setup()
-				end
-			end
 		end
 
 		local SnapperFrame do
@@ -292,14 +284,6 @@ do
 			}
 
 			SnapperFrame = Widgets.ButtonMenu(SnapperButtons,Vector2.new(buttonSize,buttonSize))
-			for i,button in pairs(SnapperButtons) do
-				if button.KeyBinding then
-					KeyBinding:Add(button.KeyBinding,function() button:Select() end)
-				end
-				if button.Setup then
-					button:Setup()
-				end
-			end
 		end
 
 		local ToolbarFrame = ToolManager:InitializeTools()

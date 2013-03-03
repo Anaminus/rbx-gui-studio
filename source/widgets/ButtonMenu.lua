@@ -111,6 +111,13 @@ do
 				ToolTipService:AddToolTip(ButtonFrame,button.ToolTip)
 
 				setmetatable(button,buttonMT)
+
+				if button.KeyBinding then
+					KeyBinding:Add(button.KeyBinding,function() button:Select() end)
+				end
+				if button.Setup then
+					button:Setup()
+				end
 			end
 		end
 
