@@ -70,13 +70,6 @@ local SnapService do
 	local snapperInit = {}
 	local snapperData = {}
 
-	local snapTolerance = Settings.SnapTolerance
-	Settings.Changed:connect(function(key,value)
-		if key == 'SnapTolerance' then
-			snapTolerance = value
-		end
-	end)
-
 	local eventStateChanged = CreateSignal(SnapService,'StateChanged')
 
 	function SnapService:AddInitializer(ref,init)
@@ -134,7 +127,8 @@ local SnapService do
 		-- starting value. So, they can be used not only select the nearest
 		-- snap, but also to ensure that only snaps within the tolerance are
 		-- selected.
-		local diffX,diffY = snapTolerance,snapTolerance
+		local diffX = Settings.SnapTolerance
+		local diffY = diffX
 
 		for i = 1,#snapperList do
 			local snapper = snapperList[i]
