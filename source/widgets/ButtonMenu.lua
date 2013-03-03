@@ -24,80 +24,102 @@ Returns:
 	The button menu GUI.
 
 ]]
-function Widgets.ButtonMenu(buttons,size,horizontal,on_click)
+
+do
 	local GuiColor = InternalSettings.GuiColor
-	local ButtonMenuFrame = Create'Frame'{
-		Name = "ButtonFrame";
-		BackgroundColor3 = GuiColor.Background;
-		BorderColor3 = GuiColor.Border;
+	local buttonMT = {
+		__index = {
+			SetEnabled = function(self,enabled)
+				self.Enabled = enabled
+				self.Button.Transparency = active and 0 or 0.5
+			end;
+			SetActive = function(self,active)
+				self.Active = active
+				self.Button.BorderColor3 = enabled and GuiColor.ButtonSelected or GuiColor.ButtonBorder
+			end;
+		};
 	}
-	for i,button in pairs(buttons) do
-		if type(button) == 'string' then
-			Create'Frame'{
-				Name = "Seperator";
-				Transparency = 1;
-				Size = vertical and UDim2.new(0,size.x,0,3) or UDim2.new(0,4,0,size.y);
+
+	function Widgets.ButtonMenu(buttons,size,horizontal,on_click)
+		local ButtonMenuFrame = Create'Frame'{
+			Name = "ButtonFrame";
+			BackgroundColor3 = GuiColor.Background;
+			BorderColor3 = GuiColor.Border;
+		}
+		for i,button in pairs(buttons) do
+			if type(button) == 'string' then
 				Create'Frame'{
-					Name = "SeperatorDecal";
-					BorderSizePixel = 0;
-					BackgroundColor3 = GuiColor.Border;
-					Position = vertical and UDim2.new(0,-2,0,2) or UDim2.new(0,2,0,-2);
-					Size = vertical and UDim2.new(1,4,0,1) or UDim2.new(0,1,1,4);
-				};
-				Parent = ButtonMenuFrame;
-			}
-		else
-			local ButtonFrame = Create'ImageButton'{
-				Name = button.Name .. " MenuButton";
-				BackgroundColor3 = GuiColor.Button;
-				BorderColor3 = GuiColor.ButtonBorder;
-				Size = UDim2.new(0,size.x,0,size.y);
-				(function()
-					if type(button.Icon) == 'string' then
-						return Create'ImageLabel'{
-							Name = "MenuButtonIcon";
-							BackgroundTransparency = 1;
-							Position = UDim2.new(0,3,0,3);
-							Size = UDim2.new(1,-6,1,-6);
-							Image = button.Icon;
-						}
-					elseif button.Icon == nil then
-						return Create'Frame'{
-							Name = "MenuButtonIcon";
-							BackgroundTransparency = 1;
-							Position = UDim2.new(0,3,0,3);
-							Size = UDim2.new(1,-6,1,-6);
-						}
-					else
-						return Create(button.Icon){
-							Name = "MenuButtonIcon";
-							BackgroundTransparency = 1;
-							Position = UDim2.new(0,3,0,3);
-							Size = UDim2.new(1,-6,1,-6);
-						}
-					end
-				end)();
-				Parent = ButtonMenuFrame;
-			}
-			button.Button = ButtonFrame
-			if on_click then
-				ButtonFrame.MouseButton1Click:connect(function()
-					on_click(button)
-				end)
+					Name = "Seperator";
+					Transparency = 1;
+					Size = vertical and UDim2.new(0,size.x,0,3) or UDim2.new(0,4,0,size.y);
+					Create'Frame'{
+						Name = "SeperatorDecal";
+						BorderSizePixel = 0;
+						BackgroundColor3 = GuiColor.Border;
+						Position = vertical and UDim2.new(0,-2,0,2) or UDim2.new(0,2,0,-2);
+						Size = vertical and UDim2.new(1,4,0,1) or UDim2.new(0,1,1,4);
+					};
+					Parent = ButtonMenuFrame;
+				}
 			else
-				ButtonFrame.MouseButton1Click:connect(function()
-					button:Select()
-				end)
+				button.Enabled = true
+				button.Active = false
+				local ButtonFrame = Create'ImageButton'{
+					Name = button.Name .. " MenuButton";
+					BackgroundColor3 = GuiColor.Button;
+					BorderColor3 = GuiColor.ButtonBorder;
+					Size = UDim2.new(0,size.x,0,size.y);
+					(function()
+						if type(button.Icon) == 'string' then
+							return Create'ImageLabel'{
+								Name = "MenuButtonIcon";
+								BackgroundTransparency = 1;
+								Position = UDim2.new(0,3,0,3);
+								Size = UDim2.new(1,-6,1,-6);
+								Image = button.Icon;
+							}
+						elseif button.Icon == nil then
+							return Create'Frame'{
+								Name = "MenuButtonIcon";
+								BackgroundTransparency = 1;
+								Position = UDim2.new(0,3,0,3);
+								Size = UDim2.new(1,-6,1,-6);
+							}
+						else
+							return Create(button.Icon){
+								Name = "MenuButtonIcon";
+								BackgroundTransparency = 1;
+								Position = UDim2.new(0,3,0,3);
+								Size = UDim2.new(1,-6,1,-6);
+							}
+						end
+					end)();
+					Parent = ButtonMenuFrame;
+				}
+				button.Button = ButtonFrame
+				if on_click then
+					ButtonFrame.MouseButton1Click:connect(function()
+						on_click(button)
+					end)
+				else
+					ButtonFrame.MouseButton1Click:connect(function()
+						if button.Enabled then
+							button:Select()
+						end
+					end)
+				end
+				ToolTipService:AddToolTip(ButtonFrame,button.ToolTip)
+
+				setmetatable(button,buttonMT)
 			end
-			ToolTipService:AddToolTip(ButtonFrame,button.ToolTip)
 		end
+
+		Widgets.StaticStackingFrame(ButtonMenuFrame,{
+			Border = 4;
+			Padding = 3;
+			Horizontal = horizontal;
+		})
+
+		return ButtonMenuFrame
 	end
-
-	Widgets.StaticStackingFrame(ButtonMenuFrame,{
-		Border = 4;
-		Padding = 3;
-		Horizontal = horizontal;
-	})
-
-	return ButtonMenuFrame
 end
