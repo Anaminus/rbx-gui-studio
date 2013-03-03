@@ -31,11 +31,11 @@ do
 		__index = {
 			SetEnabled = function(self,enabled)
 				self.Enabled = enabled
-				self.Button.Transparency = active and 0 or 0.5
+				self.Button.Transparency = enabled and 0 or 0.8
 			end;
 			SetActive = function(self,active)
 				self.Active = active
-				self.Button.BorderColor3 = enabled and GuiColor.ButtonSelected or GuiColor.ButtonBorder
+				self.Button.BorderColor3 = active and GuiColor.ButtonSelected or GuiColor.ButtonBorder
 			end;
 		};
 	}
