@@ -232,8 +232,43 @@ do
 			local shigh = slow + siblings[i].AbsoluteSize
 
 			check(slow.x, slow.y)
-			check(slow.x - snapPadding, slow.y - snapPadding)
 			check(shigh.x, shigh.y)
+		end
+		return finalX,finalY
+	end)
+
+	SnapService:AddSnapper('LayoutEdgesPadding',function(point,data)
+		data = data.LayoutSiblings
+		if not data then return end
+		local object = data[1]
+		local siblings = data[2]
+
+		local finalX
+		local finalY
+
+		local diffX = Settings.SnapTolerance
+		local diffY = Settings.SnapTolerance
+
+		local px = point.x
+		local py = point.y
+
+		local function check(edgeX,edgeY)
+			local diff = abs( edgeX - px )
+			if diff < diffX then
+				finalX = edgeX
+				diffX = diff
+			end
+			local diff = abs( edgeY - py )
+			if diff < diffY then
+				finalY = edgeY
+				diffY = diff
+			end
+		end
+		for i = 1,#siblings do
+			local slow = siblings[i].AbsolutePosition
+			local shigh = slow + siblings[i].AbsoluteSize
+
+			check(slow.x - snapPadding, slow.y - snapPadding)
 			check(shigh.x + snapPadding, shigh.y + snapPadding)
 		end
 		return finalX,finalY
@@ -304,8 +339,40 @@ do
 		end
 
 		check(plow.x, plow.y)
-		check(plow.x + snapPadding, plow.y + snapPadding)
 		check(phigh.x, phigh.y)
+
+		return finalX,finalY
+	end)
+
+	SnapService:AddSnapper('LayoutParentPadding',function(point,data)
+		local parent = data.LayoutParent
+		if not parent then return end
+		local finalX
+		local finalY
+
+		local diffX = Settings.SnapTolerance
+		local diffY = Settings.SnapTolerance
+
+		local px = point.x
+		local py = point.y
+
+		local plow = parent.AbsolutePosition
+		local phigh = plow + parent.AbsoluteSize
+
+		local function check(edgeX,edgeY)
+			local diff = abs( edgeX - px )
+			if diff < diffX then
+				finalX = edgeX
+				diffX = diff
+			end
+			local diff = abs( edgeY - py )
+			if diff < diffY then
+				finalY = edgeY
+				diffY = diff
+			end
+		end
+
+		check(plow.x + snapPadding, plow.y + snapPadding)
 		check(phigh.x - snapPadding, phigh.y - snapPadding)
 
 		return finalX,finalY
