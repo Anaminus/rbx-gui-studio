@@ -373,4 +373,5 @@ do
 			SnapService:SetEnabled('Grid',value)
 		end
 	end)
+	SnapService:SetEnabled('Grid',Settings.SnapToGrid)
 end

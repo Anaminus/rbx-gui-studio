@@ -390,4 +390,9 @@ do
 			SnapService:SetEnabled('LayoutCenter',value)
 		end
 	end)
+	SnapService:SetEnabled('LayoutEdges',Settings.SnapToEdges)
+	SnapService:SetEnabled('LayoutParent',Settings.SnapToParent)
+	SnapService:SetEnabled('LayoutEdgesPadding',Settings.SnapToPadding and Settings.SnapToEdges)
+	SnapService:SetEnabled('LayoutParentPadding',Settings.SnapToPadding and Settings.SnapToParent)
+	SnapService:SetEnabled('LayoutCenter',Settings.SnapToCenter)
 end
