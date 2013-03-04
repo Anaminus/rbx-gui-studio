@@ -283,6 +283,7 @@ function Widgets.TransformHandles(Canvas)
 						end
 						Frame.Visible = true
 						finishDrag = nil
+						statusMessage = nil
 						Status:Remove(statusRef)
 					end;
 				},nil,true)
