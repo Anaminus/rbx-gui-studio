@@ -53,8 +53,19 @@ SnapService:Snap ( interestPoint )
 	Snaps a point by running it through each snapper function.
 	Returns the snapped point.
 
-SnapService:ClearLines()
-	Clears any visual lines while snapping.
+SnapService:SetAnchorVisual( position, object )
+	Sets the location where a visual representation of a snap anchor will appear.
+
+	Arguments:
+		`position`
+			A UDim2 indicating the position of the anchor.
+			If nil, the anchor visual is hidden.
+		`object`
+			The object that the anchor will appear in.
+			If nil, the canvas will be used instead.
+
+SnapService:ClearVisuals()
+	Clears any visual lines and anchors that were created while snapping.
 
 SnapService:SetParent( parent )
 	Sets the parent where visual snapping lines will appear.
@@ -123,14 +134,15 @@ local SnapService do
 		local screen
 		local screenPosX,screenPosY
 		local screenSizeX,screenSizeY
+		local screenConn
 
 		function SnapService:SetParent(parent)
-			if con then con:disconnect() con = nil end
+			if screenConn then screenConn:disconnect() end
 			screen = parent
 			screenPos = screen.Position
 			screenSizeX = screen.AbsoluteSize.x
 			screenSizeY = screen.AbsoluteSize.y
-			con = screen.Changed:connect(function(p)
+			screenConn = screen.Changed:connect(function(p)
 				if p == 'AbsoluteSize' then
 					screenSizeX = screen.AbsoluteSize.x
 					screenSizeY = screen.AbsoluteSize.y
@@ -184,11 +196,6 @@ local SnapService do
 		}
 		local lineYFrame = lineXFrame:Clone()
 
-		function SnapService:ClearLines()
-			lineXFrame.Parent = nil
-			lineYFrame.Parent = nil
-		end
-
 		function setXLine(px,line)
 			if px then
 				local py,sy
@@ -224,8 +231,65 @@ local SnapService do
 				lineYFrame.Parent = nil
 			end
 		end
-	end
 
+	---- SNAP ANCHOR VISUAL
+		local size = 4
+		local anchorFrame = Create'Frame'{
+			Name = "SnapAnchor VisualEffect";
+			BackgroundColor3 = Color3.new(1,1,1);
+			BorderColor3 = Color3.new(0,0,0);
+			Transparency = 0.25;
+			Size = UDim2.new(0,size*2,0,size*2);
+		}
+
+		local anchorParent
+		local anchorPos = UDim2.new(0,0,0,0)
+		local anchorConn
+
+		local function updateAnchor()
+		-- The position of the visual indicator must be adjusted depending
+		-- on which coordinates of the absolute size are negative, because
+		-- GUIs are drawn based on their apparent size (how they look),
+		-- and not their actual size.
+		local absS = anchorParent.AbsoluteSize
+		if absS.x >= 0 then
+			if absS.y >= 0 then
+				anchorFrame.Position = anchorPos
+			else
+				anchorFrame.Position = UDim2.new(0,0,1,0) - anchorPos
+			end
+		else
+			if absS.y >= 0 then
+				anchorFrame.Position = UDim2.new(1,0,0,0) - anchorPos
+			else
+				anchorFrame.Position = UDim2.new(1,0,1,0) - anchorPos
+			end
+		end
+
+		function SnapService:SetAnchorVisual(pos,parent)
+			if anchorConn then anchorConn:disconnect() end
+			if pos then
+				anchorParent = parent or screen
+				anchorPos = pos + UDim2.new(0,-size,0,-size)
+
+				anchorConn = anchorParent.Changed:connect(function(p)
+					if p == 'AbsoluteSize' then
+						updateAnchor()
+					end
+				end)
+			else
+				anchorFrame.Parent = nil
+				anchorParent = nil
+			end
+		end
+
+		function SnapService:ClearVisuals()
+			lineXFrame.Parent = nil
+			lineYFrame.Parent = nil
+			anchorFrame.Parent = nil
+			anchorParent = nil
+		end
+	end
 
 	local abs = math.abs
 	function SnapService:Snap(interestPoint)

@@ -65,18 +65,15 @@ do
 	Settings.SnapFromCenter = true
 
 	local DragModifier = CreateEnum'DragModifier'{'TopLeft','Top','TopRight','Right','BottomRight','Bottom','BottomLeft','Left','Center'}
-	--[[
 
-	When dragging, these modifiers are multiplied by the final Position and
-	Size of an object, which constrains the changes made by the drag in
-	certain ways, depending on the modifer chosen.
+	-- When dragging, these modifiers are multiplied by the final Position and
+	-- Size of an object, which constrains the changes made by the drag in
+	-- certain ways, depending on the modifer chosen.
 
-	Some Size modifiers are negative. In this case, when an object is dragged,
-	its position is offset, and its size offset in the opposite direction by
-	the exact same amount, which effectively makes that opposite edge appear
-	static.
-
-	]]
+	-- Some Size modifiers are negative. In this case, when an object is
+	-- dragged, its position is offset, and its size offset in the opposite
+	-- direction by the exact same amount, which effectively makes that
+	-- opposite edge appear static.
 	local ModifierLookup = {	   -- Position           Size                Snap Adjust
 		[DragModifier.TopLeft    ] = {Vector2.new(1, 1), Vector2.new(-1,-1), Vector2.new(0  , 0  )};
 		[DragModifier.Top        ] = {Vector2.new(0, 1), Vector2.new( 0,-1), Vector2.new(0.5, 0  )};
@@ -90,19 +87,14 @@ do
 	}
 
 	local NegCorrection do
-		--[[
+		-- If a coordinate of the AbsoluteSize of an object is negative,
+		-- then the object wont resize as expected. That's why we map the
+		-- given drag modifier to a corrected modifier, depending on which
+		-- coordinates are negative.
 
-			If a coordinate of the AbsoluteSize of an object is negative, then
-			the object wont resize as expected. That's why we map the given
-			drag modifier to a corrected modifier, depending on which
-			coordinates are negative.
-
-			For example, if both coordinates are negative, and the given
-			modifier is TopLeft, it would map to BottomRight, because that's
-			the opposite corner on both axes.
-
-		]]
-
+		-- For example, if both coordinates are negative, and the given
+		-- modifier is TopLeft, it would map to BottomRight, because
+		-- that's the opposite corner on both axes.
 		local TopLeft     = DragModifier.TopLeft
 		local Top         = DragModifier.Top
 		local TopRight    = DragModifier.TopRight
@@ -161,19 +153,17 @@ do
 
 		local Maid = CreateMaid()
 
-		--[[
+		-- Objects are dragged by first getting the point where the user
+		-- clicked to begin the drag (mouseClick), and the Position/Size of
+		-- each object at that point (originPos/Size). Then, as the user
+		-- drags, the Position/Size of each object is offset from their origin
+		-- by applying the difference between the originClick and the current
+		-- position of the mouse.
 
-		Objects are dragged by first getting the point where the user clicked
-		to begin the drag (mouseClick), and the Position/Size of each object
-		at that point (originPos/Size). Then, as the user drags, the
-		Position/Size of each object is offset from their origin by applying
-		the difference between the originClick and the current position of the
-		mouse.
+		-- originClick is the point that all objects are offset from when
+		-- dragging. If snapping is enabled, this point is constrained to the
+		-- grid.
 
-		originClick is the point that all objects are offset from when dragging.
-		If snapping is enabled, this point is constrained to the grid.
-
-		]]
 		local originClick = mouseClick
 		local mouseOffset
 		local originPos = {}
@@ -208,14 +198,10 @@ do
 
 		local snapAnchor = Vector2.new(0,0)
 		local function updateSnapAnchorFrame(cx,cy)
-			--[[
-
-			The position of the visual indicator must be adjusted depending on
-			which coordinates of the absolute size are negative, because GUIs
-			are drawn based on their apparent size (how they look), and not
-			their actual size.
-
-			]]
+			-- The position of the visual indicator must be adjusted depending
+			-- on which coordinates of the absolute size are negative, because
+			-- GUIs are drawn based on their apparent size (how they look),
+			-- and not their actual size.
 			if snapAnchorFrame then
 				if cx then
 					if cy then
@@ -234,22 +220,19 @@ do
 		end
 
 		local function updateOriginClick()
-			--[[
+			-- There is a Snap Adjust component of the drag modifier, which is
+			-- used only when snapping is enabled. When enabled, instead of
+			-- using the mouseClick, the snap adjust is multiplied by the Size
+			-- and offset by the Position of the first object, which is then
+			-- used as the originClick. This fixes the originClick to a corner
+			-- or edge of the object, which ensures that the snap is properly
+			-- aligned.
 
-			There is a Snap Adjust component of the drag modifier, which is
-			used only when snapping is enabled. When enabled, instead of using
-			the mouseClick, the snap adjust is multiplied by the Size and
-			offset by the Position of the first object, which is then used as
-			the originClick. This fixes the originClick to a corner or edge of
-			the object, which ensures that the snap is properly aligned.
-
-			The Center snap adjust is a special case. Since there is a large
-			area of points that map to the Center, the point that is closest
-			to the provided mouseClick is chosen. This can be an edge or
-			corner or even the center of the object, depending on the snap
-			settings.
-
-			]]
+			-- The Center snap adjust is a special case. Since there is a
+			-- large area of points that map to the Center, the point that is
+			-- closest to the provided mouseClick is chosen. This can be an
+			-- edge or corner or even the center of the object, depending on
+			-- the snap settings.
 			local anchor
 			if snapEnabled then
 				if originObject then
@@ -298,19 +281,16 @@ do
 
 		Maid:GiveTask(Settings.Changed:connect(function(key,value)
 			if key == 'LayoutMode' then
-				--[[
+				-- Because objects are offset from an origin, there wont be
+				-- any odd effects from switching the layout mode mid-drag.
+				-- The Position/Size will simply be offset using the other
+				-- layout component.
 
-				Because objects are offset from an origin, there wont be any
-				odd effects from switching the layout mode mid-drag. The
-				Position/Size will simply be offset using the other layout
-				component.
-
-				However, switching the layout mode will not update each object
-				by itself. The mouse must also move so that a drag is
-				detected, which does the updating. This doesn't seem like it
-				would be much of a problem, so it will be left alone for now.
-
-				]]
+				-- However, switching the layout mode will not update each
+				-- object by itself. The mouse must also move so that a drag
+				-- is detected, which does the updating. This doesn't seem
+				-- like it would be much of a problem, so it will be left
+				-- alone for now.
 				layoutScaled = value('Scale')
 			elseif key == 'SnapEnabled' then
 				snapEnabled = value and not no_snap
@@ -318,15 +298,10 @@ do
 			end
 		end))
 
-		--[[
-
-		setObjects is passed through the OnDrag callback, which lets the list
-		of dragged objects be switched mid-drag. For example, this is used in
-		the Insert tool to begin a drag when the user clicks, but create a new
-		object only on the first drag.
-
-		]]
-
+		-- setObjects is passed through the OnDrag callback, which lets the
+		-- list of dragged objects be switched mid-drag. For example, this is
+		-- used in the Insert tool to begin a drag when the user clicks, but
+		-- create a new object only on the first drag.
 		local function setObjects(list,origin)
 			objectList = list
 			originObject = origin or objectList[#objectList]
@@ -364,7 +339,6 @@ do
 
 		-- finishDrag is returned by the DragGUI, allowing the operation to be
 		-- finished remotely. Useful if the plugin deactivates unexpectedly.
-
 		local dragFinished = false
 		local function finishDrag(x,y)
 			if dragFinished then return end
@@ -373,7 +347,7 @@ do
 			Dragger:Destroy()
 			if snapEnabled then
 				SnapService:ClearData()
-				SnapService:ClearLines()
+				SnapService:ClearVisuals()
 			end
 			Selection:SetVisible(true)
 			if callbacks.OnRelease then
