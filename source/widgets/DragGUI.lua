@@ -182,43 +182,6 @@ do
 		local layoutScaled = Settings.LayoutMode('Scale')
 		local snapEnabled = Settings.SnapEnabled and not no_snap
 
-		-- When snapping, because the originClick isnt always at the exact
-		-- position where the mouse clicked, a visual indicator is displayed.
-		local snapAnchorFrame
-		if snap_anchor then
-			snapAnchorFrame = Create'Frame'{
-				Name = "SnapAnchor VisualEffect";
-				BackgroundColor3 = Color3.new(1,1,1);
-				BorderColor3 = Color3.new(0,0,0);
-				Transparency = 0.25;
-				Size = UDim2.new(0,8,0,8);
-			}
-			Maid:GiveTask(function() snapAnchorFrame:Destroy() end)
-		end
-
-		local snapAnchor = Vector2.new(0,0)
-		local function updateSnapAnchorFrame(cx,cy)
-			-- The position of the visual indicator must be adjusted depending
-			-- on which coordinates of the absolute size are negative, because
-			-- GUIs are drawn based on their apparent size (how they look),
-			-- and not their actual size.
-			if snapAnchorFrame then
-				if cx then
-					if cy then
-						snapAnchorFrame.Position = UDim2.new(snapAnchor.x,-4,snapAnchor.y,-4)
-					else
-						snapAnchorFrame.Position = UDim2.new(snapAnchor.x,-4,1-snapAnchor.y,-4)
-					end
-				else
-					if cy then
-						snapAnchorFrame.Position = UDim2.new(1-snapAnchor.x,-4,snapAnchor.y,-4)
-					else
-						snapAnchorFrame.Position = UDim2.new(1-snapAnchor.x,-4,1-snapAnchor.y,-4)
-					end
-				end
-			end
-		end
-
 		local function updateOriginClick()
 			-- There is a Snap Adjust component of the drag modifier, which is
 			-- used only when snapping is enabled. When enabled, instead of
@@ -265,15 +228,14 @@ do
 			else
 				originClick = mouseClick
 			end
-			if snapAnchorFrame then
+			-- When snapping, because the originClick isnt always at the exact
+			-- position where the mouse clicked, a visual indicator is displayed.
+			if snap_anchor then
 				if anchor then
 				-- implies originObject ~= nil
-					local abs = originObject.AbsoluteSize
-					snapAnchor = anchor
-					updateSnapAnchorFrame(abs.x >= 0,abs.y >= 0)
-					snapAnchorFrame.Parent = originObject
+					SnapService:SetAnchorVisual(UDim2.new(anchor.x,0,anchor.y,0),originObject)
 				else
-					snapAnchorFrame.Parent = nil
+					SnapService:SetAnchorVisual()
 				end
 			end
 			mouseOffset = originClick - mouseClick
@@ -361,8 +323,6 @@ do
 
 		local OnDrag = callbacks.OnDrag
 		Maid:GiveTask(Dragger.MouseButton1Up:connect(finishDrag))
-		local negAbsX
-		local negAbsY
 		Maid:GiveTask(Dragger.MouseMoved:connect(function(x,y)
 		--[[ amount in pixels before a click is considered a drag
 			if not hasDragged and (originClick - Vector2.new(x,y)).magnitude <= Settings.ClickDragThreshold then
@@ -415,18 +375,6 @@ do
 
 					local size = Vector2.new(oSize.X.Offset,oSize.Y.Offset) + mouseDelta*modSize
 					object.Size = UDim2.new(oSize.X.Scale,size.x,oSize.Y.Scale,size.y)
-				end
-			end
-
-			if snapAnchorFrame and originObject then
-			-- updates the snapAnchorFrame when the abs size is dragged from positive to negative, and vice-versa
-				local abs = originObject.AbsoluteSize
-				local x = abs.x >= 0
-				local y = abs.y >= 0
-				if x ~= negAbsX or y ~= negAbsY then
-					negAbsX = x
-					negAbsY = y
-					updateSnapAnchorFrame(x,y)
 				end
 			end
 		end))
