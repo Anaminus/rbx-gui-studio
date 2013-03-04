@@ -100,11 +100,6 @@ do
 			if self.CurrentTool.Button then
 				self.CurrentTool.Button.BorderColor3 = GuiColor.ButtonSelected
 			end
-			for i,tool in pairs(self.ToolList) do
-				if tool.KeyBinding then
-					KeyBinding:Add(tool.KeyBinding,function() self:SelectTool(tool) end)
-				end
-			end
 		end
 		return self.ToolbarFrame
 	end
