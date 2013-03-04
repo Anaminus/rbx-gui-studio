@@ -373,6 +373,7 @@ do
 			Dragger:Destroy()
 			if snapEnabled then
 				SnapService:ClearData()
+				SnapService:ClearLines()
 			end
 			Selection:SetVisible(true)
 			if callbacks.OnRelease then

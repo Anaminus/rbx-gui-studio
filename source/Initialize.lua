@@ -13,6 +13,8 @@ PluginActivator.Initialized:connect(function()
 	Canvas.Stopped:connect(function()
 		Selection:Stop()
 	end)
+
+	SnapService:SetParent(Canvas.CanvasFrame)
 end)
 
 do

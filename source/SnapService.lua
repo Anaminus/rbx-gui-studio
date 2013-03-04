@@ -53,6 +53,12 @@ SnapService:Snap ( interestPoint )
 	Snaps a point by running it through each snapper function.
 	Returns the snapped point.
 
+SnapService:ClearLines()
+	Clears any visual lines while snapping.
+
+SnapService:SetParent( parent )
+	Sets the parent where visual snapping lines will appear.
+
 SnapService.StateChanged ( ref, enabled )
 	Fired after a snapper is enabled or disabled.
 
@@ -113,6 +119,114 @@ local SnapService do
 		end
 	end
 
+	local setXLine,setYLine do
+		local screen
+		local screenPosX,screenPosY
+		local screenSizeX,screenSizeY
+
+		function SnapService:SetParent(parent)
+			if con then con:disconnect() con = nil end
+			screen = parent
+			screenPos = screen.Position
+			screenSizeX = screen.AbsoluteSize.x
+			screenSizeY = screen.AbsoluteSize.y
+			con = screen.Changed:connect(function(p)
+				if p == 'AbsoluteSize' then
+					screenSizeX = screen.AbsoluteSize.x
+					screenSizeY = screen.AbsoluteSize.y
+				elseif p == 'AbsolutePosition' then
+					screenPosX = screen.AbsolutePosition.x
+					screenPosY = screen.AbsolutePosition.y
+				end
+			end)
+		end
+
+		local lineXFrame = Create'Frame'{
+			BackgroundColor3 = Color3.new(1,0,0);
+			BorderSizePixel = 0;
+			Create'Frame'{
+				Name = "Border";
+				Transparency = 1;
+				Size = UDim2.new(1,0,1,0);
+				Create'Frame'{
+					Name = "Top";
+					BackgroundColor3 = Color3.new(0,0,0);
+					BackgroundTransparency = 0.5;
+					BorderSizePixel = 0;
+					Position = UDim2.new(0,-1,0,-1);
+					Size = UDim2.new(1,2,0,1);
+				};
+				Create'Frame'{
+					Name = "Right";
+					BackgroundColor3 = Color3.new(0,0,0);
+					BackgroundTransparency = 0.5;
+					BorderSizePixel = 0;
+					Position = UDim2.new(1,0,0,0);
+					Size = UDim2.new(0,1,1,0);
+				};
+				Create'Frame'{
+					Name = "Bottom";
+					BackgroundColor3 = Color3.new(0,0,0);
+					BackgroundTransparency = 0.5;
+					BorderSizePixel = 0;
+					Position = UDim2.new(0,-1,1,0);
+					Size = UDim2.new(1,2,0,1);
+				};
+				Create'Frame'{
+					Name = "Left";
+					BackgroundColor3 = Color3.new(0,0,0);
+					BackgroundTransparency = 0.5;
+					BorderSizePixel = 0;
+					Position = UDim2.new(0,-1,0,0);
+					Size = UDim2.new(0,1,1,0);
+				};
+			};
+		}
+		local lineYFrame = lineXFrame:Clone()
+
+		function SnapService:ClearLines()
+			lineXFrame.Parent = nil
+			lineYFrame.Parent = nil
+		end
+
+		function setXLine(px,line)
+			if px then
+				local py,sy
+				if line then
+					py = line.x
+					sy = line.y
+				else
+					py = 0
+					sy = screenSizeY
+				end
+				lineXFrame.Position = UDim2.new(0,px - screenPosX,0,py)
+				lineXFrame.Size = UDim2.new(0,1,0,sy)
+				lineXFrame.Parent = screen
+			else
+				lineXFrame.Parent = nil
+			end
+		end
+
+		function setYLine(py,line)
+			if py then
+				local px,sx
+				if line then
+					px = line.x
+					sx = line.y
+				else
+					px = 0
+					sx = screenSizeX
+				end
+				lineYFrame.Position = UDim2.new(0,px,0,py - screenPosY)
+				lineYFrame.Size = UDim2.new(0,sx,0,1)
+				lineYFrame.Parent = screen
+			else
+				lineYFrame.Parent = nil
+			end
+		end
+	end
+
+
 	local abs = math.abs
 	function SnapService:Snap(interestPoint)
 		-- The interest point is separated into its individual coordinates, so
@@ -120,7 +234,8 @@ local SnapService do
 		-- way, axes of two different snaps can be combined to form one final
 		-- snapped point.
 		local pointX,pointY = interestPoint.x,interestPoint.y
-		local finalX,finalY = pointX,pointY
+		local finalX,finalY
+		local lineX,lineY
 
 		-- Because these variables are used to select the snaps with the
 		-- nearest to the original point, they will always be lower than the
@@ -133,12 +248,13 @@ local SnapService do
 		for i = 1,#snapperList do
 			local snapper = snapperList[i]
 			if snapperEnabled[snapper] then
-				local snappedX,snappedY = snapper(interestPoint,snapperData)
+				local snappedX,snappedY,lnX,lnY = snapper(interestPoint,snapperData)
 				if snappedX then
 					local diff = abs(snappedX - pointX)
 					if diff <= diffX then
 						finalX = snappedX
 						diffX = diff
+						lineX = lnX
 					end
 				end
 				if snappedY then
@@ -146,12 +262,15 @@ local SnapService do
 					if diff <= diffY then
 						finalY = snappedY
 						diffY = diff
+						lineY = lnY
 					end
 				end
 			end
 		end
-		-- TODO: return which axes were snapped on
-		return Vector2.new(finalX,finalY)
+
+		setXLine(finalX,lineX)
+		setYLine(finalY,lineY)
+		return Vector2.new(finalX or pointX,finalY or pointY)
 	end
 end
 

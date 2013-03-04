@@ -114,6 +114,7 @@ do
 				SnapService:ReadyData()
 				originClick = SnapService:Snap(Vector2.new(x,y))
 				SnapService:ClearData()
+				SnapService:ClearLines()
 			else
 				originClick = Vector2.new(x,y)
 			end
