@@ -243,40 +243,65 @@ local SnapService do
 		}
 
 		local anchorParent
-		local anchorPos = UDim2.new(0,0,0,0)
 		local anchorConn
 
-		local function updateAnchor()
-		-- The position of the visual indicator must be adjusted depending
-		-- on which coordinates of the absolute size are negative, because
-		-- GUIs are drawn based on their apparent size (how they look),
-		-- and not their actual size.
-		local absS = anchorParent.AbsoluteSize
-		if absS.x >= 0 then
-			if absS.y >= 0 then
-				anchorFrame.Position = anchorPos
-			else
-				anchorFrame.Position = UDim2.new(0,0,1,0) - anchorPos
-			end
-		else
-			if absS.y >= 0 then
-				anchorFrame.Position = UDim2.new(1,0,0,0) - anchorPos
-			else
-				anchorFrame.Position = UDim2.new(1,0,1,0) - anchorPos
+		local anchorPos
+		local anchorPosNegX
+		local anchorPosNegY
+		local anchorPosNegXY
+
+		local absNegX
+		local absNegY
+
+		local updateAnchor do
+			function updateAnchor()
+				-- The position of the visual indicator must be adjusted depending
+				-- on which coordinates of the absolute size are negative, because
+				-- GUIs are drawn based on their apparent size (how they look),
+				-- and not their actual size.
+				local x = anchorParent.AbsoluteSize.x >= 0
+				local y = anchorParent.AbsoluteSize.y >= 0
+				if x ~= absNegX or y ~= absNegY then
+					absNegX = x
+					absNegY = y
+					if x then
+						if y then
+							anchorFrame.Position = anchorPos
+						else
+							anchorFrame.Position = anchorPosNegY
+						end
+					else
+						if y then
+							anchorFrame.Position = anchorPosNegX
+						else
+							anchorFrame.Position = anchorPosNegXY
+						end
+					end
+				end
 			end
 		end
 
 		function SnapService:SetAnchorVisual(pos,parent)
 			if anchorConn then anchorConn:disconnect() end
 			if pos then
-				anchorParent = parent or screen
-				anchorPos = pos + UDim2.new(0,-size,0,-size)
+				local usize = UDim2.new(0,size,0,size)
+				absNegX = nil
+				absNegY = nil
 
+				anchorPos = pos - usize
+				anchorPosNegY = UDim2.new(pos.X.Scale,pos.X.Offset,1-pos.Y.Scale,pos.Y.Offset) - usize
+				anchorPosNegX = UDim2.new(1-pos.X.Scale,pos.X.Offset,pos.Y.Scale,pos.Y.Offset) - usize
+				anchorPosNegXY = UDim2.new(1-pos.X.Scale,pos.X.Offset,1-pos.Y.Scale,pos.Y.Offset) - usize
+
+				anchorParent = parent or screen
 				anchorConn = anchorParent.Changed:connect(function(p)
 					if p == 'AbsoluteSize' then
 						updateAnchor()
 					end
 				end)
+
+				anchorFrame.Parent = anchorParent
+				updateAnchor()
 			else
 				anchorFrame.Parent = nil
 				anchorParent = nil
@@ -286,6 +311,7 @@ local SnapService do
 		function SnapService:ClearVisuals()
 			lineXFrame.Parent = nil
 			lineYFrame.Parent = nil
+			if anchorConn then anchorConn:disconnect() end
 			anchorFrame.Parent = nil
 			anchorParent = nil
 		end
