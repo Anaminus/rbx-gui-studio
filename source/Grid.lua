@@ -176,21 +176,14 @@ do
 		lineTemplateY.Transparency     = color.a
 	end
 
+	local updateParent
 
-	Settings.Changed:connect(function(key,value)
-		if key == 'LayoutMode' and gridContainer then
-			layoutMode = value('Scale')
-			updateTemplateColor()
-			updateGrid()
-		end
-	end)
-
-	local function initializeGrid()
+	function Grid:Initialize()
 		lineTemplateX = Create'Frame'{
 			Name = "GridLine Vertical";
 			BorderSizePixel = 0;
-			BackgroundColor3 = layoutMode and Grid.ScaleLineColor.color3 or Grid.OffsetLineColor.color3;
-			Transparency = layoutMode and Grid.ScaleLineColor.a or Grid.OffsetLineColor.a;
+			BackgroundColor3 = layoutMode and self.ScaleLineColor.color3 or self.OffsetLineColor.color3;
+			Transparency = layoutMode and self.ScaleLineColor.a or self.OffsetLineColor.a;
 			ZIndex = 9;
 			Size = UDim2.new(0,1,1,0);
 		}
@@ -207,31 +200,116 @@ do
 			Transparency = 1;
 			Size = UDim2.new(1,0,1,0);
 		}
-		Grid.Container = gridContainer
+		self.Container = gridContainer
 
+	---- GRID SNAPPING
+
+		Settings.SnapToGrid = true
+
+		-- gridOffset is a combination of gridPos (the grid container's position)
+		-- and gridOrigin (the grid's position).
+		local gridSpacing,gridOffset do
+			local parent
+			local parentConn
+
+			local gridSize = Vector2.new()
+			local gridPos = Vector2.new()
+			local function updateGridPos(p)
+				if p == 'AbsolutePosition' then
+					gridPos = parent.AbsolutePosition
+					if layoutMode then
+						gridOffset = gridPos + gridSize*gOrigin
+					else
+						gridOffset = gridPos + gOrigin
+					end
+				elseif p == 'AbsoluteSize' then
+					gridSize = parent.AbsoluteSize
+					if layoutMode then
+						gridSpacing = gridSize*gSpacing
+						gridOffset = gridPos + gridSize*gOrigin
+					end
+					-- gridSize isn't used with offset mode, so it doesn't need to
+					-- be updated here.
+				end
+			end
+
+			-- Because the gridContainer is used to determine visibility (by
+			-- parenting), it can't be used to update variables. So instead,
+			-- Grid.Parent will be used.
+			function updateParent(p)
+				parent = p
+				if parentConn then parentConn:disconnect() parentConn = nil end
+				if parent then
+					parentConn = parent.Changed:connect(updateGridPos)
+					updateGridPos('AbsolutePosition')
+					updateGridPos('AbsoluteSize')
+				end
+			end
+
+			local function updateVars()
+				if layoutMode then
+					-- Since the grid spacing and origin are in scaled
+					-- coordinates, they need to be converted to global
+					-- coordinates by multiplying by the gridSize.
+					gridSpacing = gridSize*gSpacing
+					gridOffset = gridPos + gridSize*gOrigin
+				else
+					gridSpacing = gSpacing
+					gridOffset = gridPos + gOrigin
+				end
+			end
+
+			self.Updated:connect(updateVars)
+			updateVars()
+		end
+
+		local floor = math.floor
+		SnapService:AddSnapper('Grid',function(point)
+			-- In global coordinates, the grid container will have some arbitrary
+			-- position. So, the point, which is currently in global coordinates,
+			-- needs to be converted to the grid container's coordinates before
+			-- snapping. This is done by subtracting gridPos (the container's
+			-- position).
+
+			-- Then, the point needs to be converted to the actual grid's
+			-- coordinates, which is done by subtracting (gridOrigin).
+
+			-- gridPos and gridOrigin are combined into gridOffset beforehand, so
+			-- that it doesn't have to be done here.
+			return
+				floor((point.x - gridOffset.x)/gridSpacing.x + 0.5)*gridSpacing.x + gridOffset.x,
+				floor((point.y - gridOffset.y)/gridSpacing.y + 0.5)*gridSpacing.y + gridOffset.y
+		end)
+
+		Settings.Changed:connect(function(key,value)
+			if key == 'LayoutMode' then
+				layoutMode = value('Scale')
+				updateTemplateColor()
+				updateGrid()
+			elseif key == 'SnapToGrid' then
+				SnapService:SetEnabled('Grid',value)
+			end
+		end)
+		SnapService:SetEnabled('Grid',Settings.SnapToGrid)
 		updateGrid()
 	end
 
 	local activeLookup = Canvas.ActiveLookup
 
 	function Grid:SetParent(parent)
-		if not gridContainer then
-			initializeGrid()
-		end
 		self.Parent = parent
 		if self.Visible then
 			gridContainer.Parent = activeLookup[parent]
 		end
+		updateParent(activeLookup[parent])
 	end
 
 	function Grid:SetVisible(visible)
 		self.Visible = visible
-		if gridContainer then
-			if visible then
-				gridContainer.Parent = activeLookup[self.Parent]
-			else
-				gridContainer.Parent = nil
-			end
+		if visible then
+			gridContainer.Parent = activeLookup[self.Parent]
+		else
+			gridContainer.Parent = nil
 		end
 		eventVisibilitySet:Fire(visible)
 	end
@@ -243,9 +321,7 @@ do
 		if spacing then
 			self.Spacing = spacing
 		end
-		if gridContainer then
-			updateGrid()
-		end
+		updateGrid()
 	end
 
 	function Grid:SetColor(scale,offset)
@@ -297,81 +373,4 @@ do
 			Grid:SetParent(nil)
 		end;
 	}
-	initializeGrid()
-
----- GRID SNAPPING
-
-	Settings.SnapToGrid = true
-
-	-- gridOffset is a combination of gridPos (the grid container's position)
-	-- and gridOrigin (the grid's position).
-	local gridSpacing,gridOffset do
-		-- We want the snapper function to be speedy fast, so we'll update
-		-- these variables only when they change.
-		local gridContainer = Grid.Container
-		local gridSize
-		local function updateGridPos(p)
-			if p == 'AbsolutePosition' then
-				gridPos = gridContainer.AbsolutePosition
-				if layoutMode then
-					gridOffset = gridPos + gridSize*gOrigin
-				else
-					gridOffset = gridPos + gOrigin
-				end
-			elseif p == 'AbsoluteSize' then
-				gridSize = gridContainer.AbsoluteSize
-				if layoutMode then
-					gridSpacing = gridSize*gSpacing
-					gridOffset = gridPos + gridSize*gOrigin
-				end
-				-- gridSize isn't used with offset mode, so it doesn't need to
-				-- be updated here.
-			end
-		end
-		gridContainer.Changed:connect(updateGridPos)
-		updateGridPos('AbsolutePosition')
-		updateGridPos('AbsoluteSize')
-
-		local function updateGrid()
-			if layoutMode then
-				-- Since the grid spacing and origin are in scaled
-				-- coordinates, they need to be converted to global
-				-- coordinates by multiplying by the gridSize.
-				gridSpacing = gridSize*gSpacing
-				gridOffset = gridPos + gridSize*gOrigin
-			else
-				gridSpacing = gSpacing
-				gridOffset = gridPos + gOrigin
-			end
-		end
-
-		Grid.Updated:connect(updateGrid)
-		updateGrid()
-	end
-
-	local floor = math.floor
-	SnapService:AddSnapper('Grid',function(point)
-		-- In global coordinates, the grid container will have some arbitrary
-		-- position. So, the point, which is currently in global coordinates,
-		-- needs to be converted to the grid container's coordinates before
-		-- snapping. This is done by subtracting gridPos (the container's
-		-- position).
-
-		-- Then, the point needs to be converted to the actual grid's
-		-- coordinates, which is done by subtracting (gridOrigin).
-
-		-- gridPos and gridOrigin are combined into gridOffset beforehand, so
-		-- that it doesn't have to be done here.
-
-		return
-			floor((point.x - gridOffset.x)/gridSpacing.x + 0.5)*gridSpacing.x + gridOffset.x,
-			floor((point.y - gridOffset.y)/gridSpacing.y + 0.5)*gridSpacing.y + gridOffset.y
-	end)
-
-	Settings.Changed:connect(function(key,value)
-		if key == 'SnapToGrid' then
-			SnapService:SetEnabled('Grid',value)
-		end
-	end)
-	SnapService:SetEnabled('Grid',Settings.SnapToGrid)
 end

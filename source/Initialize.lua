@@ -1,5 +1,7 @@
 PluginActivator.Initialized:connect(function()
+	Grid:Initialize()
 	UserInterface:Initialize()
+
 	Canvas.Started:connect(function(screen)
 		Scope:SetTop(screen)
 		Grid:Start()
