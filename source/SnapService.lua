@@ -198,16 +198,16 @@ local SnapService do
 
 		function setXLine(px,line)
 			if px then
-				local py,sy
+				local ly,hy
 				if line then
-					py = line.x
-					sy = line.y
+					ly = line.x - screenPosY
+					hy = line.y - screenPosY
 				else
-					py = 0
-					sy = screenSizeY
+					ly = -screenPosY
+					hy = screenSizeY
 				end
-				lineXFrame.Position = UDim2.new(0,px - screenPosX,0,py)
-				lineXFrame.Size = UDim2.new(0,1,0,sy)
+				lineXFrame.Position = UDim2.new(0,px - screenPosX,0,ly)
+				lineXFrame.Size = UDim2.new(0,1,0,hy - ly)
 				lineXFrame.Parent = screen
 			else
 				lineXFrame.Parent = nil
@@ -216,16 +216,16 @@ local SnapService do
 
 		function setYLine(py,line)
 			if py then
-				local px,sx
+				local lx,hx
 				if line then
-					px = line.x
-					sx = line.y
+					lx = line.x - screenPosX
+					hx = line.y - screenPosX
 				else
-					px = 0
-					sx = screenSizeX
+					lx = -screenPosX
+					hx = screenSizeX
 				end
-				lineYFrame.Position = UDim2.new(0,px,0,py - screenPosY)
-				lineYFrame.Size = UDim2.new(0,sx,0,1)
+				lineYFrame.Position = UDim2.new(0,lx,0,py - screenPosY)
+				lineYFrame.Size = UDim2.new(0,hx - lx,0,1)
 				lineYFrame.Parent = screen
 			else
 				lineYFrame.Parent = nil
@@ -371,6 +371,7 @@ do
 	Settings.SnapToCenter = false
 	Settings.SnapToParent = true
 	Settings.SnapToPadding = false
+	Settings.SnapConstrained = false
 
 	local snapPadding = Settings.SnapPadding
 	Settings.Changed:connect(function(key,value)
@@ -444,6 +445,64 @@ do
 		return finalX,finalY
 	end)
 
+	SnapService:AddSnapper('LayoutEdgesConstrained',function(point,data)
+		data = data.LayoutSiblings
+		if not data then return end
+		local object = data[1]
+		local siblings = data[2]
+
+		local finalX
+		local finalY
+
+		local diffX = Settings.SnapTolerance
+		local diffY = Settings.SnapTolerance
+
+		local lineX
+		local lineY
+
+		local px = point.x
+		local py = point.y
+
+		for i = 1,#siblings do
+			local slow = siblings[i].AbsolutePosition
+			local shigh = slow + siblings[i].AbsoluteSize
+			if py >= slow.y and py <= shigh.y then
+				-- low x
+				local diff = abs( slow.x - px )
+				if diff < diffX then
+					finalX = slow.x
+					diffX = diff
+					lineX = Vector2.new(slow.y,shigh.y)
+				end
+				-- high x
+				local diff = abs( shigh.x - px )
+				if diff < diffX then
+					finalX = shigh.x
+					diffX = diff
+					lineX = Vector2.new(slow.y,shigh.y)
+				end
+			end
+
+			if px >= slow.x and px <= shigh.x then
+				-- low y
+				local diff = abs( slow.y - py )
+				if diff < diffY then
+					finalY = slow.y
+					diffY = diff
+					lineY = Vector2.new(slow.x,shigh.x)
+				end
+				-- high y
+				local diff = abs( shigh.y - py )
+				if diff < diffY then
+					finalY = shigh.y
+					diffY = diff
+					lineY = Vector2.new(slow.x,shigh.x)
+				end
+			end
+		end
+		return finalX,finalY,lineX,lineY
+	end)
+
 	SnapService:AddSnapper('LayoutEdgesPadding',function(point,data)
 		data = data.LayoutSiblings
 		if not data then return end
@@ -481,6 +540,68 @@ do
 		return finalX,finalY
 	end)
 
+	SnapService:AddSnapper('LayoutEdgesPaddingConstrained',function(point,data)
+		data = data.LayoutSiblings
+		if not data then return end
+		local object = data[1]
+		local siblings = data[2]
+
+		local finalX
+		local finalY
+
+		local diffX = Settings.SnapTolerance
+		local diffY = Settings.SnapTolerance
+
+		local lineX
+		local lineY
+
+		local px = point.x
+		local py = point.y
+
+		for i = 1,#siblings do
+			local slow = siblings[i].AbsolutePosition
+			local shigh = slow + siblings[i].AbsoluteSize
+			if py >= slow.y - snapPadding and py <= shigh.y + snapPadding then
+				-- low x
+				local edge = slow.x - snapPadding
+				local diff = abs( edge - px )
+				if diff < diffX then
+					finalX = edge
+					diffX = diff
+					lineX = Vector2.new(slow.y-snapPadding,shigh.y+snapPadding)
+				end
+				-- high x
+				local edge = shigh.x + snapPadding
+				local diff = abs( edge - px )
+				if diff < diffX then
+					finalX = edge
+					diffX = diff
+					lineX = Vector2.new(slow.y-snapPadding,shigh.y+snapPadding)
+				end
+			end
+
+			if px >= slow.x - snapPadding and px <= shigh.x + snapPadding then
+				-- low y
+				local edge = slow.y - snapPadding
+				local diff = abs( edge - py )
+				if diff < diffY then
+					finalY = edge
+					diffY = diff
+					lineY = Vector2.new(slow.x-snapPadding,shigh.x+snapPadding)
+				end
+				-- high y
+				local edge = shigh.y + snapPadding
+				local diff = abs( edge - py )
+				if diff < diffY then
+					finalY = edge
+					diffY = diff
+					lineY = Vector2.new(slow.x-snapPadding,shigh.x+snapPadding)
+				end
+			end
+		end
+		return finalX,finalY,lineX,lineY
+	end)
+
 	SnapService:AddSnapper('LayoutCenter',function(point,data)
 		data = data.LayoutSiblings
 		if not data then return end
@@ -511,6 +632,50 @@ do
 			end
 		end
 		return finalX,finalY
+	end)
+
+	SnapService:AddSnapper('LayoutCenterConstrained',function(point,data)
+		data = data.LayoutSiblings
+		if not data then return end
+		local object = data[1]
+		local siblings = data[2]
+
+		local finalX
+		local finalY
+
+		local snapTol = Settings.SnapTolerance
+		local diffX = snapTol
+		local diffY = snapTol
+
+		local lineX
+		local lineY
+
+		local px = point.x
+		local py = point.y
+
+		for i = 1,#siblings do
+			local slow = siblings[i].AbsolutePosition
+			local shigh = slow + siblings[i].AbsoluteSize
+			local scenter = slow + siblings[i].AbsoluteSize/2
+
+			if py >= slow.y and py <= shigh.y then
+				local diff = abs( scenter.x - px )
+				if diff < diffX then
+					finalX = scenter.x
+					diffX = diff
+					lineX = Vector2.new(slow.y,shigh.y)
+				end
+			end
+			if px >= slow.x and px <= shigh.x then
+				local diff = abs( scenter.y - py )
+				if diff < diffY then
+					finalY = scenter.y
+					diffY = diff
+					lineY = Vector2.new(slow.x,shigh.x)
+				end
+			end
+		end
+		return finalX,finalY,lineX,lineY
 	end)
 
 	SnapService:AddInitializer('LayoutParent',function(active)
@@ -587,21 +752,38 @@ do
 
 	Settings.Changed:connect(function(key,value)
 		if key == 'SnapToEdges' then
-			SnapService:SetEnabled('LayoutEdges',value)
-			SnapService:SetEnabled('LayoutEdgesPadding',value and Settings.SnapToPadding)
+			SnapService:SetEnabled('LayoutEdges',value and not Settings.SnapConstrained)
+			SnapService:SetEnabled('LayoutEdgesPadding',value and Settings.SnapToPadding and not Settings.SnapConstrained)
+			SnapService:SetEnabled('LayoutEdgesConstrained',value and Settings.SnapConstrained)
+			SnapService:SetEnabled('LayoutEdgesPaddingConstrained',value and Settings.SnapToPadding and Settings.SnapConstrained)
+		elseif key == 'SnapToCenter' then
+			SnapService:SetEnabled('LayoutCenter',value and not Settings.SnapConstrained)
+			SnapService:SetEnabled('LayoutCenterConstrained',value and Settings.SnapConstrained)
 		elseif key == 'SnapToParent' then
 			SnapService:SetEnabled('LayoutParent',value)
 			SnapService:SetEnabled('LayoutParentPadding',value and Settings.SnapToPadding)
 		elseif key == 'SnapToPadding' then
-			SnapService:SetEnabled('LayoutEdgesPadding',value and Settings.SnapToEdges)
+			SnapService:SetEnabled('LayoutEdgesPadding',value and Settings.SnapToEdges and not Settings.SnapConstrained)
 			SnapService:SetEnabled('LayoutParentPadding',value and Settings.SnapToParent)
-		elseif key == 'SnapToCenter' then
-			SnapService:SetEnabled('LayoutCenter',value)
+			SnapService:SetEnabled('LayoutEdgesPaddingConstrained',value and Settings.SnapToEdges and Settings.SnapConstrained)
+		elseif key == 'SnapConstrained' then
+			SnapService:SetEnabled('LayoutEdges',not value and Settings.SnapToEdges)
+			SnapService:SetEnabled('LayoutCenter',not value and Settings.SnapToCenter)
+			SnapService:SetEnabled('LayoutEdgesPadding',not value and Settings.SnapToEdges and Settings.SnapToPadding)
+			SnapService:SetEnabled('LayoutEdgesConstrained',value and Settings.SnapToEdges)
+			SnapService:SetEnabled('LayoutCenterConstrained',value and Settings.SnapToCenter)
+			SnapService:SetEnabled('LayoutEdgesPaddingConstrained',value and Settings.SnapToEdges and Settings.SnapToPadding)
 		end
 	end)
-	SnapService:SetEnabled('LayoutEdges',Settings.SnapToEdges)
+
+	SnapService:SetEnabled('LayoutEdges',Settings.SnapToEdges and not Settings.SnapConstrained)
+	SnapService:SetEnabled('LayoutCenter',Settings.SnapToCenter and not Settings.SnapConstrained)
 	SnapService:SetEnabled('LayoutParent',Settings.SnapToParent)
-	SnapService:SetEnabled('LayoutEdgesPadding',Settings.SnapToPadding and Settings.SnapToEdges)
-	SnapService:SetEnabled('LayoutParentPadding',Settings.SnapToPadding and Settings.SnapToParent)
-	SnapService:SetEnabled('LayoutCenter',Settings.SnapToCenter)
+
+	SnapService:SetEnabled('LayoutEdgesPadding',Settings.SnapToEdges and Settings.SnapToPadding and not Settings.SnapConstrained)
+	SnapService:SetEnabled('LayoutParentPadding',Settings.SnapToParent and Settings.SnapToPadding)
+
+	SnapService:SetEnabled('LayoutEdgesConstrained',Settings.SnapToEdges and Settings.SnapConstrained)
+	SnapService:SetEnabled('LayoutCenterConstrained',Settings.SnapToCenter and Settings.SnapConstrained)
+	SnapService:SetEnabled('LayoutEdgesPaddingConstrained',Settings.SnapToEdges and Settings.SnapToPadding and Settings.SnapConstrained)
 end

@@ -258,8 +258,29 @@ do
 					end;
 				};
 				{
-					Name = "ToggleGridSnapping";
+					Name = "ToggleConstrainedSnapping";
 					Icon = Widgets.Icon(nil,InternalSettings.IconMap.Snap,32,5,0);
+					ToolTip = "Constrained snapping";
+					Select = function()
+						Settings.SnapConstrained = not Settings.SnapConstrained
+					end;
+					Setup = function(self)
+						Settings.Changed:connect(function(key,value)
+							if key == 'SnapConstrained' then
+								self:SetActive(value)
+							elseif key == 'SnapEnabled' then
+								self:SetEnabled(value)
+								Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,5,value and 0 or 1)
+							end
+						end)
+						self:SetActive(Settings.SnapConstrained)
+						self:SetEnabled(Settings.SnapEnabled)
+						Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,5,Settings.SnapEnabled and 0 or 1)
+					end;
+				};
+				{
+					Name = "ToggleGridSnapping";
+					Icon = Widgets.Icon(nil,InternalSettings.IconMap.Snap,32,6,0);
 					ToolTip = "Snap to grid";
 					Select = function()
 						Settings.SnapToGrid = not Settings.SnapToGrid
@@ -270,12 +291,12 @@ do
 								self:SetActive(value)
 							elseif key == 'SnapEnabled' then
 								self:SetEnabled(value)
-								Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,5,value and 0 or 1)
+								Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,6,value and 0 or 1)
 							end
 						end)
 						self:SetActive(Settings.SnapToGrid)
 						self:SetEnabled(Settings.SnapEnabled)
-						Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,5,Settings.SnapEnabled and 0 or 1)
+						Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,6,Settings.SnapEnabled and 0 or 1)
 					end;
 				};
 			}

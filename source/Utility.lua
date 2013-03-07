@@ -26,7 +26,7 @@ InternalSettings = {
 		Menu   = Preload"http://www.roblox.com/asset/?id=95760448";
 		Tool   = Preload"http://www.roblox.com/asset/?id=93526037";
 		Insert = Preload"http://www.roblox.com/asset/?id=93526058";
-		Snap   = Preload"http://www.roblox.com/asset/?id=108791773";
+		Snap   = Preload"http://www.roblox.com/asset/?id=108808793";
 	};
 }
 
