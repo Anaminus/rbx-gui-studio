@@ -40,8 +40,8 @@ function Widgets.TabContainer(TabContainerFrame,ContentList,currentTab)
 
 	local BorderHide = Create'Frame'{
 		Name = "BorderHide";
-		Position = UDim2.new(0, 1, 1, -1);
-		Size = UDim2.new(1, 0, 0, 1);
+		Position = UDim2.new(0, 0, 1, 0);
+		Size = UDim2.new(1, 1, 0, 1);
 		BackgroundColor3 = GuiColor.Background;
 		BorderSizePixel = 0;
 		ZIndex = 10;
