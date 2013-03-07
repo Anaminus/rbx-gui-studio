@@ -204,7 +204,7 @@ do
 
 	---- GRID SNAPPING
 
-		Settings.SnapToGrid = true
+		Settings.SnapToGrid = false
 
 		-- gridOffset is a combination of gridPos (the grid container's position)
 		-- and gridOrigin (the grid's position).
