@@ -122,26 +122,6 @@ do
 					end;
 				};
 				{
-					Name = "ToggleSnapping";
-					Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,1,0);
-					ToolTip = "Toggle whether objects will snap to the grid";
-					KeyBinding = "alt+s";
-					Select = function(self)
-						Settings.SnapEnabled = not Settings.SnapEnabled
-					end;
-					Setup = function(self)
-						Settings.Changed:connect(function(key,value)
-							if key == 'SnapEnabled' then
-								if value then
-									self.Button.BorderColor3 = GuiColor.ButtonSelected
-								else
-									self.Button.BorderColor3 = GuiColor.ButtonBorder
-								end
-							end
-						end)
-					end;
-				};
-				{
 					Name = "ConfigGrid";
 					Icon = Widgets.Icon(nil,InternalSettings.IconMap.Menu,32,1,1);
 					KeyBinding = "shift+ctrl+g";
@@ -178,7 +158,9 @@ do
 			local SnapperButtons = {
 				{
 					Name = "ToggleSnapping";
-					ToolTip = "Toggle whether objects will snap to anything";
+					Icon = Widgets.Icon(nil,InternalSettings.IconMap.Snap,32,0,0);
+					ToolTip = "Enable snapping";
+					KeyBinding = "alt+s";
 					Select = function()
 						Settings.SnapEnabled = not Settings.SnapEnabled
 					end;
@@ -193,7 +175,8 @@ do
 				};
 				{
 					Name = "ToggleEdgeSnapping";
-					ToolTip = "Toggle whether objects will snap to the edges of sibling objects";
+					Icon = Widgets.Icon(nil,InternalSettings.IconMap.Snap,32,1,0);
+					ToolTip = "Snap to edge";
 					Select = function()
 						Settings.SnapToEdges = not Settings.SnapToEdges
 					end;
@@ -203,15 +186,18 @@ do
 								self:SetActive(value)
 							elseif key == 'SnapEnabled' then
 								self:SetEnabled(value)
+								Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,1,value and 0 or 1)
 							end
 						end)
 						self:SetActive(Settings.SnapToEdges)
 						self:SetEnabled(Settings.SnapEnabled)
+						Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,1,Settings.SnapEnabled and 0 or 1)
 					end;
 				};
 				{
 					Name = "ToggleCenterSnapping";
-					ToolTip = "Toggle whether objects will snap to the centers of sibling objects";
+					Icon = Widgets.Icon(nil,InternalSettings.IconMap.Snap,32,2,0);
+					ToolTip = "snap to center";
 					Select = function()
 						Settings.SnapToCenter = not Settings.SnapToCenter
 					end;
@@ -221,15 +207,18 @@ do
 								self:SetActive(value)
 							elseif key == 'SnapEnabled' then
 								self:SetEnabled(value)
+								Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,2,value and 0 or 1)
 							end
 						end)
 						self:SetActive(Settings.SnapToCenter)
 						self:SetEnabled(Settings.SnapEnabled)
+						Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,2,Settings.SnapEnabled and 0 or 1)
 					end;
 				};
 				{
 					Name = "ToggleParentSnapping";
-					ToolTip = "Toggle whether objects will snap to the parent object";
+					Icon = Widgets.Icon(nil,InternalSettings.IconMap.Snap,32,3,0);
+					ToolTip = "Snap to parent";
 					Select = function()
 						Settings.SnapToParent = not Settings.SnapToParent
 					end;
@@ -239,15 +228,18 @@ do
 								self:SetActive(value)
 							elseif key == 'SnapEnabled' then
 								self:SetEnabled(value)
+								Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,3,value and 0 or 1)
 							end
 						end)
 						self:SetActive(Settings.SnapToParent)
 						self:SetEnabled(Settings.SnapEnabled)
+						Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,3,Settings.SnapEnabled and 0 or 1)
 					end;
 				};
 				{
 					Name = "TogglePaddingSnapping";
-					ToolTip = "Toggle whether objects will snap to edges of objects with padding";
+					Icon = Widgets.Icon(nil,InternalSettings.IconMap.Snap,32,4,0);
+					ToolTip = "Snap to padding";
 					Select = function()
 						Settings.SnapToPadding = not Settings.SnapToPadding
 					end;
@@ -257,15 +249,18 @@ do
 								self:SetActive(value)
 							elseif key == 'SnapEnabled' then
 								self:SetEnabled(value)
+								Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,4,value and 0 or 1)
 							end
 						end)
 						self:SetActive(Settings.SnapToPadding)
 						self:SetEnabled(Settings.SnapEnabled)
+						Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,4,Settings.SnapEnabled and 0 or 1)
 					end;
 				};
 				{
 					Name = "ToggleGridSnapping";
-					ToolTip = "Toggle whether objects will snap to the grid";
+					Icon = Widgets.Icon(nil,InternalSettings.IconMap.Snap,32,5,0);
+					ToolTip = "Snap to grid";
 					Select = function()
 						Settings.SnapToGrid = not Settings.SnapToGrid
 					end;
@@ -275,10 +270,12 @@ do
 								self:SetActive(value)
 							elseif key == 'SnapEnabled' then
 								self:SetEnabled(value)
+								Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,5,value and 0 or 1)
 							end
 						end)
 						self:SetActive(Settings.SnapToGrid)
 						self:SetEnabled(Settings.SnapEnabled)
+						Widgets.Icon(self.Button.MenuButtonIcon,InternalSettings.IconMap.Menu,32,5,Settings.SnapEnabled and 0 or 1)
 					end;
 				};
 			}
