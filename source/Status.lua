@@ -50,7 +50,7 @@ do
 		local mtMessage = {
 			__index = {
 				Destroy = function(self)
-					setmetatable(self,nil)
+				--	setmetatable(self,nil)
 				end;
 				GetString = function(self)
 					local messageSet = self.MessageSet
