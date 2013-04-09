@@ -21,11 +21,12 @@ PluginActivator.Initialized:connect(function()
 end)
 
 do
-	local Camera = Workspace.CurrentCamera
+	local Camera
 	local cameraCF
 	local cameraFO
 	local cameraType
 	PluginActivator.Activated:connect(function()
+		Camera = Workspace.CurrentCamera
 		if Camera then
 			cameraCF = Camera.CoordinateFrame
 			cameraFO = Camera.Focus
@@ -38,6 +39,7 @@ do
 	end)
 
 	PluginActivator.Deactivated:connect(function()
+		Camera = Workspace.CurrentCamera
 		Canvas:Stop()
 		UserInterface:Stop()
 		Keyboard:Stop()
