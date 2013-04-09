@@ -29,6 +29,7 @@ read [[source/Keyboard.lua]]      {'main'}
 read [[source/KeyBinding.lua]]    {'main'}
 read [[source/Status.lua]]        {'main'}
 read [[source/SnapService.lua]]   {'main'}
+read [[source/TemplateManager.lua]] {'main'}
 
 export = [[source/export]]
 read (export/[[Exporter.lua]])          {'main'}

@@ -305,6 +305,29 @@ do
 		end
 
 		local ToolbarFrame = ToolManager:InitializeTools()
+		local TemplatePanel = TemplateManager.Frame
+
+		do
+			local CollapseButton = TemplatePanel.CollapseButton
+			local canvasFrame = Canvas.CanvasFrame
+			local collapsed = false
+			CollapseButton.MouseButton1Click:connect(function()
+				collapsed = not collapsed
+				if collapsed then
+					TemplatePanel.Position = UDim2.new(0,menuSize - 183,0,menuSize*2)
+					TemplatePanel.Size = UDim2.new(0,200,1,-menuSize*2)
+					canvasFrame.Size = UDim2.new(1, -menuSize*2 - 16, 1, -menuSize*2)
+					canvasFrame.Position = UDim2.new(0, menuSize + 16, 0, menuSize*2)
+					CollapseButton.Text = '>>'
+				else
+					TemplatePanel.Position = UDim2.new(0,menuSize,0,menuSize*2)
+					TemplatePanel.Size = UDim2.new(0,200,1,-menuSize*2)
+					canvasFrame.Size = UDim2.new(1, -menuSize*2 - 200, 1, -menuSize*2)
+					canvasFrame.Position = UDim2.new(0, menuSize + 200, 0, menuSize*2)
+					CollapseButton.Text = '<<'
+				end
+			end)
+		end
 
 		self.Screen = Create'ScreenGui'{
 			Name = "GuiStudio";
@@ -321,9 +344,9 @@ do
 					BackgroundColor3 = Color3.new(0.5, 0.5, 0.5);
 				};
 				Create(Canvas.CanvasFrame){
-					Size = UDim2.new(1, -menuSize*2, 1, -menuSize*2);
+					Size = UDim2.new(1, -menuSize*2 - 200, 1, -menuSize*2);
 					Name = "Canvas";
-					Position = UDim2.new(0, menuSize, 0, menuSize*2);
+					Position = UDim2.new(0, menuSize + 200, 0, menuSize*2);
 					BackgroundTransparency = 1;
 				};
 				Create(MenuFrame){
@@ -334,6 +357,10 @@ do
 					Name = "SnapperMenu ButtonMenu";
 					Position = UDim2.new(1,-menuSize,0,menuSize*2);
 					Size = UDim2.new(0,menuSize,1,0);
+				};
+				Create(TemplatePanel){
+					Position = UDim2.new(0,menuSize,0,menuSize*2);
+					Size = UDim2.new(0,200,1,-menuSize*2);
 				};
 				Create(ToolbarFrame){
 					Name = "Toolbar ButtonMenu";

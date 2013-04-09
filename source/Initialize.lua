@@ -1,5 +1,6 @@
 PluginActivator.Initialized:connect(function()
 	Grid:Initialize()
+	TemplateManager:Initialize()
 	UserInterface:Initialize()
 
 	Canvas.Started:connect(function(screen)
