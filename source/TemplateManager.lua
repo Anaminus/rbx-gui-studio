@@ -26,6 +26,9 @@ TemplateManager:AddTemplate ( name, template )
 TemplateManager:RemoveTemplate ( name )
 	Removes a user template.
 
+TemplateManager:InitializeTemplate ( name )
+	Create an instance from template `name`.
+
 TemplateManager:StartDrag ( name )
 	Performs a dragging action.
 
@@ -40,6 +43,7 @@ do
 	local DefaultTemplates = {}
 	local TemplateIcons = {}
 
+	local listItemLookup = {}
 	local addListItem
 	local removeListItem
 
@@ -88,10 +92,13 @@ do
 		local listContainer = Widgets.StackingFrame(templateList.Container)
 		listContainer.Border = 2
 
-		local listItemTemplate = Create'Frame'{
+		local listItemTemplate = Create'ImageButton'{
 			BorderSizePixel = 0;
 			Size = UDim2.new(0,176,0,38);
+			BackgroundColor3 = GuiColor.Field;
+			BorderSizePixel = 0;
 			BackgroundTransparency = 1;
+			AutoButtonColor = false;
 			Create'TextLabel'{
 				Name = "ItemText";
 				BackgroundTransparency = 1;
@@ -103,7 +110,6 @@ do
 			};
 		}
 
-		local listItemLookup = {}
 		function addListItem(name)
 			local template = DefaultTemplates[name] or UserTemplates[name]
 			local icon = TemplateIcons[name]
@@ -128,7 +134,9 @@ do
 			end
 			listItem.ItemText.Text = name
 
-			-- connect StartDrag on click
+			listItem.MouseButton1Down:connect(function(x,y)
+				self:StartDrag(name,Vector2.new(x,y))
+			end)
 
 			listContainer:AddObject(listItem)
 			listItemLookup[name] = listItem
@@ -246,7 +254,83 @@ do
 		return true
 	end
 
-	function TemplateManager:StartDrag(name)
+	do
+		local function recurse(template,parent)
+			local object = Instance.new(template.ClassName,parent)
+			for k,v in pairs(template) do
+				if type(k) == 'string' and k ~= 'ClassName' then
+					object[k] = v
+				elseif type(k) == 'number' then
+					recurse(v,object)
+				end
+			end
+			return object
+		end
+		function TemplateManager:InitializeTemplate(name)
+			local template
+			if UserTemplates[name] then
+				template = UserTemplates[name]
+			elseif DefaultTemplates[name] then
+				template = DefaultTemplates[name]
+			else
+				return error("`" .. name .. "` is not an existing template",2)
+			end
+			return recurse(template)
+		end
+	end
 
+	function TemplateManager:StartDrag(name,mouseClick)
+		local listItem = listItemLookup[name]
+		if not listItem then
+			error("`" .. tostring(name) .. "` is not a valid template",2)
+		end
+
+		ActionManager:StopAction('Default')
+
+		local dragGhost = listItem:Clone()
+
+		local onCanvas = false
+		local conHover; conHover = Canvas.GlobalButton.MouseMoved:connect(function(object,active,x,y)
+			conHover:disconnect()
+			onCanvas = true
+		end)
+
+		local conCanvas,finishDrag
+		conCanvas = Canvas.Stopping:connect(function()
+			conCanvas:disconnect()
+			if finishDrag then finishDrag() end
+		end)
+
+		dragGhost.Position = UDim2.new(0,listItem.AbsolutePosition.x,0,listItem.AbsolutePosition.y)
+		dragGhost.Size = UDim2.new(0,listItem.AbsoluteSize.x,0,listItem.AbsoluteSize.y)
+		dragGhost.BackgroundTransparency = 0.5
+		dragGhost.Parent = GetScreen(Canvas.CanvasFrame)
+		finishDrag = Widgets.DragGUI(dragGhost,dragGhost,mouseClick,'Center',{
+			OnDrag = function(x,y,hasDragged,setObjects)
+				if onCanvas then
+					onCanvas = false
+					dragGhost:Destroy()
+					local object = self:InitializeTemplate(name)
+					object.Parent = Scope.Current
+					local active = Canvas:WaitForObject(object)
+
+					local pos = mouseClick - active.Parent.AbsolutePosition - active.AbsoluteSize/2
+					if Settings.LayoutMode('Scale') then
+						pos = pos/active.Parent.AbsoluteSize
+						active.Position = UDim2.new(pos.x,0,pos.y,0)
+					else
+						active.Position = UDim2.new(0,pos.x,0,pos.y)
+					end
+
+					Selection:Set{object}
+					setObjects({active},active)
+				end
+			end;
+			OnRelease = function()
+				conCanvas:disconnect()
+				dragGhost:Destroy()
+				ActionManager:StartAction('Default')
+			end;
+		},Canvas.CanvasFrame,false,false,true)
 	end
 end
