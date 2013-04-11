@@ -67,6 +67,7 @@ do
 			};
 			Create'TextButton'{
 				Name = "CollapseButton";
+				AutoButtonColor = false;
 				Position = UDim2.new(1,-16,0,0);
 				Size = UDim2.new(0,16,1,0);
 				BackgroundColor3 = GuiColor.TitleBackground;
