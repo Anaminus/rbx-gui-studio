@@ -50,7 +50,7 @@ do
 				Create'TextBox'{
 					FontSize = Enum.FontSize.Size9;
 					Text = "";
-					Size = UDim2.new(0.5, -40, 1, -16);
+					Size = UDim2.new(0.5, -24, 1, -16);
 					TextColor3 = GuiColor.Text;
 					BorderColor3 = GuiColor.FieldBorder;
 					Name = "XComponent";
@@ -63,29 +63,18 @@ do
 					Size = UDim2.new(0, 12, 1, -8);
 					TextColor3 = GuiColor.Text;
 					Name = "Y Label";
-					Position = UDim2.new(0.5, -16, 0, 4);
+					Position = UDim2.new(0.5, 0, 0, 4);
 					BackgroundTransparency = 1;
 				};
 				Create'TextBox'{
 					FontSize = Enum.FontSize.Size9;
 					Text = "";
-					Size = UDim2.new(0.5, -40, 1, -16);
+					Size = UDim2.new(0.5, -24, 1, -16);
 					TextColor3 = GuiColor.Text;
 					BorderColor3 = GuiColor.FieldBorder;
 					Name = "YComponent";
-					Position = UDim2.new(0.5, 0, 0, 8);
+					Position = UDim2.new(0.5, 16, 0, 8);
 					BackgroundColor3 = GuiColor.Field;
-				};
-				Create'TextButton'{
-					FontSize = Enum.FontSize.Size18;
-					BackgroundColor3 = GuiColor.Button;
-					Name = "SetToZero Button";
-					Text = "0";
-					Size = UDim2.new(0, 32, 1, -8);
-					TextColor3 = GuiColor.Text;
-					TextStrokeTransparency = 0;
-					BorderColor3 = GuiColor.ButtonBorder;
-					Position = UDim2.new(1, -36, 0, 4);
 				};
 			};
 			Create'Frame'{
@@ -105,7 +94,7 @@ do
 				Create'TextBox'{
 					FontSize = Enum.FontSize.Size9;
 					Text = "";
-					Size = UDim2.new(0.5, -40, 1, -16);
+					Size = UDim2.new(0.5, -24, 1, -16);
 					TextColor3 = GuiColor.Text;
 					BorderColor3 = GuiColor.FieldBorder;
 					Name = "XComponent";
@@ -118,29 +107,18 @@ do
 					Size = UDim2.new(0, 12, 1, -8);
 					TextColor3 = GuiColor.Text;
 					Name = "H Label";
-					Position = UDim2.new(0.5, -16, 0, 4);
+					Position = UDim2.new(0.5, 0, 0, 4);
 					BackgroundTransparency = 1;
 				};
 				Create'TextBox'{
 					FontSize = Enum.FontSize.Size9;
 					Text = "";
-					Size = UDim2.new(0.5, -40, 1, -16);
+					Size = UDim2.new(0.5, -24, 1, -16);
 					TextColor3 = GuiColor.Text;
 					BorderColor3 = GuiColor.FieldBorder;
 					Name = "YComponent";
-					Position = UDim2.new(0.5, 0, 0, 8);
+					Position = UDim2.new(0.5, 16, 0, 8);
 					BackgroundColor3 = GuiColor.Field;
-				};
-				Create'TextButton'{
-					FontSize = Enum.FontSize.Size18;
-					BackgroundColor3 = GuiColor.Button;
-					Name = "SetToZero Button";
-					Text = "0";
-					Size = UDim2.new(0, 32, 1, -8);
-					TextColor3 = GuiColor.Text;
-					TextStrokeTransparency = 0;
-					BorderColor3 = GuiColor.ButtonBorder;
-					Position = UDim2.new(1, -36, 0, 4);
 				};
 			};
 			Create'Frame'{
@@ -263,47 +241,6 @@ do
 					SizeY.Text = ''
 				end
 			end
-
-			local SetPosZero = DescendantByOrder(ComponentFrame,1,5)
-			local SetSizeZero = DescendantByOrder(ComponentFrame,2,5)
-
-			ToolTipService:AddToolTip(SetPosZero,"Set the opposite layout component of the Position to 0")
-			ToolTipService:AddToolTip(SetSizeZero,"Set the opposite layout component of the Size to 0")
-
-			Maid:GiveTask(SetPosZero.MouseButton1Click:connect(function()
-				if layoutMode then
-				--	for i = 1,#SelectedObjects do
-					if SelectedObjects[1] then
-						local object = SelectedObjects[1]
-						local p = object.Position
-						object.Position = UDim2.new(p.X.Scale,0,p.Y.Scale,0)
-					end
-				else
-				--	for i = 1,#SelectedObjects do
-					if SelectedObjects[1] then
-						local object = SelectedObjects[1]
-						local p = object.Position
-						object.Position = UDim2.new(0,p.X.Offset,0,p.Y.Offset)
-					end
-				end
-			end))
-			Maid:GiveTask(SetSizeZero.MouseButton1Click:connect(function()
-				if layoutMode then
-				--	for i = 1,#SelectedObjects do
-					if SelectedObjects[1] then
-						local object = SelectedObjects[1]
-						local s = object.Size
-						object.Size = UDim2.new(s.X.Scale,0,s.Y.Scale,0)
-					end
-				else
-				--	for i = 1,#SelectedObjects do
-					if SelectedObjects[1] then
-						local object = SelectedObjects[1]
-						local s = object.Size
-						object.Size = UDim2.new(0,s.X.Offset,0,s.Y.Offset)
-					end
-				end
-			end))
 
 			Maid.component_layout = Settings.Changed:connect(function(key,value)
 				if key == 'LayoutMode' then
