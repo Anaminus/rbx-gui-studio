@@ -72,10 +72,10 @@ read [[source/Grid.lua]]          {'main'}
 read [[source/Selection.lua]]     {'main'}
 read [[source/ScreenManager.lua]] {'main'}
 
-tools = [[source/tools]]
-read [[source/ToolManager.lua]]   {'main'}
-read (tools/[[Selector.lua]])     {'main'}
-read (tools/[[Insert.lua]])       {'main'}
+
+read [[source/StandardToolbar.lua]] {'main'}
+read [[source/ActionManager.lua]] {'main'}
+read [[source/tools/Selector.lua]] {'main'}
 
 read [[source/UserInterface.lua]] {'main'}
 read [[source/Initialize.lua]]    {'main'}

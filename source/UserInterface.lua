@@ -304,9 +304,9 @@ do
 			SnapperFrame = Widgets.ButtonMenu(SnapperButtons,Vector2.new(buttonSize,buttonSize))
 		end
 
-		local ToolbarFrame = ToolManager:InitializeTools()
-		local TemplatePanel = TemplateManager.Frame
+		local ToolbarFrame = StandardToolbar:Initialize()
 
+		local TemplatePanel = TemplateManager.Frame
 		do
 			local CollapseButton = TemplatePanel.CollapseButton
 			local canvasFrame = Canvas.CanvasFrame
@@ -314,16 +314,16 @@ do
 			CollapseButton.MouseButton1Click:connect(function()
 				collapsed = not collapsed
 				if collapsed then
-					TemplatePanel.Position = UDim2.new(0,menuSize - 183,0,menuSize*2)
+					TemplatePanel.Position = UDim2.new(0,-183,0,menuSize*2)
 					TemplatePanel.Size = UDim2.new(0,200,1,-menuSize*2)
-					canvasFrame.Size = UDim2.new(1, -menuSize*2 - 16, 1, -menuSize*2)
-					canvasFrame.Position = UDim2.new(0, menuSize + 16, 0, menuSize*2)
+					canvasFrame.Size = UDim2.new(1, -menuSize - 16, 1, -menuSize*2)
+					canvasFrame.Position = UDim2.new(0, 16, 0, menuSize*2)
 					CollapseButton.Text = '>>'
 				else
-					TemplatePanel.Position = UDim2.new(0,menuSize,0,menuSize*2)
+					TemplatePanel.Position = UDim2.new(0,0,0,menuSize*2)
 					TemplatePanel.Size = UDim2.new(0,200,1,-menuSize*2)
-					canvasFrame.Size = UDim2.new(1, -menuSize*2 - 200, 1, -menuSize*2)
-					canvasFrame.Position = UDim2.new(0, menuSize + 200, 0, menuSize*2)
+					canvasFrame.Size = UDim2.new(1, -menuSize - 200, 1, -menuSize*2)
+					canvasFrame.Position = UDim2.new(0, 200, 0, menuSize*2)
 					CollapseButton.Text = '<<'
 				end
 			end)
@@ -337,10 +337,10 @@ do
 				Position = UDim2.new(0, 0, 0, -1);
 				BackgroundTransparency = 1;
 				Create'Frame'{
-					Size = UDim2.new(1, -menuSize*2, 1, -menuSize*2);
+					Size = UDim2.new(1, -menuSize, 1, -menuSize*2);
 					BorderSizePixel = 0;
 					Name = "Background";
-					Position = UDim2.new(0, menuSize, 0, menuSize*2);
+					Position = UDim2.new(0, 0, 0, menuSize*2);
 					BackgroundColor3 = Color3.new(0.5, 0.5, 0.5);
 				};
 				Create(Canvas.CanvasFrame){
@@ -359,20 +359,16 @@ do
 					Size = UDim2.new(0,menuSize,1,0);
 				};
 				Create(TemplatePanel){
-					Position = UDim2.new(0,menuSize,0,menuSize*2);
+					Position = UDim2.new(0,0,0,menuSize*2);
 					Size = UDim2.new(0,200,1,-menuSize*2);
 				};
-				Create(ToolbarFrame){
-					Name = "Toolbar ButtonMenu";
-					Position = UDim2.new(0, 0, 0, menuSize*2);
-					Size = UDim2.new(0, menuSize, 1, -menuSize*2);
-				};
-				Create(ToolManager.ToolOptionsFrame){
+				Create'Frame'{
 					Name = "ToolOptions";
 					Position = UDim2.new(0, 0, 0, menuSize);
 					Size = UDim2.new(1, 0, 0, menuSize);
 					BackgroundColor3 = GuiColor.Background;
 					BorderColor3 = GuiColor.Border;
+					ToolbarFrame;
 				};
 				Create'Frame'{
 					Name = "BottomPanel";
