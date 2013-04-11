@@ -29,103 +29,128 @@ do
 	function StandardToolbar:Initialize()
 		local GuiColor = InternalSettings.GuiColor
 		local ComponentFrame = Create'Frame'{
-			Size = UDim2.new(0, 530, 1, 0);
+			Size = UDim2.new(0, 430, 1, 0);
 			BorderColor3 = GuiColor.Border;
 			Name = "Components";
 			BackgroundColor3 = GuiColor.Background;
 			Visible = false;
 			Create'Frame'{
-				Size = UDim2.new(0.5, 0, 1, 0);
+				Position = UDim2.new(0,4,0,4);
+				Size = UDim2.new(0.5,-4,1,-8);
 				Name = "Position Group";
 				BackgroundTransparency = 1;
-				Create'TextLabel'{
-					FontSize = Enum.FontSize.Size10;
-					Text = "X";
-					Size = UDim2.new(0, 12, 1, -8);
-					TextColor3 = GuiColor.Text;
-					Name = "X Label";
-					Position = UDim2.new(0, 4, 0, 4);
+				Create'Frame'{
+					Position = UDim2.new(0,0,0,0);
+					Size = UDim2.new(0.5,-4,1,0);
+					Name = "X Component Group";
 					BackgroundTransparency = 1;
+					Create'TextLabel'{
+						Position = UDim2.new(0, 0, 0, 0);
+						Size = UDim2.new(0, 12, 1, 0);
+						FontSize = Enum.FontSize.Size10;
+						Text = "X";
+						TextColor3 = GuiColor.Text;
+						Name = "X Label";
+						BackgroundTransparency = 1;
+					};
+					Create'TextBox'{
+						Position = UDim2.new(0, 16, 0, 0);
+						Size = UDim2.new(1, -16, 1, 0);
+						FontSize = Enum.FontSize.Size9;
+						Text = "";
+						TextColor3 = GuiColor.Text;
+						BorderColor3 = GuiColor.FieldBorder;
+						Name = "XComponent";
+						BackgroundColor3 = GuiColor.Field;
+					};
 				};
-				Create'TextBox'{
-					FontSize = Enum.FontSize.Size9;
-					Text = "";
-					Size = UDim2.new(0.5, -24, 1, -16);
-					TextColor3 = GuiColor.Text;
-					BorderColor3 = GuiColor.FieldBorder;
-					Name = "XComponent";
-					Position = UDim2.new(0, 20, 0, 8);
-					BackgroundColor3 = GuiColor.Field;
-				};
-				Create'TextLabel'{
-					FontSize = Enum.FontSize.Size10;
-					Text = "Y";
-					Size = UDim2.new(0, 12, 1, -8);
-					TextColor3 = GuiColor.Text;
-					Name = "Y Label";
-					Position = UDim2.new(0.5, 0, 0, 4);
+				Create'Frame'{
+					Position = UDim2.new(0.5,0,0,0);
+					Size = UDim2.new(0.5,-4,1,0);
+					Name = "Y Component Group";
 					BackgroundTransparency = 1;
-				};
-				Create'TextBox'{
-					FontSize = Enum.FontSize.Size9;
-					Text = "";
-					Size = UDim2.new(0.5, -24, 1, -16);
-					TextColor3 = GuiColor.Text;
-					BorderColor3 = GuiColor.FieldBorder;
-					Name = "YComponent";
-					Position = UDim2.new(0.5, 16, 0, 8);
-					BackgroundColor3 = GuiColor.Field;
+					Create'TextLabel'{
+						Position = UDim2.new(0, 0, 0, 0);
+						Size = UDim2.new(0, 12, 1, 0);
+						FontSize = Enum.FontSize.Size10;
+						Text = "Y";
+						TextColor3 = GuiColor.Text;
+						Name = "Y Label";
+						BackgroundTransparency = 1;
+					};
+					Create'TextBox'{
+						Position = UDim2.new(0, 16, 0, 0);
+						Size = UDim2.new(1, -16, 1, 0);
+						FontSize = Enum.FontSize.Size9;
+						Text = "";
+						TextColor3 = GuiColor.Text;
+						BorderColor3 = GuiColor.FieldBorder;
+						Name = "YComponent";
+						BackgroundColor3 = GuiColor.Field;
+					};
 				};
 			};
 			Create'Frame'{
-				Size = UDim2.new(0.5, 0, 1, 0);
+				Position = UDim2.new(0.5,4,0,4);
+				Size = UDim2.new(0.5,-4,1,-8);
 				Name = "Size Group";
-				Position = UDim2.new(0.5, 0, 0, 0);
 				BackgroundTransparency = 1;
-				Create'TextLabel'{
-					FontSize = Enum.FontSize.Size10;
-					Text = "W";
-					Size = UDim2.new(0, 12, 1, -8);
-					TextColor3 = GuiColor.Text;
-					Name = "W Label";
-					Position = UDim2.new(0, 4, 0, 4);
+				Create'Frame'{
+					Position = UDim2.new(0,0,0,0);
+					Size = UDim2.new(0.5,-4,1,0);
+					Name = "W Component Group";
 					BackgroundTransparency = 1;
+					Create'TextLabel'{
+						Position = UDim2.new(0, 0, 0, 0);
+						Size = UDim2.new(0, 12, 1, 0);
+						FontSize = Enum.FontSize.Size10;
+						Text = "W";
+						TextColor3 = GuiColor.Text;
+						Name = "W Label";
+						BackgroundTransparency = 1;
+					};
+					Create'TextBox'{
+						Position = UDim2.new(0, 16, 0, 0);
+						Size = UDim2.new(1, -16, 1, 0);
+						FontSize = Enum.FontSize.Size9;
+						Text = "";
+						TextColor3 = GuiColor.Text;
+						BorderColor3 = GuiColor.FieldBorder;
+						Name = "XComponent";
+						BackgroundColor3 = GuiColor.Field;
+					};
 				};
-				Create'TextBox'{
-					FontSize = Enum.FontSize.Size9;
-					Text = "";
-					Size = UDim2.new(0.5, -24, 1, -16);
-					TextColor3 = GuiColor.Text;
-					BorderColor3 = GuiColor.FieldBorder;
-					Name = "XComponent";
-					Position = UDim2.new(0, 20, 0, 8);
-					BackgroundColor3 = GuiColor.Field;
-				};
-				Create'TextLabel'{
-					FontSize = Enum.FontSize.Size10;
-					Text = "H";
-					Size = UDim2.new(0, 12, 1, -8);
-					TextColor3 = GuiColor.Text;
-					Name = "H Label";
-					Position = UDim2.new(0.5, 0, 0, 4);
+				Create'Frame'{
+					Position = UDim2.new(0.5,0,0,0);
+					Size = UDim2.new(0.5,-4,1,0);
+					Name = "H Component Group";
 					BackgroundTransparency = 1;
-				};
-				Create'TextBox'{
-					FontSize = Enum.FontSize.Size9;
-					Text = "";
-					Size = UDim2.new(0.5, -24, 1, -16);
-					TextColor3 = GuiColor.Text;
-					BorderColor3 = GuiColor.FieldBorder;
-					Name = "YComponent";
-					Position = UDim2.new(0.5, 16, 0, 8);
-					BackgroundColor3 = GuiColor.Field;
+					Create'TextLabel'{
+						Position = UDim2.new(0, 0, 0, 0);
+						Size = UDim2.new(0, 12, 1, 0);
+						FontSize = Enum.FontSize.Size10;
+						Text = "H";
+						TextColor3 = GuiColor.Text;
+						Name = "H Label";
+						BackgroundTransparency = 1;
+					};
+					Create'TextBox'{
+						Position = UDim2.new(0, 16, 0, 0);
+						Size = UDim2.new(1, -16, 1, 0);
+						FontSize = Enum.FontSize.Size9;
+						Text = "";
+						TextColor3 = GuiColor.Text;
+						BorderColor3 = GuiColor.FieldBorder;
+						Name = "YComponent";
+						BackgroundColor3 = GuiColor.Field;
+					};
 				};
 			};
 			Create'Frame'{
-				BorderSizePixel = 0;
-				Size = UDim2.new(0, 1, 1, 0);
-				BorderColor3 = GuiColor.Border;
 				Position = UDim2.new(0.5, 0, 0, 0);
+				Size = UDim2.new(0, 1, 1, 0);
+				BorderSizePixel = 0;
+				BorderColor3 = GuiColor.Border;
 			};
 		};
 		StandardToolbar.Frame = ComponentFrame
@@ -142,10 +167,10 @@ do
 			local layoutMode = Settings.LayoutMode('Scale')
 			local currentObject
 
-			local PosX  = DescendantByOrder(ComponentFrame,1,2)
-			local PosY  = DescendantByOrder(ComponentFrame,1,4)
-			local SizeX = DescendantByOrder(ComponentFrame,2,2)
-			local SizeY = DescendantByOrder(ComponentFrame,2,4)
+			local PosX  = DescendantByOrder(ComponentFrame,1,1,2)
+			local PosY  = DescendantByOrder(ComponentFrame,1,2,2)
+			local SizeX = DescendantByOrder(ComponentFrame,2,1,2)
+			local SizeY = DescendantByOrder(ComponentFrame,2,2,2)
 
 			do
 				-- Here, we're going to have the selected object update when a
