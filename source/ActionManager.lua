@@ -75,7 +75,7 @@ do
 	end
 
 	function ActionManager:StartAction(name,...)
-		if not self.Status('Started') then return end
+		if self.Status('Stopped') or self.Status('Stopping') then return end
 
 		if StartAction[name] then
 			ActionRunning[name] = true
