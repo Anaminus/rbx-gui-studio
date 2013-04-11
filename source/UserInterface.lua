@@ -344,9 +344,9 @@ do
 					BackgroundColor3 = Color3.new(0.5, 0.5, 0.5);
 				};
 				Create(Canvas.CanvasFrame){
-					Size = UDim2.new(1, -menuSize*2 - 200, 1, -menuSize*2);
+					Size = UDim2.new(1, -menuSize - 200, 1, -menuSize*2);
 					Name = "Canvas";
-					Position = UDim2.new(0, menuSize + 200, 0, menuSize*2);
+					Position = UDim2.new(0, 200, 0, menuSize*2);
 					BackgroundTransparency = 1;
 				};
 				Create(MenuFrame){
