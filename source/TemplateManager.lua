@@ -323,6 +323,15 @@ do
 						active.Position = UDim2.new(0,pos.x,0,pos.y)
 					end
 
+					--------
+					-- temporary fix for adapting size based on layout mode
+					-- remove when implementing user-templates
+					if Settings.LayoutMode('Scale') then
+						local size = active.AbsoluteSize/active.Parent.AbsoluteSize
+						object.Size = UDim2.new(size.x,0,size.y,0)
+					end
+					--------
+
 					Selection:Set{object}
 					setObjects({active},active)
 				end
