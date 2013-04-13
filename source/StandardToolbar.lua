@@ -29,14 +29,14 @@ do
 	function StandardToolbar:Initialize()
 		local GuiColor = InternalSettings.GuiColor
 		local ComponentFrame = Create'Frame'{
-			Size = UDim2.new(0, 430, 1, 0);
+			Size = UDim2.new(0, 530, 1, 0);
 			BorderColor3 = GuiColor.Border;
 			Name = "Components";
 			BackgroundColor3 = GuiColor.Background;
 			Visible = false;
 			Create'Frame'{
 				Position = UDim2.new(0,4,0,4);
-				Size = UDim2.new(0.5,-4,1,-8);
+				Size = UDim2.new(0.4,-8,1,-8);
 				Name = "Position Group";
 				BackgroundTransparency = 1;
 				Create'Frame'{
@@ -89,10 +89,17 @@ do
 						BackgroundColor3 = GuiColor.Field;
 					};
 				};
+				Create'Frame'{
+					Name = "Seperator";
+					Position = UDim2.new(1, 0, 0, -4);
+					Size = UDim2.new(0, 1, 1, 8);
+					BorderSizePixel = 0;
+					BorderColor3 = GuiColor.Border;
+				};
 			};
 			Create'Frame'{
-				Position = UDim2.new(0.5,4,0,4);
-				Size = UDim2.new(0.5,-4,1,-8);
+				Position = UDim2.new(0.4,4,0,4);
+				Size = UDim2.new(0.4,-8,1,-8);
 				Name = "Size Group";
 				BackgroundTransparency = 1;
 				Create'Frame'{
@@ -145,12 +152,38 @@ do
 						BackgroundColor3 = GuiColor.Field;
 					};
 				};
+				Create'Frame'{
+					Name = "Seperator";
+					Position = UDim2.new(1, 0, 0, -4);
+					Size = UDim2.new(0, 1, 1, 8);
+					BorderSizePixel = 0;
+					BorderColor3 = GuiColor.Border;
+				};
 			};
 			Create'Frame'{
-				Position = UDim2.new(0.5, 0, 0, 0);
-				Size = UDim2.new(0, 1, 1, 0);
-				BorderSizePixel = 0;
-				BorderColor3 = GuiColor.Border;
+				Position = UDim2.new(0.8,4,0,4);
+				Size = UDim2.new(0.2,-8,1,-8);
+				Name = "SnapPadding Group";
+				BackgroundTransparency = 1;
+				Create'TextLabel'{
+					Position = UDim2.new(0, 0, 0, 0);
+					Size = UDim2.new(0, 12, 1, 0);
+					FontSize = Enum.FontSize.Size10;
+					Text = "Sp";
+					TextColor3 = GuiColor.Text;
+					Name = "Sp Label";
+					BackgroundTransparency = 1;
+				};
+				Create'TextBox'{
+					Position = UDim2.new(0, 16, 0, 0);
+					Size = UDim2.new(1, -16, 1, 0);
+					FontSize = Enum.FontSize.Size9;
+					Text = "";
+					TextColor3 = GuiColor.Text;
+					BorderColor3 = GuiColor.FieldBorder;
+					Name = "SnapPaddingField";
+					BackgroundColor3 = GuiColor.Field;
+				};
 			};
 		};
 		StandardToolbar.Frame = ComponentFrame
@@ -292,6 +325,31 @@ do
 				updateObject(object,activeLookup[object])
 			else
 				updateObject()
+			end
+
+			-- SnapPadding field
+			do
+				local SnapPaddingField = DescendantByOrder(ComponentFrame,3,2)
+				local prev = Settings.SnapPadding
+				Settings.Changed:connect(function(key,value)
+					if key == 'SnapPadding' then
+						SnapPaddingField.Text = string.format('%i',value)
+						prev = value
+					end
+				end)
+
+				ToolTipService:AddToolTip(SnapPaddingField,"Snap padding")
+				Maid:GiveTask(Widgets.MaskedTextBox(SnapPaddingField,function(textBox,text)
+					local value = EvaluateInput(text)
+					if value then
+						Settings.SnapPadding = value
+						return nil
+					else
+						return string.format('%i',prev)
+					end
+				end))
+
+				SnapPaddingField.Text = prev
 			end
 
 			ComponentFrame.Visible = true
