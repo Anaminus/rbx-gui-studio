@@ -306,28 +306,51 @@ do
 
 		local ToolbarFrame = StandardToolbar:Initialize()
 
+		-- remember viewport position
+		do
+			local canvasFrame = Canvas.CanvasFrame
+			local currentScreen = ScreenManager.CurrentScreen
+			local currentPosition = Vector2.new(0,0)
+
+			canvasFrame.Changed:connect(function(p)
+				if p == 'Position' then
+					currentPosition = Vector2.new(canvasFrame.Position.X.Offset,canvasFrame.Position.Y.Offset)
+				end
+			end)
+
+			Canvas.Started:connect(function(screen)
+				if screen ~= currentScreen then
+					-- if the screen changes, then reset the viewport
+					currentPosition = Vector2.new(0,0)
+					currentScreen = screen
+				end
+				canvasFrame.Position = UDim2.new(0,currentPosition.x,0,currentPosition.y)
+			end)
+		end
+
 		local TemplatePanel = TemplateManager.Frame
 		do
 			local CollapseButton = TemplatePanel.CollapseButton
-			local canvasFrame = Canvas.CanvasFrame
+			local viewportFrame = Canvas.ViewportFrame
 			local collapsed = false
 			CollapseButton.MouseButton1Click:connect(function()
 				collapsed = not collapsed
 				if collapsed then
 					TemplatePanel.Position = UDim2.new(0,-183,0,menuSize*2)
 					TemplatePanel.Size = UDim2.new(0,200,1,-menuSize*2)
-					canvasFrame.Size = UDim2.new(1, -menuSize - 16, 1, -menuSize*2)
-					canvasFrame.Position = UDim2.new(0, 16, 0, menuSize*2)
+					viewportFrame.Size = UDim2.new(1, -menuSize - 16, 1, -menuSize*2)
+					viewportFrame.Position = UDim2.new(0, 16, 0, menuSize*2)
 					CollapseButton.Text = '>>'
 				else
 					TemplatePanel.Position = UDim2.new(0,0,0,menuSize*2)
 					TemplatePanel.Size = UDim2.new(0,200,1,-menuSize*2)
-					canvasFrame.Size = UDim2.new(1, -menuSize - 200, 1, -menuSize*2)
-					canvasFrame.Position = UDim2.new(0, 200, 0, menuSize*2)
+					viewportFrame.Size = UDim2.new(1, -menuSize - 200, 1, -menuSize*2)
+					viewportFrame.Position = UDim2.new(0, 200, 0, menuSize*2)
 					CollapseButton.Text = '<<'
 				end
 			end)
 		end
+
 
 		self.Screen = Create'ScreenGui'{
 			Name = "GuiStudio";
@@ -341,13 +364,23 @@ do
 					BorderSizePixel = 0;
 					Name = "Background";
 					Position = UDim2.new(0, 0, 0, menuSize*2);
-					BackgroundColor3 = Color3.new(0.5, 0.5, 0.5);
+					BackgroundColor3 = Color3.new(0.4, 0.4, 0.4);
 				};
-				Create(Canvas.CanvasFrame){
-					Size = UDim2.new(1, -menuSize - 200, 1, -menuSize*2);
-					Name = "Canvas";
-					Position = UDim2.new(0, 200, 0, menuSize*2);
+				Create(Canvas.ViewportFrame){
+					Name = "ViewportFrame";
+					AutoButtonColor = false;
 					BackgroundTransparency = 1;
+					Size = UDim2.new(1, -menuSize - 200, 1, -menuSize*2);
+					Position = UDim2.new(0, 200, 0, menuSize*2);
+					Create(Canvas.CanvasFrame){
+						Name = "Canvas";
+					--	BackgroundTransparency = 1;
+						AutoButtonColor = false;
+						BackgroundColor3 = Color3.new(0.5, 0.5, 0.5);
+						BorderColor3 = Color3.new(0,0,0);
+						Size = UDim2.new(1,0,1,0);
+						Position = UDim2.new(0,0,0,0);
+					};
 				};
 				Create(MenuFrame){
 					Name = "MainMenu ButtonMenu";

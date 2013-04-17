@@ -9,6 +9,7 @@ do
 	local SelectedObjects = Selection.SelectedObjects
 	local GlobalButton = Canvas.GlobalButton
 	local CanvasFrame = Canvas.CanvasFrame
+	local ViewportFrame = Canvas.ViewportFrame
 
 	local Maid = CreateMaid()
 
@@ -194,6 +195,7 @@ do
 			TransformHandles:SetParent(SelectedObjects[#SelectedObjects])
 		end
 
+		-- precise arrow keys
 		do
 			local Keyboard = Keyboard
 			local function moveSelection(dir,scaled)
@@ -309,6 +311,47 @@ do
 			Maid.arrow_down  = Keyboard.KeyDown[down ]:connect(startMoving)
 			Maid.arrow_right = Keyboard.KeyDown[right]:connect(startMoving)
 			Maid.arrow_left  = Keyboard.KeyDown[left ]:connect(startMoving)
+		end
+
+		-- viewport manipulation
+		do
+			local function viewportDrag(x,y)
+				if inAction then return end
+				inAction = true
+
+				local Dragger = Widgets.Dragger()
+				local mouseClick = Vector2.new(x,y)
+
+				local conStop
+
+				local function finishDrag()
+					if conStop then conStop:disconnect() end
+					Dragger:Destroy()
+					inAction = false
+				end
+
+				local originPos = Vector2.new(CanvasFrame.Position.X.Offset,CanvasFrame.Position.Y.Offset)
+
+				conStop = Canvas.Stopping:connect(finishDrag)
+
+				Dragger.MouseButton2Up:connect(finishDrag)
+				Dragger.MouseMoved:connect(function(x,y)
+					local pos = originPos + Vector2.new(x,y) - mouseClick
+					CanvasFrame.Position = UDim2.new(
+						0,
+						math.abs(pos.x) <= 8 and 0 or pos.x,
+						0,
+						math.abs(pos.y) <= 8 and 0 or pos.y
+					)
+				end)
+
+				Dragger.Parent = UserInterface.Screen
+			end
+
+			Maid:GiveTask(GlobalButton.MouseButton2Down:connect(function(_,_,x,y)
+				viewportDrag(x,y)
+			end))
+			Maid:GiveTask(ViewportFrame.MouseButton2Down:connect(viewportDrag))
 		end
 	end
 

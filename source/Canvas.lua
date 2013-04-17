@@ -9,6 +9,7 @@ This includes property changes and additions, removals, and changes to the hiera
 API:
 	Canvas.CurrentScreen            The current ScreenGui the Canvas is bound to
 	Canvas.CanvasFrame              The GuiObject instance representing the Canvas
+	Canvas.ViewportFrame            The GuiObject instance representing the viewport
 	Canvas.ActiveLookup             Save-to-active lookup table
 	Canvas.SaveLookup               Active-to-save lookup table
 	Canvas.GlobalButton             A representation of every button in the canvas
@@ -60,6 +61,7 @@ do
 	Canvas = {
 		CurrentScreen      = CurrentScreen;
 		CanvasFrame        = CanvasFrame;
+		ViewportFrame      = Create'ImageButton'{};
 		ActiveLookup       = ActiveLookup;
 		SaveLookup         = SaveLookup;
 		Replicate          = true;
