@@ -306,28 +306,6 @@ do
 
 		local ToolbarFrame = StandardToolbar:Initialize()
 
-		-- remember viewport position
-		do
-			local canvasFrame = Canvas.CanvasFrame
-			local currentScreen = ScreenManager.CurrentScreen
-			local currentPosition = Vector2.new(0,0)
-
-			canvasFrame.Changed:connect(function(p)
-				if p == 'Position' then
-					currentPosition = Vector2.new(canvasFrame.Position.X.Offset,canvasFrame.Position.Y.Offset)
-				end
-			end)
-
-			Canvas.Started:connect(function(screen)
-				if screen ~= currentScreen then
-					-- if the screen changes, then reset the viewport
-					currentPosition = Vector2.new(0,0)
-					currentScreen = screen
-				end
-				canvasFrame.Position = UDim2.new(0,currentPosition.x,0,currentPosition.y)
-			end)
-		end
-
 		local TemplatePanel = TemplateManager.Frame
 		do
 			local CollapseButton = TemplatePanel.CollapseButton

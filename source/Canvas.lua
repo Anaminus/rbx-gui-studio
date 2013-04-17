@@ -224,6 +224,15 @@ do
 		end
 	end
 
+	-- remember canvas position in viewport
+	local canvasPosition = Vector2.new(0,0)
+	local lastScreen
+	CanvasFrame.Changed:connect(function(p)
+		if p == 'Position' then
+			canvasPosition = Vector2.new(CanvasFrame.Position.X.Offset,CanvasFrame.Position.Y.Offset)
+		end
+	end)
+
 	AddServiceStatus{Canvas;
 		Start = function(self,container)
 			local function r(object,list)
@@ -232,6 +241,14 @@ do
 					r(child,list)
 				end
 			end
+
+			-- set the canvas position in viewport
+			if container ~= lastScreen then
+				-- if the screen changes, then reset the position
+				canvasPosition = Vector2.new(0,0)
+				lastScreen = container
+			end
+			CanvasFrame.Position = UDim2.new(0,canvasPosition.x,0,canvasPosition.y)
 
 			if container then
 				CurrentScreen = container
@@ -259,6 +276,7 @@ do
 			for i,descendant in pairs(descendants) do
 				saveAdded(descendant)
 			end
+
 
 			eventStarted:Fire(CurrentScreen)
 		end;
