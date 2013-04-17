@@ -1,3 +1,64 @@
+--[[ScrollBar
+A primative scrollbar.
+
+API:
+
+Fields:
+
+ScrollBar.GUI
+	The GUI object representing the scrollbar.
+
+ScrollBar.ScrollIndex
+	A number indicating the current position of the scroll bar.
+
+ScrollBar.VisibleSpace
+	A number indicating the visible span of the scrollable space.
+
+ScrollBar.TotalSpace
+	A number indicating the total span of the scrollable space.
+
+ScrollBar.PageIncrement
+	The amount to increase or decrease the ScrollIndex when ScrollDown or ScrollUp is called.
+
+
+Methods:
+
+ScrollBar:CanScrollDown ( )
+ScrollBar:CanScrollLeft ( )
+ScrollBar:CanScrollRight ( )
+ScrollBar:CanScrollUp ( )
+	Returns whether the scrollbar can be scrolled in a particular direction.
+
+ScrollBar:ScrollDown ( )
+ScrollBar:ScrollLeft ( )
+ScrollBar:ScrollRight ( )
+ScrollBar:ScrollUp ( )
+	Scrolls the scrollbar in a particular direction by Scrollbar.PageIncrement.
+
+ScrollBar:ScrollTo ( index )
+	Scrolls to a specific location.
+
+ScrollBar:GetScrollPercent ( )
+	Returns the scroll index as a percentage between 0 and 1.
+
+ScrollBar:SetScrollPercent ( percent )
+	Sets the scroll index from a percentage between 0 and 1.
+
+ScrollBar:Update ( )
+	Updates the scrollbar.
+
+ScrollBar:Destroy ( )
+	Releases any resources used by this object. Call this if you are no longer using the object.
+
+
+Callbacks:
+
+ScrollBar.UpdateCallback ( class )
+	Called when the scrollbar updates.
+	If this function returns false, then the update will be cancelled.
+
+]]
+
 do
 	local mt = {
 		__index = {
