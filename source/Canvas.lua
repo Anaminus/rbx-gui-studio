@@ -12,6 +12,7 @@ API:
 	Canvas.ViewportFrame            The GuiObject instance representing the viewport
 	Canvas.ActiveLookup             Save-to-active lookup table
 	Canvas.SaveLookup               Active-to-save lookup table
+	Canvas.ButtonLookup             Save-to-button lookup
 	Canvas.GlobalButton             A representation of every button in the canvas
 	ServiceStatus.Status            Whether the service is started or not
 
@@ -57,6 +58,7 @@ do
 
 	local ActiveLookup = {} -- [CurrentScreen] = CanvasFrame
 	local SaveLookup = {} -- [CanvasFrame] = CurrentScreen
+	local ButtonLookup = {}
 
 	Canvas = {
 		CurrentScreen      = CurrentScreen;
@@ -64,6 +66,7 @@ do
 		ViewportFrame      = Create'ImageButton'{};
 		ActiveLookup       = ActiveLookup;
 		SaveLookup         = SaveLookup;
+		ButtonLookup       = ButtonLookup;
 		Replicate          = true;
 	}
 	local Canvas = Canvas
@@ -130,6 +133,7 @@ do
 	}
 
 	local function connectButton(save,active,button)
+		ButtonLookup[save] = button
 		for event,global in pairs(Canvas.GlobalButton) do
 			button[event]:connect(function(...)
 				for _,listener in pairs(global) do
@@ -291,6 +295,10 @@ do
 			for object,con in pairs(conChangedLookup) do
 				con:disconnect()
 				conChangedLookup[object] = nil
+			end
+			for save,button in pairs(ButtonLookup) do
+				ButtonLookup[save] = nil
+				button:Destroy()
 			end
 			for save,active in pairs(ActiveLookup) do
 				ActiveLookup[save] = nil
