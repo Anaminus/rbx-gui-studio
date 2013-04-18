@@ -51,20 +51,22 @@ do
 			end
 		end
 
-		local clickStamp = 0
-		local function checkDoubleClick(object)
+		local leftClickStamp = 0
+		local rightClickStamp = 0
+		local function checkDoubleLeftClick(object)
 			local t = tick()
-			if t-clickStamp < 0.5 then
-				clickStamp = 0
+			if t-leftClickStamp < 0.5 then
+				leftClickStamp = 0
 				setScope(object)
 				return true
 			end
-			clickStamp = t
+			leftClickStamp = t
 			return false
 		end
 
 		local function resetClick()
-			clickStamp = 0
+			leftClickStamp = 0
+			rightClickStamp = 0
 		end
 
 		local function selectNothing()
@@ -76,10 +78,10 @@ do
 		local function rubberband(x,y)
 			Maid.rubberband = Widgets.RubberbandSelect(Vector2.new(x,y),{
 					OnDrag = function()
-						clickStamp = 0
+						leftClickStamp = 0
 					end;
 					OnRelease = function()
-						clickStamp = 0
+						leftClickStamp = 0
 						Maid.rubberband = nil
 						inAction = false
 					end;
@@ -98,13 +100,13 @@ do
 
 			if object == Canvas.CurrentScreen then
 			-- clicked nothing
-				if checkDoubleClick() then inAction = false return end
+				if checkDoubleLeftClick() then inAction = false return end
 				rubberband(x,y)
 				return
 			end
 			-- clicked object
 
-			if checkDoubleClick(object) then inAction = false return end
+			if checkDoubleLeftClick(object) then inAction = false return end
 
 			local can_drag = true
 			-- click to select
@@ -160,7 +162,7 @@ do
 					end;
 					OnRelease = function(x,y,hasDragged)
 						if hasDragged then
-							clickStamp = 0
+							leftClickStamp = 0
 							for i = 1,#dragObjects do
 								local object = dragObjects[i]
 								local active = activeObjects[i]
@@ -315,18 +317,33 @@ do
 
 		-- viewport manipulation
 		do
+			local function checkDoubleRightClick()
+				local t = tick()
+				if t-rightClickStamp < 0.5 then
+					rightClickStamp = 0
+					CanvasFrame.Position = UDim2.new(0,0,0,0)
+					return true
+				end
+				rightClickStamp = t
+				return false
+			end
+
 			local function viewportDrag(x,y)
 				if inAction then return end
 				inAction = true
+
+				if checkDoubleRightClick() then inAction = false return end
 
 				local Dragger = Widgets.Dragger()
 				local mouseClick = Vector2.new(x,y)
 
 				local conStop
+				local hasDragged = false
 
 				local function finishDrag()
 					if conStop then conStop:disconnect() end
 					Dragger:Destroy()
+					if hasDragged then rightClickStamp = 0 end
 					inAction = false
 				end
 
@@ -336,6 +353,7 @@ do
 
 				Dragger.MouseButton2Up:connect(finishDrag)
 				Dragger.MouseMoved:connect(function(x,y)
+					hasDragged = true
 					local pos = originPos + Vector2.new(x,y) - mouseClick
 					CanvasFrame.Position = UDim2.new(
 						0,
