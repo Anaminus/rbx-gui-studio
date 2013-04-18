@@ -97,7 +97,7 @@ do
 			if inAction then return end
 			inAction = true
 
-			if object == Canvas.CurrentScreen then
+			if object == Canvas.CurrentScreen or object == nil then
 			-- clicked nothing
 				if checkDoubleLeftClick() then inAction = false return end
 				rubberband(x,y)
@@ -184,6 +184,9 @@ do
 
 		Maid:GiveTask(GlobalButton.MouseMoved:connect(resetClick))
 		Maid:GiveTask(GlobalButton.MouseButton1Down:connect(startDrag))
+		Maid:GiveTask(ViewportFrame.MouseButton1Down:connect(function(...)
+			startDrag(nil,nil,...)
+		end))
 
 		-- selection
 		Maid:GiveTask(Selection.ObjectSelected:connect(function(object,active)
