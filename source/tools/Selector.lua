@@ -182,19 +182,22 @@ do
 			end
 		end
 
-		Maid.move = GlobalButton.MouseMoved:connect(resetClick)
-		Maid.select = GlobalButton.MouseButton1Down:connect(startDrag)
+		Maid:GiveTask(GlobalButton.MouseMoved:connect(resetClick))
+		Maid:GiveTask(GlobalButton.MouseButton1Down:connect(startDrag))
 
-		Maid.selected = Selection.ObjectSelected:connect(function(object,active)
+		-- selection
+		Maid:GiveTask(Selection.ObjectSelected:connect(function(object,active)
 			TransformHandles:SetParent(object)
-		end)
-		Maid.deselected = Selection.ObjectDeselected:connect(function(object,active)
+		end))
+
+		Maid:GiveTask(Selection.ObjectDeselected:connect(function(object,active)
 			if #SelectedObjects > 0 then
 				TransformHandles:SetParent(SelectedObjects[#SelectedObjects])
 			else
 				TransformHandles:SetParent(nil)
 			end
-		end)
+		end))
+
 		if #SelectedObjects > 0 then
 			TransformHandles:SetParent(SelectedObjects[#SelectedObjects])
 		end
@@ -249,11 +252,11 @@ do
 			}
 
 			local scaled = Settings.LayoutMode('Scale')
-			Maid.layout_changed = Settings.Changed:connect(function(key,value)
+			Maid:GiveTask(Settings.Changed:connect(function(key,value)
 				if key == 'LayoutMode' then
 					scaled = value('Scale')
 				end
-			end)
+			end))
 
 			local arrowIsDown = Keyboard.KeyIsDown
 			local MoveID = 0
@@ -311,10 +314,10 @@ do
 				inAction = false
 			end
 
-			Maid.arrow_up    = Keyboard.KeyDown[up   ]:connect(startMoving)
-			Maid.arrow_down  = Keyboard.KeyDown[down ]:connect(startMoving)
-			Maid.arrow_right = Keyboard.KeyDown[right]:connect(startMoving)
-			Maid.arrow_left  = Keyboard.KeyDown[left ]:connect(startMoving)
+			Maid:GiveTask(Keyboard.KeyDown[up   ]:connect(startMoving))
+			Maid:GiveTask(Keyboard.KeyDown[down ]:connect(startMoving))
+			Maid:GiveTask(Keyboard.KeyDown[right]:connect(startMoving))
+			Maid:GiveTask(Keyboard.KeyDown[left ]:connect(startMoving))
 		end
 
 		-- viewport manipulation
