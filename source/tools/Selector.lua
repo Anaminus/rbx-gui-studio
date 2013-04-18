@@ -93,8 +93,7 @@ do
 				})
 		end
 
-		Maid.move = GlobalButton.MouseMoved:connect(resetClick)
-		Maid.select = GlobalButton.MouseButton1Down:connect(function(object,active,x,y)
+		local function startDrag(object,active,x,y)
 			if inAction then return end
 			inAction = true
 
@@ -181,7 +180,10 @@ do
 			else
 				inAction = false
 			end
-		end)
+		end
+
+		Maid.move = GlobalButton.MouseMoved:connect(resetClick)
+		Maid.select = GlobalButton.MouseButton1Down:connect(startDrag)
 
 		Maid.selected = Selection.ObjectSelected:connect(function(object,active)
 			TransformHandles:SetParent(object)
