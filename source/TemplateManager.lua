@@ -291,7 +291,7 @@ do
 		local dragGhost = listItem:Clone()
 
 		local onCanvas = false
-		local conHover; conHover = Canvas.GlobalButton.MouseMoved:connect(function(object,active,x,y)
+		local conHover; conHover = Canvas.ViewportFrame.MouseMoved:connect(function(object,active,x,y)
 			conHover:disconnect()
 			onCanvas = true
 		end)
