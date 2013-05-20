@@ -4,7 +4,6 @@ option('write_path',"--[[FILE: %s]]")
 
 META    = data [[METADATA]]
 NAME    = META.PLUGIN_NAME
-TYPE    = META.PLUGIN_TYPE
 VERSION = META.PLUGIN_VERSION
 
 if os_version == "Windows XP" then

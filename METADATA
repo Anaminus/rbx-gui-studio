@@ -1,3 +1,2 @@
 PLUGIN_NAME = "GUI Studio";
-PLUGIN_TYPE = "Plugin";
 PLUGIN_VERSION = "0.1";
