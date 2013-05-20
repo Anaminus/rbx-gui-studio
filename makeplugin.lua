@@ -57,3 +57,7 @@ read [[lua/UserInterface.lua]]
 read [[lua/Initialize.lua]]
 
 write ( META.PLUGIN_NAME .. ".lua" )
+
+-- plugin icon
+read [[images/application_form_edit.png]]
+bwrite [[application_form_edit.png]]
