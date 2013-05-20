@@ -1,6 +1,6 @@
 PluginData = {
 	Toolbar = "Plugins";
-	ActivationButton = {"", "Open "..PROJECT_NAME, "application_form_edit.png"};
+	ActivationButton = {"", "Open "..PLUGIN_NAME, "application_form_edit.png"};
 }
 
 --[[PluginActivator

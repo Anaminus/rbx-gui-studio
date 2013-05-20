@@ -3,9 +3,9 @@ option('write_path',"--[[FILE: %s]]")
 --option('cmd_friendly',0)
 
 META    = data [[METADATA]]
-NAME    = META.PROJECT_NAME
-TYPE    = META.PROJECT_TYPE
-VERSION = META.PROJECT_VERSION
+NAME    = META.PLUGIN_NAME
+TYPE    = META.PLUGIN_TYPE
+VERSION = META.PLUGIN_VERSION
 
 if os_version == "Windows XP" then
 	rbx_plugins = [[%USERPROFILE%/Local Settings/Application Data/Roblox/plugins]]
