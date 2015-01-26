@@ -45,7 +45,7 @@ do
 		Button.Click:connect(function()
 			if self.IsActive then
 				self.IsActive = false
-				Button:SetActive(false)
+			--	Button:SetActive(false)
 				if self.IsInitialized then
 					eventDeactivated:Fire()
 				end
@@ -56,10 +56,11 @@ do
 				end
 				self.IsActive = true
 				Plugin:Activate(true)
-				Button:SetActive(true)
+			--	Button:SetActive(true)
 				eventActivated:Fire()
 			end
 		end)
+	--[[
 		Plugin.Deactivation:connect(function()
 			self.IsActive = false
 			Button:SetActive(false)
@@ -67,5 +68,6 @@ do
 				eventDeactivated:Fire()
 			end
 		end)
+	--]]
 	end
 end
