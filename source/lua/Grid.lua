@@ -41,8 +41,8 @@ do
 	local GridLinesX
 	local GridLinesY
 
-	local gSpacing
-	local gOrigin
+	local gSpacing = Vector2.new()
+	local gOrigin = Vector2.new()
 	local giOriginX
 	local giOriginY
 
